@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Sidebars · Bootstrap v5.0</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/">
+
+    
+
+    <!-- Bootstrap core CSS -->
+<link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="static/css/sidebars.css" rel="stylesheet">
+    <!-- <link href="static/css/headers.css" rel="stylesheet"> -->
+
+  </head>
+  <body>
+
+<main>
+    
+    <!-- sidebar -->
+    <div class="d-none d-md-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px; background-color: rgb(73, 73, 73);">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <span class="fs-4">CRYPTO WALLET</span>
+        </a>    
+        <hr>
+        <ul class="nav nav-pills flex-column lg-auto">
+        <li class="nav-item">
+            <a href="#" class="nav-link active fs-4" aria-current="page">
+            Профіль
+            </a>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-white fs-4">
+            Гаманець
+            </a>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-white fs-4">
+            iBay
+            </a>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-white fs-4">
+            Чат
+            </a>
+        </li>
+        </ul>
+    </div>
+    <div class="b-example-divider d-none d-lg-flex"></div>
+
+    <!-- end sidebar -->
+
+    <div class="container-fluid overflow-auto">
+        <header class="d-none d-lg-block p-3 mb-3 border-bottom">
+            <!-- <div class="container"> -->
+              <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="#" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+                  <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+                </a>
+        
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"></ul>
+
+
+
+                </ul>
+                <a href="#" class="nav-link px-2 mx-3 link-dark fs-4">Username</a>
+                <img src="static/image/portrait.jpg" alt="mdo" width="50" height="50" class="img-fluid">
+              </div>
+            <!-- </div> -->
+          </header>
+
+          <div class="collapse" id="navbarToggleExternalContent">
+            <div class="bg-dark p-4">
+              <ul>
+                <li><h5 class="text-white h4">Collapsed content</h5></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Профіль</a></span></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Гаманець</a></span></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">iBay</a></span></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Чат</a></span></li>
+                <li><h5 class="text-white h4">Username</h5></li>
+              </ul>
+            </div>
+          </div>
+
+          <nav class="d-flex d-lg-none navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            </div>
+          </nav>
+
+        <h3>Профіль користувача</h3>
+
+        <div class="row my-3 border">
+
+          <div class="col-12 col-sm-10 col-md-8 col-lg-6 my-3" style="max-height: 270px;">
+            <!-- user card -->
+            <div class="card bg-dark text-white mb-3" style="max-width: 540px; max-height: 270px;">
+              <div class="row g-0">
+                <div class="col-6 col-lg-4">
+                  <img src="static/image/portrait.jpg" class="img-fluid rounded-start" alt="Портрет користувача" style="max-height: 270px;">
+                </div>
+                <div class="col-6  col-lg-8">
+                  <div class="card-body">
+                    <h5 class="card-title">Username</h5>
+                    <div class="row">
+                      <div class="col-12 col-lg-6">
+                        <button type="button" class="btn btn-primary mt-5 mx-1">Оновити</button>
+                      </div>
+                      <div class="col-12 col-lg-6">
+                        <button type="button" class="btn btn-light mt-5 mx-1">Видалити</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>            
+          </div>
+          
+          <!-- end user card -->
+          <!-- change user data form -->
+          <div class="col-12">
+            <div class="row">
+
+              <div class="col-12 col-lg-6">
+                <div class="form-group row my-3">
+                  <label for="inputUsername" class="col-sm-2 col-form-label">Юзернейм</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" id="inputUsername" placeholder="Username">
+                  </div>
+                </div>  
+              </div>
+
+              <div class="col-12 col-lg-6">
+                <div class="form-group row my-3">
+                  <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" id="inputPassword" placeholder="Email">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <div class="form-group row my-3">
+                  <label for="inputPassword" class="col-sm-2 col-form-label">пароль</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="пароль">
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="form-group row my-3">
+                  <label for="inputRepeatPassword" class="col-sm-2 col-form-label">повторіть пароль</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="повторіть пароль">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+          <div class="row">
+            <div class="col-4">
+              <button type="button" class="btn btn-success mt-1 mb-3">Зберігти</button>
+            </div>
+          </div>
+          </div>
+          <!-- end change user data form -->
+        </div>
+        <h3>Статистика</h3>
+        <div class="row my-3 border">
+          <div class="col-12 my-3">
+            <h5>Повідомлень в чаті: 200</h5>
+            <h5>Кількість гаманців: 4</h5>
+          </div>
+        </div>
+
+        <h3>Управління гаманцями</h3>
+        <div class="row my-3 border py-3">
+
+
+          <div class="col-12 col-lg-6">
+            <div class="card border-0 mb-3" style="max-height: 100px;">
+              <div class="row g-0">
+                <div class="col-2">
+                  <img src="static/image/ethereum-icon.png" class="img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
+                </div>
+                <div class="col-10">
+                  <div class="card-body">
+                    <p class="card-text border">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="card border-0 mb-3" style="max-height: 100px;">
+              <div class="row g-0">
+                <div class="col-2">
+                  <img src="static/image/ethereum-icon.png" class="img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
+                </div>
+                <div class="col-10">
+                  <div class="card-body">
+                    <p class="card-text border">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="card border-0 mb-3" style="max-height: 100px;">
+              <div class="row g-0">
+                <div class="col-2">
+                  <img src="static/image/ethereum-icon.png" class="img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
+                </div>
+                <div class="col-10">
+                  <div class="card-body">
+                    <p class="card-text border">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="card border-0 mb-3" style="max-height: 100px;">
+              <div class="row g-0">
+                <div class="col-2">
+                  <img src="static/image/ethereum-icon.png" class="img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
+                </div>
+                <div class="col-10">
+                  <div class="card-body">
+                    <p class="card-text border">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="card border-0 mb-3" style="max-height: 100px;">
+              <div class="row g-0">
+                <div class="col-2">
+                  <img src="static/image/ethereum-icon.png" class="img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
+                </div>
+                <div class="col-10">
+                  <div class="card-body">
+                    <p class="card-text border">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+
+
+
+
+          <div class="col-11 text-center">
+            <button type="button" class="btn btn-success mt-5 mx-1">Імпортувати ETH гаманець</button>
+            <button type="button" class="btn btn-success mt-5 mx-1">Create ETH гаманець</button>
+          </div>
+        </div>
+
+
+    </div>
+
+
+ 
+
+
+    <!-- header -->
+
+
+    </main>
+
+    <script src="static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/sidebars.js"></script>
+  </body>
+</html>
