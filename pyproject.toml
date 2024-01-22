@@ -12,6 +12,8 @@ fastapi = "^0.109.0"
 uvicorn = {extras = ["standart"], version = "^0.26.0"}
 sqlalchemy = "^2.0.25"
 sqlalchemy-file = "^0.6.0"
+alembic = "^1.13.1"
+psycopg2-binary = "^2.9.9"
 
 
 [build-system]
