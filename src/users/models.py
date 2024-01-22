@@ -35,6 +35,8 @@ class User(Base):
     # photo: mapped_column(FileField())
     photo = Column(FileField)
 
+    # biography: Mapped[str] = mapped_column(TEXT)
+
 
 class Message(Base):
     __tablename__ = "message"

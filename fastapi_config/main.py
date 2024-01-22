@@ -7,9 +7,16 @@ from src.users.routers import users_routers
 # from src.etherium.models import Transaction
 # from src.orders.models import Commodity, Order
 
+from db_config.database import engine
 from db_config import database
+# from 
 
 
+# from db_config.models import User, Message, Wallet, Asset, Blockchain, Transaction, Commodity, Order
+from src.users.models import User, Message
+from src.wallets.models import Wallet, Asset, Blockchain
+from src.etherium.models import Transaction
+from src.orders.models import Commodity, Order
 
 # from sqlalchemy.ext.declarative import declarative_base
 
@@ -18,7 +25,7 @@ from db_config import database
 # Base.metadata.create_all(database.engine)
 
 
-database.Base.metadata.create_all(bind=database.engine)
+database.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()

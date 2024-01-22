@@ -7,7 +7,10 @@ from sqlalchemy.orm import relationship
 
 from sqlalchemy.dialects.postgresql import ENUM
 
+
 from sqlalchemy_file import FileField
+from sqlalchemy_utils.types.choice import ChoiceType
+
 
 from src.users.models import User
 
@@ -39,9 +42,15 @@ class Wallet(Base):
 
 class Asset(Base):
     __tablename__ = "asset"
+    TYPES = (
+        ('currency', 'Currency'),
+        ('token', 'Token')
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    type: Mapped[str] = mapped_column(ENUM("currency", "token"))
+    # type: Mapped[str] = mapped_column(ENUM("currency", "token"))
+    type = Column(ChoiceType(TYPES))
+
     text: Mapped[str] = mapped_column(TEXT)
     decimal_places: Mapped[int] = mapped_column(Integer())
     title: Mapped[str] = mapped_column(String(70))
@@ -54,9 +63,17 @@ class Asset(Base):
 
 class Blockchain(Base):
     __tablename__ = "blockchain"
+    BLOCKCHAINTYPE = (
+        ("eth_like", "Etherium_like"),
+        ("bitcoin_like", "Bitcoin_like"),
+        ("unique", "Unique")
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    blockchain_type: Mapped[str] = mapped_column(ENUM("eth_like", "bitcoin_like", "unique"))
+
+    # blockchain_type: Mapped[str] = mapped_column(ENUM("eth_like", "bitcoin_like", "unique"))
+    blockchain_type = Column(ChoiceType(BLOCKCHAINTYPE))
+
     title: Mapped[str] = mapped_column(String(70))
     # logo: mapped_column(FileField())
     photo = Column(FileField)

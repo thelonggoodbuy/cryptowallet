@@ -1,4 +1,4 @@
-from sqlalchemy import String, ForeignKey, DECIMAL, DATETIME, Column
+from sqlalchemy import String, ForeignKey, DECIMAL, DateTime, Column
 
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.orm import relationship
@@ -7,6 +7,9 @@ from sqlalchemy.dialects.postgresql import ENUM
 
 from src.wallets.models import Wallet
 from db_config.database import Base
+from sqlalchemy_utils.types.choice import ChoiceType
+from datetime import datetime
+
 
 # from db_config.models import Base
 
@@ -16,6 +19,12 @@ from db_config.database import Base
 
 class Transaction(Base):
     __tablename__ = "transaction"
+    STATUS = (
+        ("success", "Success"),
+        ("fail", "Fail"),
+        ("pending", "Pending")
+    )
+
 
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -30,8 +39,12 @@ class Transaction(Base):
 
 
     txn_hash: Mapped[str] = mapped_column(String(200))
+
     # date_time_transaction: mapped_column(DATETIME())
-    date_time_transaction = DATETIME()
+    date_time_transaction = Column(DateTime, default=datetime.now)
+    
     txn_hash: Mapped[str] = mapped_column(String(200))
-    status: Mapped[str] = mapped_column(ENUM("success", "fail", "pending"))
+    # status: Mapped[str] = mapped_column(ENUM("success", "fail", "pending"))
+    status = Column(ChoiceType(STATUS))
+
 
