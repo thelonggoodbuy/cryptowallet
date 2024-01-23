@@ -9,7 +9,9 @@ from src.users.routers import users_routers
 
 from db_config.database import engine
 from db_config import database
-# from 
+
+from fastapi.staticfiles import StaticFiles
+
 
 
 # from db_config.models import User, Message, Wallet, Asset, Blockchain, Transaction, Commodity, Order
@@ -30,9 +32,13 @@ database.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="front"), name="static")
+
+
 app.include_router(users_routers.router)
 
 
 @app.get("/")
 async def root():
+    
     return {"message": "Cryptowallet main app!"}
