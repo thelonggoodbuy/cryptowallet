@@ -14,7 +14,7 @@
 
     <!-- Bootstrap core CSS -->
 <!-- <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="#" rel="stylesheet" id="bootsrap_min_css">
 
     <style>
       .bd-placeholder-img {
@@ -32,9 +32,31 @@
       }
     </style>
 
+
+
     
     <!-- Custom styles for this template -->
-    <link href="../../static/css/signin.css" rel="stylesheet">
+    <!-- <link href="static/css/signin.css" rel="stylesheet"> -->
+    <!-- <link href="http://127.0.0.1:8000/static/static/css/signin.css" rel="stylesheet"> -->
+    <link href="#" rel="stylesheet" id="sign_in_css">
+
+    <script>
+      sign_in_css_obj = document.getElementById('sign_in_css')
+      sign_in_css_obj.href=window.location.href.replace('users/login/', '') + 'static/static/css/signin.css'
+      
+      bootsrap_min_css = document.getElementById('bootsrap_min_css')
+      bootsrap_min_css.href=window.location.href.replace('users/login/', '') + 'static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css'
+
+      var links = document.getElementsByTagName("link");
+      for (var cl in links)
+      {
+          var link = links[cl];
+          if (link.rel === "stylesheet")
+              link.href += "";
+      }
+
+    </script>
+
   </head>
   <body class="text-center">
     
