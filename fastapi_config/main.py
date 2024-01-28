@@ -14,7 +14,6 @@ from fastapi.staticfiles import StaticFiles
 
 
 
-# from db_config.models import User, Message, Wallet, Asset, Blockchain, Transaction, Commodity, Order
 from src.users.models import User, Message
 from src.wallets.models import Wallet, Asset, Blockchain
 from src.etherium.models import Transaction

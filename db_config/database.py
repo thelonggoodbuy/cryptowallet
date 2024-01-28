@@ -9,11 +9,11 @@ from sqlalchemy.orm import sessionmaker
 # from src.orders.models import Commodity, Order
 
 
-
+# !!! вынести ссылку в .env
 SQLALCHEMY_DATABASE_URL = "postgresql://maxim:12345qwert@localhost:5432/cryptowallet_db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, echo=True
+    SQLALCHEMY_DATABASE_URL
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
