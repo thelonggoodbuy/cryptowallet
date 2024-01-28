@@ -23,7 +23,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 0.1
 
 
 fake_users_db = {
-    "johndoe": {
+    "johndoe@example.com": {
         "username": "johndoe",
         "full_name": "John Doe",
         "email": "johndoe@example.com",
@@ -84,14 +84,18 @@ def get_password_hash(password):
 
 
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
+def get_user(db, email: str):
+    if email in db:
+        user_dict = db[email]
         return UserInDB(**user_dict)
     
 
 def authenticate_user(fake_db, username: str, password: str):
+    print('-------------1-1--------------')
     user = get_user(fake_db, username)
+    print('-------------1-2--------------')
+    print(user)
+    print('-------------1-3--------------')
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -165,25 +169,32 @@ async def get_current_active_user(
 
 
 
+# OAuth2PasswordRequestForm
+
 @router.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
     # payload: Dict[Any, Any]
 ) -> Token:
-    # print('----------------------------')
+    print('-------------1--------------')
     # print(form_data)
     # print('----------------------------')
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    print('-------------2--------------')
+    print(user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    print('-------------3--------------')
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    print('-------------4--------------')
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
+    print('-------------5--------------')
     return Token(access_token=access_token, token_type="bearer")
 
 

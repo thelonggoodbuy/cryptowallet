@@ -111,7 +111,7 @@
 
 
         var fd = new FormData();    
-        fd.append('username', 'johndoe');
+        fd.append('username', 'johndoe@example.com');
         fd.append('password', 'secret');
 
 
@@ -126,7 +126,10 @@
             processData: false,
             contentType: false,
             success: function(result){
+              document.cookie = result.access_token
               console.log("success", result);
+              var x = document.cookie;
+              console.log(x)
             },
             error: function(){
               console.log("error", data);
