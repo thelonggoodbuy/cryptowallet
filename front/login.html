@@ -99,7 +99,52 @@
 
   window.onload = function() {
     $(document).ready(function () {
-      // console.log($('#passwordInput'))
+      var cookie_data = document.cookie
+
+      for (var cookie of cookie_data.split('; ')){
+        if (cookie.startsWith('access_token=')){
+          var access_token = cookie.replace('access_token=', '')
+
+          $.ajax({
+            url: window.location.href.replace('login/', 'validate_access_token/'),
+            type: "POST",
+            data: JSON.stringify({'access_token': access_token}), 
+            processData: false,
+            contentType: false,
+            success: function(result){
+
+              console.log('success!');
+
+              // window.location.href = window.location.href.replace('login/', 'profile/')
+              $.ajax({
+                url: window.location.href.replace('login/', 'profile/'),
+                type: "GET",
+                headers: {"Bearer": access_token},
+
+              })
+
+
+            },
+            error: function(){
+              // console.log("error", data);
+              console.log('error!');
+            }
+          });
+
+          // console.log(cookie.replace('access_token=', ''))
+
+
+
+        }
+
+      }
+
+      // var access_token = 
+      console.log('--------------------------------')
+
+
+
+      // ------------check if token is not expires---------------
 
       
       console.log('JQuery! Work!')
@@ -126,7 +171,7 @@
             processData: false,
             contentType: false,
             success: function(result){
-              document.cookie = result.access_token
+              document.cookie = 'access_token=' + result.access_token
               console.log("success", result);
               var x = document.cookie;
               console.log(x)

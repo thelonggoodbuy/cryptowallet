@@ -91,11 +91,8 @@ def get_user(db, email: str):
     
 
 def authenticate_user(fake_db, username: str, password: str):
-    print('-------------1-1--------------')
     user = get_user(fake_db, username)
-    print('-------------1-2--------------')
-    print(user)
-    print('-------------1-3--------------')
+
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -176,25 +173,20 @@ async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
     # payload: Dict[Any, Any]
 ) -> Token:
-    print('-------------1--------------')
-    # print(form_data)
-    # print('----------------------------')
+
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
-    print('-------------2--------------')
-    print(user)
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    print('-------------3--------------')
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    print('-------------4--------------')
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    print('-------------5--------------')
+
     return Token(access_token=access_token, token_type="bearer")
 
 
@@ -252,6 +244,31 @@ async def read_own_items(
 
 
 # --------------------------######----------------------------------
+from jose import JWTError, jwt
+
+# class AccessToken(BaseModel):
+#     access_token: str
+
+from fastapi import Request
+
+@router.post("/users/validate_access_token/")
+async def validate_access_token(request: Request):
+    print(request)
+    print(await request.json())
+    json_data = await request.json()
+    token = json_data['access_token']
+    # print('==============')
+    # print(token)
+    # print('==============')
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    print('-------------------JVT-DECODE--------------------------------')
+    print(token)
+    print(payload)
+    print('-------------------!!!!--------------------------------')
+
+
+
+
 
 @router.get("/users/test_response/")
 async def test_response(current_user: Annotated[User, Depends(get_current_active_user)]):
@@ -260,12 +277,9 @@ async def test_response(current_user: Annotated[User, Depends(get_current_active
 
 
 
-
-
-
-
 @router.get("/users/login/", response_class=HTMLResponse)
 async def login():
+
     with open('front/login.html', 'r') as file:
         data = file.read()
     
