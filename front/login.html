@@ -111,29 +111,17 @@
             data: JSON.stringify({'access_token': access_token}), 
             processData: false,
             contentType: false,
-            success: function(result){
-
-              console.log('success!');
-
-              // window.location.href = window.location.href.replace('login/', 'profile/')
-              $.ajax({
-                url: window.location.href.replace('login/', 'profile/'),
-                type: "GET",
-                headers: {"Bearer": access_token},
-
-              })
-
-
-            },
-            error: function(){
-              // console.log("error", data);
-              console.log('error!');
+            success: function(result){ 
+              console.log(result['result'])
+              console.log(typeof result['result'])
+              if(result['result'] == true)
+              window.location.href = window.location.href.replace('login/', 'profile/')
             }
+            // error: function(){
+            //   console.log('you have NOT cookie!');
+            //   console.log(result)
+            // }
           });
-
-          // console.log(cookie.replace('access_token=', ''))
-
-
 
         }
 
@@ -153,11 +141,15 @@
         console.log('---------SEND----BUTTON=------')
         console.log(window.location.href.replace('users/login/', '') + 'token/')
 
+        var email_input = document.getElementById("emailInput").value
+        var password_input = document.getElementById("passwordInput").value;
+        console.log(email_input)
+        console.log(password_input)
 
 
-        var fd = new FormData();    
-        fd.append('username', 'johndoe@example.com');
-        fd.append('password', 'secret');
+        var fd = new FormData();
+        fd.append('username', email_input);
+        fd.append('password', password_input);
 
 
         $.ajax({
@@ -171,10 +163,16 @@
             processData: false,
             contentType: false,
             success: function(result){
-              document.cookie = 'access_token=' + result.access_token
+
+              
+              document.cookie = 'access_token=' + result.access_token + ";path=/"
               console.log("success", result);
               var x = document.cookie;
-              console.log(x)
+              console.log('------------total---cookie----------------')
+              console.log(document.cookie)
+
+              window.location.href = window.location.href.replace('login/', 'profile/')
+
             },
             error: function(){
               console.log("error", data);
