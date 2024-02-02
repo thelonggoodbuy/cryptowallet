@@ -75,7 +75,7 @@
 
     <div class="checkbox mb-3">
       <label>
-        <input type="checkbox" value="remember-me"> Запам'ятати мене
+        <input type="checkbox" value="remember-me" id="rememberMeInput"> Запам'ятати мене
       </label>
     </div>
     <!-- <button class="btn btn-success" id="send_button">Увійти в систему</button> -->
@@ -85,14 +85,20 @@
 
   </form>
 </main>
+
+
 <script type="text/javascript">
   var new_script = document.createElement("script");
   new_script.type = "text/javascript";
   new_script.src = window.location.href.replace('users/login/', '') + 'static/static/plugin/jquery/dist/jquery.min.js'
   var head= document.getElementsByTagName('head')[0];
   head.appendChild(new_script);
-
 </script>
+
+
+
+
+
 
 
 <script>
@@ -135,7 +141,6 @@
       // ------------check if token is not expires---------------
 
       
-      console.log('JQuery! Work!')
       $('#send_button').on('click', function(){
 
         console.log('---------SEND----BUTTON=------')
@@ -143,13 +148,17 @@
 
         var email_input = document.getElementById("emailInput").value
         var password_input = document.getElementById("passwordInput").value;
+        var scope = 'remember_me:'+document.getElementById("rememberMeInput").checked
+
         console.log(email_input)
         console.log(password_input)
+        console.log(typeof scope)
 
 
         var fd = new FormData();
         fd.append('username', email_input);
         fd.append('password', password_input);
+        fd.append('scope', scope);
 
 
         $.ajax({

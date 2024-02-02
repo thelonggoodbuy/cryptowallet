@@ -21,7 +21,7 @@ from jose.exceptions import ExpiredSignatureError
 
 SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
+ACCESS_TOKEN_EXPIRE_MINUTES = 0.25
 
 
 
@@ -50,8 +50,7 @@ router = APIRouter()
 
 # ------------------------USER LOGIC FROM DOC--------------------
 
-# def fake_hash_password(password: str):
-#     return "fakehashed" + password
+# -------------->>>>>>>>>>>>>>>models<<<<<<<<<<<<<<<<<<<<<-------
 
 
 class Token(BaseModel):
@@ -107,9 +106,10 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
+        to_encode.update({"exp": expire})
+    #     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    # else:
+    #     expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
@@ -122,13 +122,20 @@ async def get_current_user(request:Request):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    print('---------#1----------------')
     try:
         # token in request----
         token = request.cookies['access_token']
+        print('---------#2---TOKEN--------')
+        print(token)
 
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        print('---------#3----------------')
+        print(payload)
         username: str = payload.get("sub")
+        print(username)
         if username is None:
+            
             raise credentials_exception
         token_data = TokenData(username=username)
 
@@ -139,9 +146,13 @@ async def get_current_user(request:Request):
     
 
     except JWTError:
-        raise credentials_exception
+        print('---------#4----------------')
+        redirect_url = '/users/login/'
+        # raise credentials_exception
+        return RedirectResponse(url=redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
     
     except KeyError:
+        print('---------#5----------------')
         redirect_url = '/users/login/'
         return RedirectResponse(url=redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
     
@@ -156,7 +167,6 @@ async def validate_access_token(request: Request):
     token_from_backend = request.cookies['access_token_in_backend'].replace("Bearer ","")
 
     if token_from_backend == token:
-
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             result = {'result': True}
@@ -164,16 +174,7 @@ async def validate_access_token(request: Request):
             result = {'result': False, 'cause': 'token_expiced'}
     else:
         result = {'result': False, 'cause': 'token_doesnt_match'}
-
     return result
-
-    # token_from_backend = request.cookies
-    # print('--------SAVED---TOKEN-----')
-    # token_from_backend['access_token_in_backend']
-    # print('-------------------------')
-
-
-    # return result
 
     
 
@@ -183,8 +184,15 @@ async def validate_access_token(request: Request):
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()], response: Response):
 # ) -> Token:
+    
+    # print('----login----authentication---form---data---')
+    # print(form_data.scopes)
+    # print(type(form_data.scopes))
+    # print('remember-me' in form_data.scopes)
+    # print('--------------------------------------------')
 
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+
 
     if not user:
         raise HTTPException(
@@ -192,11 +200,23 @@ async def login_for_access_token(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
+    
 
+    # remember_me_form_data = filter(lambda x: x.startswith('remember-me'), form_data.scopes)
+    remember_me_form_data = [i for i in form_data.scopes if i.startswith('remember_me')]
+    remember_me_status = remember_me_form_data[0].replace("remember_me:","")
+
+    if remember_me_status == 'true':
+        # print('***REMEMBER***ME****')
+        access_token = create_access_token(
+            data={"sub": user.email}
+        )
+    else:
+        # print('***FORGET***ME***')
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user.email}, expires_delta=access_token_expires
+        )
 
     response.set_cookie(key="access_token_in_backend",value=f"Bearer {access_token}", httponly=True)
     return Token(access_token=access_token, token_type="bearer")
@@ -209,9 +229,9 @@ async def login_for_access_token(
 # async def test_response(current_user: Annotated[User, Depends(get_current_active_user)], request: Request):
 async def test_response(request: Request):
     # print('#1#')
-    print('---login---cookie---')
-    print(request.cookies)
-    print('--------------------')
+    # print('---login---cookie---')
+    # print(request.cookies)
+    # print('--------------------')
     item = {"response": "you are authentoicated!"}
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
 
@@ -222,9 +242,9 @@ async def login(request: Request):
 
     with open('front/login.html', 'r') as file:
         data = file.read()
-    print('---login---cookie---')
-    print(request.cookies)
-    print('--------------------')
+    # print('---login---cookie---')
+    # print(request.cookies)
+    # print('--------------------')
     return HTMLResponse(content=data, status_code=200)
 
 
@@ -232,7 +252,7 @@ async def login(request: Request):
 
 @router.post("/users/send_login_data/")
 async def send_login_data():
-    print('RECEIVE!')
+    # print('RECEIVE!')
     item = {"response": "success from server!"}
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
 
@@ -247,12 +267,6 @@ async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_
                   response: Response,
                   cookies: Optional[str] = Cookie(None)):
     
-    # async def profile(request: Request):
-    # print('----profile----cookies---from---Frontend----------------')
-    # print(request.cookies)
-    # print('-----dependency result----------------')
-    # print(current_user_or_redirect)
-    # print(type(current_user_or_redirect))
 
     match current_user_or_redirect:
         case UserInDB():
