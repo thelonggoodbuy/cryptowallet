@@ -1,4 +1,4 @@
-from fastapi import Cookie, Depends, APIRouter, status, HTTPException, Request, Response
+from fastapi import Cookie, Depends, APIRouter, status, HTTPException, Request, Response, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -184,15 +184,9 @@ async def validate_access_token(request: Request):
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()], response: Response):
 # ) -> Token:
-    
-    # print('----login----authentication---form---data---')
-    # print(form_data.scopes)
-    # print(type(form_data.scopes))
-    # print('remember-me' in form_data.scopes)
-    # print('--------------------------------------------')
+
 
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
-
 
     if not user:
         raise HTTPException(
@@ -225,15 +219,15 @@ async def login_for_access_token(
 
 
 
-@router.get("/users/test_response/")
-# async def test_response(current_user: Annotated[User, Depends(get_current_active_user)], request: Request):
-async def test_response(request: Request):
-    # print('#1#')
-    # print('---login---cookie---')
-    # print(request.cookies)
-    # print('--------------------')
-    item = {"response": "you are authentoicated!"}
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
+# @router.get("/users/test_response/")
+# # async def test_response(current_user: Annotated[User, Depends(get_current_active_user)], request: Request):
+# async def test_response(request: Request):
+#     # print('#1#')
+#     # print('---login---cookie---')
+#     # print(request.cookies)
+#     # print('--------------------')
+#     item = {"response": "you are authentoicated!"}
+#     return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
 
 
 
@@ -250,13 +244,11 @@ async def login(request: Request):
 
 
 
-@router.post("/users/send_login_data/")
-async def send_login_data():
-    # print('RECEIVE!')
-    item = {"response": "success from server!"}
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
-
-
+# @router.post("/users/send_login_data/")
+# async def send_login_data():
+#     # print('RECEIVE!')
+#     item = {"response": "success from server!"}
+#     return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
 
 
 
@@ -275,3 +267,37 @@ async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_
             return HTMLResponse(content=data, status_code=200)
         case RedirectResponse():
             return current_user_or_redirect
+        
+
+
+
+
+@router.get("/users/registration/", response_class=HTMLResponse)
+async def registration(request: Request):
+
+    with open('front/registration.html', 'r') as file:
+        data = file.read()
+    # print('---login---cookie---')
+    # print(request.cookies)
+    # print('--------------------')
+    return HTMLResponse(content=data, status_code=200)
+
+
+
+
+
+
+
+
+
+@router.post("/users/registration_data/")
+async def registration_data(email: Annotated[str, Form()], 
+                            username: Annotated[str, Form()],
+                            password: Annotated[str, Form()],
+                            repeat_password: Annotated[str, Form()],):
+    print('-----START-----REGISTRATION----DATA-----')
+    print(email)
+    print(username)
+    print(password)
+    print(repeat_password)
+    print('-----END-------REGISTRATION----DATA-----')

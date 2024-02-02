@@ -381,7 +381,33 @@
 
   window.onload = function() {
     $(document).ready(function () {
-      console.log($('#inputPassword'))
+      var cookie_data = document.cookie
+
+      for (var cookie of cookie_data.split('; ')){
+        if (cookie.startsWith('access_token=')){
+          var access_token = cookie.replace('access_token=', '')
+
+          $.ajax({
+            url: window.location.href.replace('profile/', 'validate_access_token/'),
+            type: "POST",
+            data: JSON.stringify({'access_token': access_token}), 
+            processData: false,
+            contentType: false,
+            success: function(result){ 
+              console.log(result['result'])
+              console.log(typeof result['result'])
+              if(result['result'] == false)
+              window.location.href = window.location.href.replace('profile/', 'login/')
+            }
+          });
+        }
+      }
+
+
+      
+      
+
+
   })
   }
   

@@ -14,7 +14,7 @@
 
     <!-- Bootstrap core CSS -->
 <!-- <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -34,23 +34,23 @@
 
     
     <!-- Custom styles for this template -->
-    <link href="static/css/signin.css" rel="stylesheet">
+    <link href="/static/static/css/signin.css" rel="stylesheet">
   </head>
   <body class="text-center">
     
 <main class="form-signin border border-dark">
-  <form>
+  <form id="registration_form">
     
     <h1 class="h3 mb-3 fw-normal">Реєстрація</h1>
 
     <div class="form-floating mt-1 mb-1">
-      <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-      <label for="floatingInput">Email</label>
+      <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com">
+      <label for="floatingEmail">Email</label>
     </div>
 
     <div class="form-floating mt-1 mb-1">
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-        <label for="floatingInput">Username</label>
+        <input type="email" class="form-control" id="floatingUsername" placeholder="name@example.com">
+        <label for="floatingUsername">Username</label>
     </div>
 
     <div class="form-floating mt-1 mb-1">
@@ -59,17 +59,128 @@
     </div>
 
     <div class="form-floating mt-1 mb-1">
-        <input type="password" class="form-control" id="floatingPassword" placeholder="Пароль">
-        <label for="floatingPassword">Повторіть</label>
+        <input type="password" class="form-control" id="floatingRepeatPassword" placeholder="Повторіть пароль">
+        <label for="floatingRepeatPassword">Повторіть</label>
     </div>
 
-    <button class="btn btn-success" type="submit">Реєстрація</button>
+    <!-- <button class="btn btn-success" type="submit">Реєстрація</button> -->
+    <a href="javascript:void(0);" id="register_button" class="btn btn-success">Реєстрація</a>
 
 
   </form>
 </main>
 
+<script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="/static/static/plugin/jquery-validation-1.19.5/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/static/static/plugin/jquery-validation-1.19.5/dist/additional-methods.min.js"></script> -->
 
-    
+
+
+<script>
+  window.onload = function() {
+    console.log('JQuery work!')
+
+
+    // test token
+    var cookie_data = document.cookie
+    for (var cookie of cookie_data.split('; ')){
+      if (cookie.startsWith('access_token=')){
+        var access_token = cookie.replace('access_token=', '')
+
+        $.ajax({
+          url: window.location.href.replace('registration/', 'validate_access_token/'),
+          type: "POST",
+          data: JSON.stringify({'access_token': access_token}), 
+          processData: false,
+          contentType: false,
+          success: function(result){ 
+            console.log(result['result'])
+            console.log(typeof result['result'])
+            if(result['result'] == true)
+            window.location.href = window.location.href.replace('registration/', 'profile/')
+          }
+        });
+      }
+    };
+
+
+    //send register data
+    $('#register_button').on('click', function(){
+
+      // ----------------validation----data----------------
+
+      // var validateForm = $(document).find('#registration_form');
+      // validateForm.validate({
+      //     rules: {
+      //         email: {
+      //             required: true,
+      //             email: true,
+      //             minlength: 5
+      //         }
+      //     },
+
+      //     messages: {
+      //         email: {
+      //             required: "Введите Email",
+      //             minlength: "Поле должно быть более 5-ти символов",
+      //             email: "Некорректно введен Email"
+      //         }
+      //     },
+
+      //     submitHandler: function(form) {                
+      //         // form.submit();
+      //         console.log('You can submit!!!!')
+      //     },
+
+      //     errorPlacement: function(error, element) {                 
+      //         var item = element.parents('.form');
+      //         item.append(error);
+      //     }
+      // });
+
+      // validateForm.submit();
+
+      // // ------end-------validation----data----------------
+
+
+
+
+      var email_input = document.getElementById("floatingEmail").value
+      var username_input = document.getElementById("floatingUsername").value
+      
+      var password_input = document.getElementById("floatingPassword").value;
+      var repeat_password_input = document.getElementById("floatingRepeatPassword").value;
+
+      var registration_form_data = new FormData();
+      registration_form_data.append('email', email_input);
+      registration_form_data.append('username', username_input);
+      registration_form_data.append('password', password_input);
+      registration_form_data.append('repeat_password', repeat_password_input);
+
+
+      $.ajax({
+            url: window.location.href.replace('registration/', '') + 'registration_data/',
+            type: "POST",
+            data: registration_form_data, 
+            processData: false,
+            contentType: false,
+            success: function(result){
+              console.log("success!");
+              // document.cookie = 'access_token=' + result.access_token + ";path=/"
+              // var x = document.cookie;
+              // window.location.href = window.location.href.replace('login/', 'profile/')
+            },
+            error: function(){
+              // console.log("error", data);
+              console.log("error!");
+            }
+          });
+
+
+    })
+
+
+  }
+</script>
   </body>
 </html>

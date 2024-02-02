@@ -84,7 +84,7 @@
     </div>
     <!-- <button class="btn btn-success" id="send_button">Увійти в систему</button> -->
     <a href="javascript:void(0);" id="send_button" class="btn btn-success">Увійти в систему</a>
-    <p class="mt-3 mb-3 text-muted">клікніть на <a href="#">РЕЄСТРАЦІЮ</a> якщо ви не в системі</p>
+    <p class="mt-3 mb-3 text-muted">клікніть на <a href="javascript:void(0);" id="registration_link">РЕЄСТРАЦІЮ</a> якщо ви не в системі</p>
     <!-- <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p> -->
 
   </form>
@@ -127,37 +127,19 @@
               if(result['result'] == true)
               window.location.href = window.location.href.replace('login/', 'profile/')
             }
-            // error: function(){
-            //   console.log('you have NOT cookie!');
-            //   console.log(result)
-            // }
           });
-
         }
-
       }
-
-      // var access_token = 
-      console.log('--------------------------------')
-
-
-
-      // ------------check if token is not expires---------------
 
       
       $('#send_button').on('click', function(){
 
-        console.log('---------SEND----BUTTON=------')
-        console.log(window.location.href.replace('users/login/', '') + 'token/')
+        // console.log('---------SEND----BUTTON=------')
+        // console.log(window.location.href.replace('users/login/', '') + 'token/')
 
         var email_input = document.getElementById("emailInput").value
         var password_input = document.getElementById("passwordInput").value;
         var scope = 'remember_me:'+document.getElementById("rememberMeInput").checked
-
-        console.log(email_input)
-        console.log(password_input)
-        console.log(typeof scope)
-
 
         var fd = new FormData();
         fd.append('username', email_input);
@@ -169,29 +151,23 @@
             url: window.location.href.replace('users/login/', '') + 'token/',
             type: "POST",
             data: fd, 
-            // data: JSON.stringify({
-            //   username: 'johndoe',
-            //   password: 'secret'
-            // }),
             processData: false,
             contentType: false,
             success: function(result){
-
               
               document.cookie = 'access_token=' + result.access_token + ";path=/"
-              console.log("success", result);
               var x = document.cookie;
-              console.log('------------total---cookie----------------')
-              console.log(document.cookie)
-
               window.location.href = window.location.href.replace('login/', 'profile/')
-
             },
             error: function(){
               console.log("error", data);
             }
           });
 
+      })
+
+      $("#registration_link").on('click', function(){
+        window.location.href = window.location.href.replace('login/', 'registration/')
       })
 
 
