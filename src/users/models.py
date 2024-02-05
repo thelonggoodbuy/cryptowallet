@@ -46,4 +46,4 @@ class Message(Base):
     text: Mapped[str] = mapped_column(TEXT)
     # user FK
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user: Mapped["User"] = relationship(back_populates="messages")
+    user: Mapped["User"] = relationship(backref="messages")

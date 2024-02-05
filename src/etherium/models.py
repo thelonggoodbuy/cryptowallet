@@ -30,7 +30,7 @@ class Transaction(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     # wallet FK
     wallet_id: Mapped[int] = mapped_column(ForeignKey("wallet.id"))
-    wallet: Mapped["Wallet"] = relationship(back_populates="transactions")
+    wallet: Mapped["Wallet"] = relationship(backref="transactions")
 
     send_to: Mapped[str] = mapped_column(String(70))
     # value: mapped_column(DECIMAL(10, 9))

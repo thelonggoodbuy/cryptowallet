@@ -31,13 +31,13 @@ class Wallet(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     private_key: Mapped[str] = mapped_column(String(300))
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user: Mapped["User"] = relationship(back_populates="wallets")
+    user: Mapped["User"] = relationship(backref="wallets")
     address: Mapped[str] = mapped_column(String(300))
     # balance: mapped_column(DECIMAL(10, 9))
     balance = Column(DECIMAL(10, 9))
     # assey FK
     asset_id: Mapped[int] = mapped_column(ForeignKey("asset.id"))
-    user: Mapped["Asset"] = relationship(back_populates="wallets")
+    user: Mapped["Asset"] = relationship(backref="wallets")
 
 
 class Asset(Base):
@@ -56,7 +56,7 @@ class Asset(Base):
     title: Mapped[str] = mapped_column(String(70))
     # blockchain: FK
     blockchain_id: Mapped[int] = mapped_column(ForeignKey("blockchain.id"))
-    blockchain: Mapped["Blockchain"] = relationship(back_populates="assets")
+    blockchain: Mapped["Blockchain"] = relationship(backref="assets")
 
     code: Mapped[str] = mapped_column(String(70))
 

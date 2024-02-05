@@ -14,7 +14,10 @@
 
     <!-- Bootstrap core CSS -->
 <!-- <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+
     <link href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -71,8 +74,7 @@
 </main>
 
 <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="/static/static/plugin/jquery-validation-1.19.5/dist/jquery.validate.min.js"></script>
-<script type="text/javascript" src="/static/static/plugin/jquery-validation-1.19.5/dist/additional-methods.min.js"></script> -->
+<script type="text/javascript" src="/static/static/plugin/toastr/build/toastr.min.js"></script>
 
 
 
@@ -107,44 +109,6 @@
     //send register data
     $('#register_button').on('click', function(){
 
-      // ----------------validation----data----------------
-
-      // var validateForm = $(document).find('#registration_form');
-      // validateForm.validate({
-      //     rules: {
-      //         email: {
-      //             required: true,
-      //             email: true,
-      //             minlength: 5
-      //         }
-      //     },
-
-      //     messages: {
-      //         email: {
-      //             required: "Введите Email",
-      //             minlength: "Поле должно быть более 5-ти символов",
-      //             email: "Некорректно введен Email"
-      //         }
-      //     },
-
-      //     submitHandler: function(form) {                
-      //         // form.submit();
-      //         console.log('You can submit!!!!')
-      //     },
-
-      //     errorPlacement: function(error, element) {                 
-      //         var item = element.parents('.form');
-      //         item.append(error);
-      //     }
-      // });
-
-      // validateForm.submit();
-
-      // // ------end-------validation----data----------------
-
-
-
-
       var email_input = document.getElementById("floatingEmail").value
       var username_input = document.getElementById("floatingUsername").value
       
@@ -165,13 +129,21 @@
             processData: false,
             contentType: false,
             success: function(result){
-              console.log("success!");
-              // document.cookie = 'access_token=' + result.access_token + ";path=/"
-              // var x = document.cookie;
-              // window.location.href = window.location.href.replace('login/', 'profile/')
+              if (result.status == "error"){
+                  // toastr.warning("ERROR!")
+                  result.errors.forEach((error) => 
+                    {
+                      var error_string = Object.keys(error)[0] + ": " + Object.values(error)[0]
+                      toastr.warning(error_string)
+                    }
+                  )
+                }
+              else if (result.status == "validated"){
+                toastr.success("Data is valid!")
+              }
+                
             },
             error: function(){
-              // console.log("error", data);
               console.log("error!");
             }
           });
@@ -181,6 +153,24 @@
 
 
   }
+  toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "10000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
 </script>
   </body>
 </html>

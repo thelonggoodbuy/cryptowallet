@@ -287,17 +287,128 @@ async def registration(request: Request):
 
 
 
+# -------------------------->>>>>>>>>>Pydantic----validation<<<<<<<<<<<<<<<-----------------------------------
+
+from typing import Union
+from typing import List
+
+class NewUserModel(BaseModel):
+
+    email: str
+    username: str | None
+    password: str
+    repeat_password: str
+    data_status: str | None
+    # cause: str | None
+    cause: Optional[List[dict]] = None
+
+    @classmethod
+    def as_form(
+        cls,
+        email: str = Form(),
+        # username: str | None = Form(),
+        username: str = Form(default=None),
+        password: str = Form(),
+        repeat_password: str = Form(),
+        data_status: str = 'unvalidated',
+        cause: str | None = []
+    ):
+
+        return cls(email=email, 
+                   username=username, 
+                   password=password, 
+                   repeat_password=repeat_password,
+                   data_status=data_status,
+                   cause=cause)
+
+
+from email_validator import validate_email, EmailNotValidError
+from password_validator import PasswordValidator
+from sqlalchemy.orm import Session
+from db_config.database import get_db
+from src.users.models import User
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
+
+
+def validate_new_user(new_user_model: NewUserModel = Depends(NewUserModel.as_form),
+                      db: Session = Depends(get_db)):
+    print('***now we validate register data!***')
+
+    # 1.1 email validation. correct email
+    try:
+        # check if email is valid
+        emailinfo = validate_email(new_user_model.email, check_deliverability=False)
+        normalized_form =  emailinfo.normalized
+        new_user_model.email = normalized_form
+
+        db_user = get_user_by_email(db, email=new_user_model.email)
+        if db_user:
+            new_user_model.cause.append({'email':'Цей емейл вже використовeється іншим користувачем.'})
+
+
+    except EmailNotValidError:
+        # new_user_model.data_status = 'error'
+        new_user_model.cause.append({'email':'Емейл було введено з помилкою!'})
+
+    # 1.2 email validation. check if email exist in DB!
+    # -------------->>>>><<<<<<<-----------------------
+    # -------------->>>>><<<<<<<-----------------------
+    # -------------->>>>><<<<<<<-----------------------
+
+    # 2.1 username validation. is username exist
+    if new_user_model.username == None:
+        # new_user_model.data_status = 'error'
+        new_user_model.cause.append({'username':'Необхідно заповнити юзернейм'})
+
+
+    # 3.1 password validation. check if password is saved
+    pasword_schema = PasswordValidator()
+    if pasword_schema.min(8).validate(new_user_model.password) == False: new_user_model.cause.append({'password':'Пароль не може бути меньшим, ніж 8 символів'})
+    # if pasword_schema.max(20) == False: new_user_model.cause.append({'password':'Пароль не може бути більшим, ніж 20 символів'})
+    if pasword_schema.has().symbols().validate(new_user_model.password) == False: new_user_model.cause.append({'password':'Пароль повинен містити хочаб один знак'})
+    if pasword_schema.has().lowercase().validate(new_user_model.password) == False: new_user_model.cause.append({'password':'Пароль повинен містити хочаб одну маленьку літеру'})
+    if pasword_schema.has().uppercase().validate(new_user_model.password) == False: new_user_model.cause.append({'password':'Пароль повинен містити хочаб одну велику літеру'})
+    if pasword_schema.has().digits().validate(new_user_model.password) == False: new_user_model.cause.append({'password':'Пароль повинен містити хочаб одну цифру'})
+
+    
+    # 4.1
+    # pasword and repeat password check
+    if new_user_model.password != new_user_model.repeat_password:
+        new_user_model.cause.append({'repeat password':'Данні в полі "пароль" та "повторити пароль" повинні співпадати!'})
+
+    if len(new_user_model.cause) == 0:
+        new_user_model.data_status = 'validated'
+    else:
+        new_user_model.data_status = 'error'
+
+    return new_user_model
 
 
 
 @router.post("/users/registration_data/")
-async def registration_data(email: Annotated[str, Form()], 
-                            username: Annotated[str, Form()],
-                            password: Annotated[str, Form()],
-                            repeat_password: Annotated[str, Form()],):
-    print('-----START-----REGISTRATION----DATA-----')
-    print(email)
-    print(username)
-    print(password)
-    print(repeat_password)
-    print('-----END-------REGISTRATION----DATA-----')
+async def registration_data(user_after_validation: NewUserModel = Depends(validate_new_user), 
+                            db: Session = Depends(get_db)):
+
+    match user_after_validation.data_status:
+        case "validated":
+            new_user = User(
+                email=user_after_validation.email,
+                password=get_password_hash(user_after_validation.password),
+                username=user_after_validation.username,
+                is_active=True
+            )
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            result = {"status": "validated"}
+            
+        case "error":
+            result = {"status": "error", "errors": user_after_validation.cause}
+        case _:
+            result = {"status": "error"}
+
+    return result
+

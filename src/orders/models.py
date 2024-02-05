@@ -31,7 +31,7 @@ class Commodity(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     # wallet FK
     wallet_id: Mapped[int] = mapped_column(ForeignKey("wallet.id"))
-    wallet: Mapped["Wallet"] = relationship(back_populates="wallets")
+    wallet: Mapped["Wallet"] = relationship(backref="wallets")
 
     title: Mapped[str] = mapped_column(String(70))
     # price: mapped_column(DECIMAL(10, 9))
@@ -53,10 +53,10 @@ class Order(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     # one to one Commodity
     commodity_id: Mapped[int] = mapped_column(ForeignKey("commodity.id"))
-    commodity: Mapped["Commodity"] = relationship(back_populates="orders")
+    commodity: Mapped["Commodity"] = relationship(backref="orders")
     # one to one Transaction
     transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"))
-    transaction: Mapped["Transaction"] = relationship(back_populates="orders")
+    transaction: Mapped["Transaction"] = relationship(backref="orders")
 
     # date_time_transaction: mapped_column(DATETIME())
     # date_time_transaction = Column(DATETIME())
