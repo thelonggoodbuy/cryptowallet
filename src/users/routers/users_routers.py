@@ -94,33 +94,20 @@ def get_password_hash(password):
 
 
 def get_user(db: Session, email: str):
-    # print('-----!!!-----')
-    # print(db)
-    # print(email)
-    # print('-----!!!-----')
     user = get_user_by_email(db, email)
-    # user.email=email
+
     if user:
-        # print('----------GET----USER----')
-        # print(user.password)
-        # print('---END----GET----USER----')
         user_dict = {"hashed_password": user.password, "email": user.email}
         return UserInDB(**user_dict)
     
     
 
 def authenticate_user(db: Session, username: str, password: str):
-    # print('===4===TEST===AUTHENTICATION====')
-    # print(username)
-    # print(password)
-    # print('===5===TEST===AUTHENTICATION====')
+
     user = get_user(db, username)
-    # print(user)
-    # print('===6===TEST===AUTHENTICATION====')
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
-        # print('/////////////////////PASSWORD//////////////////UNVERIFIED!')
         return False
     return user
 
@@ -130,14 +117,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
         to_encode.update({"exp": expire})
-    #     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    # else:
-    #     expire = datetime.now(timezone.utc) + timedelta(minutes=15)
 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    # print('============!!!1==ENCODE===JVT==========')
-    # print(encoded_jwt)
-    # print('============!!!1==ENCODE===JVT==========')
     return encoded_jwt
 
 
@@ -150,24 +131,22 @@ async def get_current_user(request:Request,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    print('---------#1----------------')
     try:
-        # token in request----
         token = request.cookies['access_token']
-        # print('---------#2---TOKEN--------')
-        # print(token)
+        print('get---current---user---')
+
+        print(token)
 
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        # print('---------#3----------------')
-        # print(payload)
+        print(payload)
+
         username: str = payload.get("sub")
-        # print(username)
-        if username is None:
-            
+        print(username)
+
+        if username is None:    
             raise credentials_exception
         token_data = TokenData(username=username)
 
-        # user = get_user(fake_users_db, email=token_data.username)
         user = get_user(db, email=token_data.username)
         if user is None:
             raise credentials_exception
@@ -175,13 +154,12 @@ async def get_current_user(request:Request,
     
 
     except JWTError:
-        # print('---------#4----------------')
+        print('---END----EXCEPT--1----')
         redirect_url = '/users/login/'
-        # raise credentials_exception
         return RedirectResponse(url=redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
     
     except KeyError:
-        # print('---------#5----------------')
+        print('---END----EXCEPT--2----')
         redirect_url = '/users/login/'
         return RedirectResponse(url=redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
     
@@ -194,12 +172,15 @@ async def validate_access_token(request: Request):
     json_data = await request.json()
     token = json_data['access_token']
     token_from_backend = request.cookies['access_token_in_backend'].replace("Bearer ","")
+    print('---------------validation===data------------')
+    print('token from FRONT')
+    print(token)
+    print('token from BACK')
+    print(token_from_backend)
+    print('---------------validation===data------------')
 
     if token_from_backend == token:
         try:
-            print('====VALIDATE===ACCESS===TOKEN=================')
-            print(token)
-            print('==============================================')
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             result = {'result': True}
         except ExpiredSignatureError:
@@ -216,8 +197,10 @@ async def validate_access_token(request: Request):
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
                                 response: Response,
                                 db: Session = Depends(get_db)):
-# ) -> Token:
 
+    print('---------1-----------')
+    print(form_data)
+    print('--------------------')
 
     user = authenticate_user(db, form_data.username, form_data.password)
 
@@ -228,28 +211,14 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-
-    # remember_me_form_data = filter(lambda x: x.startswith('remember-me'), form_data.scopes)
     remember_me_form_data = [i for i in form_data.scopes if i.startswith('remember_me')]
     remember_me_status = remember_me_form_data[0].replace("remember_me:","")
 
-    # print('====3====SUB=====TEST====')
-    # print(user)
-    # print(type(user))
-    # print('=========================')
-
-    print('***====>>>What sub data I use?<<<<<=====***')
-    print(user.email)
-    print(user)
-    print(type(user))
-    print('***=====================================***')
     if remember_me_status == 'true':
-        # print('***REMEMBER***ME****')
         access_token = create_access_token(
             data={"sub": user.email}
         )
     else:
-        # print('***FORGET***ME***')
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
             data={"sub": user.email}, expires_delta=access_token_expires
@@ -260,39 +229,13 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 
 
-
-
-# @router.get("/users/test_response/")
-# # async def test_response(current_user: Annotated[User, Depends(get_current_active_user)], request: Request):
-# async def test_response(request: Request):
-#     # print('#1#')
-#     # print('---login---cookie---')
-#     # print(request.cookies)
-#     # print('--------------------')
-#     item = {"response": "you are authentoicated!"}
-#     return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
-
-
-
 @router.get("/users/login/", response_class=HTMLResponse)
 async def login(request: Request):
 
     with open('front/login.html', 'r') as file:
         data = file.read()
-    # print('---login---cookie---')
-    # print(request.cookies)
-    # print('--------------------')
+
     return HTMLResponse(content=data, status_code=200)
-
-
-
-
-# @router.post("/users/send_login_data/")
-# async def send_login_data():
-#     # print('RECEIVE!')
-#     item = {"response": "success from server!"}
-#     return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
-
 
 
 
@@ -308,6 +251,7 @@ async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_
             with open('front/user_profile.html', 'r') as file:
                 data = file.read()
             return HTMLResponse(content=data, status_code=200)
+        
         case RedirectResponse():
             return current_user_or_redirect
         
@@ -368,16 +312,10 @@ class NewUserModel(BaseModel):
 
 from src.users import models
 
+
 def get_user_by_email(db: Session, email: str):
-    print('------DATA----IN-----TEST----FUNC')
-    print(db)
-    print(type(db))
-    print(email)
-    # print(db.query(models.User).filter(email==email).first())
-    # print(db.query(models.User).filter(email==email).first().id)
-    print('------DATA----IN-----TEST----FUNC')
     return db.query(models.User).filter(models.User.email==email).first()
-    # return db.query(models.User)
+
 
 
 def validate_new_user(new_user_model: NewUserModel = Depends(NewUserModel.as_form),
@@ -390,15 +328,9 @@ def validate_new_user(new_user_model: NewUserModel = Depends(NewUserModel.as_for
         emailinfo = validate_email(new_user_model.email, check_deliverability=False)
         normalized_form =  emailinfo.normalized
         new_user_model.email = normalized_form
-        print('===')
-        print(new_user_model.email)
-        print('===')
 
         db_user = get_user_by_email(db, email=new_user_model.email)
-        # print('-----smth---wron--with---user---data---')
-        # print(db_user.id)
-        # print(db_user.email)
-        # print('-----smth---wron--with---user---data---')
+
         if db_user:
             new_user_model.cause.append({'email':'Цей емейл вже використовeється іншим користувачем.'})
 
@@ -406,11 +338,6 @@ def validate_new_user(new_user_model: NewUserModel = Depends(NewUserModel.as_for
     except EmailNotValidError:
         # new_user_model.data_status = 'error'
         new_user_model.cause.append({'email':'Емейл було введено з помилкою!'})
-
-    # 1.2 email validation. check if email exist in DB!
-    # -------------->>>>><<<<<<<-----------------------
-    # -------------->>>>><<<<<<<-----------------------
-    # -------------->>>>><<<<<<<-----------------------
 
     # 2.1 username validation. is username exist
     if new_user_model.username == None:
@@ -435,15 +362,36 @@ def validate_new_user(new_user_model: NewUserModel = Depends(NewUserModel.as_for
 
     if len(new_user_model.cause) == 0:
         new_user_model.data_status = 'validated'
+
     else:
         new_user_model.data_status = 'error'
 
     return new_user_model
 
 
+class FictiveFormData(BaseModel):
+    username: str
+    password: str
+    scopes: list[str]
+
+    @property
+    def username(self):
+        return self.username
+    
+    @property
+    def username(self):
+        return self.password
+    
+    @property
+    def scopes(self):
+        return self.scopes
+
+
+
 
 @router.post("/users/registration_data/")
-async def registration_data(user_after_validation: NewUserModel = Depends(validate_new_user), 
+async def registration_data(response: Response,
+                            user_after_validation: NewUserModel = Depends(validate_new_user),
                             db: Session = Depends(get_db)):
 
     match user_after_validation.data_status:
@@ -457,7 +405,25 @@ async def registration_data(user_after_validation: NewUserModel = Depends(valida
             db.add(new_user)
             db.commit()
             db.refresh(new_user)
-            result = {"status": "validated"}
+            # ----------------->>>
+
+            fictive_form_data = FictiveFormData(username=user_after_validation.email, 
+                                                password=user_after_validation.password, 
+                                                scopes=['remember_me:true',])
+
+            token = await login_for_access_token(fictive_form_data, 
+                                response,
+                                db)
+            print('token in registration data!')
+            print(token)
+            # response.set_cookie(key="access_token_in_backend",value=f"Bearer {token}", httponly=True)
+
+
+            # ----------------->>>
+            result = {"status": "validated", "access_token": token}
+
+
+
             
         case "error":
             result = {"status": "error", "errors": user_after_validation.cause}

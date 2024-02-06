@@ -98,8 +98,11 @@
           success: function(result){ 
             console.log(result['result'])
             console.log(typeof result['result'])
-            if(result['result'] == true)
-            window.location.href = window.location.href.replace('registration/', 'profile/')
+            if(result['result'] == true){
+              console.log(result)
+              window.location.href = window.location.href.replace('registration/', 'profile/')
+            }
+            // 
           }
         });
       }
@@ -140,6 +143,11 @@
                 }
               else if (result.status == "validated"){
                 toastr.success("Data is valid!")
+                console.log(result.access_token.access_token)
+                document.cookie = 'access_token=' + result.access_token.access_token + ";path=/"
+                var x = document.cookie;
+                console.log(x)
+                window.location.href = window.location.href.replace('registration/', 'profile/')
               }
                 
             },
