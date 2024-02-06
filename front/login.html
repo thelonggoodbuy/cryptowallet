@@ -108,13 +108,22 @@
 <script>
 
   window.onload = function() {
+    // console.log(document.cookie)
     $(document).ready(function () {
       var cookie_data = document.cookie
+      console.log(cookie_data)
 
+      // =================return=================
       for (var cookie of cookie_data.split('; ')){
         if (cookie.startsWith('access_token=')){
+            console.log('==1====')
+            console.log(cookie)
+            console.log('======')
           var access_token = cookie.replace('access_token=', '')
-
+            console.log('==2====')
+            console.log(access_token)
+            console.log('======')
+            
           $.ajax({
             url: window.location.href.replace('login/', 'validate_access_token/'),
             type: "POST",
@@ -158,6 +167,7 @@
               document.cookie = 'access_token=' + result.access_token + ";path=/"
               var x = document.cookie;
               window.location.href = window.location.href.replace('login/', 'profile/')
+              console.log(document.cookie)
             },
             error: function(){
               console.log("error", data);

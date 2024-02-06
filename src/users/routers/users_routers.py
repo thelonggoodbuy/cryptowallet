@@ -18,6 +18,13 @@ from passlib.context import CryptContext
 from jose.exceptions import ExpiredSignatureError
 
 
+from email_validator import validate_email, EmailNotValidError
+from password_validator import PasswordValidator
+from sqlalchemy.orm import Session
+from db_config.database import get_db
+from src.users.models import User
+
+
 
 SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
 ALGORITHM = "HS256"
@@ -64,7 +71,7 @@ class TokenData(BaseModel):
 
 
 class User(BaseModel):
-    username: str
+    username: str | None = None
     email: str | None = None
     disabled: bool | None = None
 
@@ -86,18 +93,34 @@ def get_password_hash(password):
 
 
 
-def get_user(db, email: str):
-    if email in db:
-        user_dict = db[email]
+def get_user(db: Session, email: str):
+    # print('-----!!!-----')
+    # print(db)
+    # print(email)
+    # print('-----!!!-----')
+    user = get_user_by_email(db, email)
+    # user.email=email
+    if user:
+        # print('----------GET----USER----')
+        # print(user.password)
+        # print('---END----GET----USER----')
+        user_dict = {"hashed_password": user.password, "email": user.email}
         return UserInDB(**user_dict)
     
+    
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
-
+def authenticate_user(db: Session, username: str, password: str):
+    # print('===4===TEST===AUTHENTICATION====')
+    # print(username)
+    # print(password)
+    # print('===5===TEST===AUTHENTICATION====')
+    user = get_user(db, username)
+    # print(user)
+    # print('===6===TEST===AUTHENTICATION====')
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
+        # print('/////////////////////PASSWORD//////////////////UNVERIFIED!')
         return False
     return user
 
@@ -110,13 +133,18 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     #     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     # else:
     #     expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    # print('============!!!1==ENCODE===JVT==========')
+    # print(encoded_jwt)
+    # print('============!!!1==ENCODE===JVT==========')
     return encoded_jwt
 
 
 
 
-async def get_current_user(request:Request):
+async def get_current_user(request:Request,
+                           db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -126,33 +154,34 @@ async def get_current_user(request:Request):
     try:
         # token in request----
         token = request.cookies['access_token']
-        print('---------#2---TOKEN--------')
-        print(token)
+        # print('---------#2---TOKEN--------')
+        # print(token)
 
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print('---------#3----------------')
-        print(payload)
+        # print('---------#3----------------')
+        # print(payload)
         username: str = payload.get("sub")
-        print(username)
+        # print(username)
         if username is None:
             
             raise credentials_exception
         token_data = TokenData(username=username)
 
-        user = get_user(fake_users_db, email=token_data.username)
+        # user = get_user(fake_users_db, email=token_data.username)
+        user = get_user(db, email=token_data.username)
         if user is None:
             raise credentials_exception
         return user
     
 
     except JWTError:
-        print('---------#4----------------')
+        # print('---------#4----------------')
         redirect_url = '/users/login/'
         # raise credentials_exception
         return RedirectResponse(url=redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
     
     except KeyError:
-        print('---------#5----------------')
+        # print('---------#5----------------')
         redirect_url = '/users/login/'
         return RedirectResponse(url=redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
     
@@ -168,6 +197,9 @@ async def validate_access_token(request: Request):
 
     if token_from_backend == token:
         try:
+            print('====VALIDATE===ACCESS===TOKEN=================')
+            print(token)
+            print('==============================================')
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             result = {'result': True}
         except ExpiredSignatureError:
@@ -181,12 +213,13 @@ async def validate_access_token(request: Request):
 
 
 @router.post("/token")
-async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], response: Response):
+async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
+                                response: Response,
+                                db: Session = Depends(get_db)):
 # ) -> Token:
 
 
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(db, form_data.username, form_data.password)
 
     if not user:
         raise HTTPException(
@@ -200,6 +233,16 @@ async def login_for_access_token(
     remember_me_form_data = [i for i in form_data.scopes if i.startswith('remember_me')]
     remember_me_status = remember_me_form_data[0].replace("remember_me:","")
 
+    # print('====3====SUB=====TEST====')
+    # print(user)
+    # print(type(user))
+    # print('=========================')
+
+    print('***====>>>What sub data I use?<<<<<=====***')
+    print(user.email)
+    print(user)
+    print(type(user))
+    print('***=====================================***')
     if remember_me_status == 'true':
         # print('***REMEMBER***ME****')
         access_token = create_access_token(
@@ -322,15 +365,19 @@ class NewUserModel(BaseModel):
                    cause=cause)
 
 
-from email_validator import validate_email, EmailNotValidError
-from password_validator import PasswordValidator
-from sqlalchemy.orm import Session
-from db_config.database import get_db
-from src.users.models import User
 
+from src.users import models
 
 def get_user_by_email(db: Session, email: str):
-    return db.query(User).filter(User.email == email).first()
+    print('------DATA----IN-----TEST----FUNC')
+    print(db)
+    print(type(db))
+    print(email)
+    # print(db.query(models.User).filter(email==email).first())
+    # print(db.query(models.User).filter(email==email).first().id)
+    print('------DATA----IN-----TEST----FUNC')
+    return db.query(models.User).filter(models.User.email==email).first()
+    # return db.query(models.User)
 
 
 def validate_new_user(new_user_model: NewUserModel = Depends(NewUserModel.as_form),
@@ -343,8 +390,15 @@ def validate_new_user(new_user_model: NewUserModel = Depends(NewUserModel.as_for
         emailinfo = validate_email(new_user_model.email, check_deliverability=False)
         normalized_form =  emailinfo.normalized
         new_user_model.email = normalized_form
+        print('===')
+        print(new_user_model.email)
+        print('===')
 
         db_user = get_user_by_email(db, email=new_user_model.email)
+        # print('-----smth---wron--with---user---data---')
+        # print(db_user.id)
+        # print(db_user.email)
+        # print('-----smth---wron--with---user---data---')
         if db_user:
             new_user_model.cause.append({'email':'Цей емейл вже використовeється іншим користувачем.'})
 
@@ -394,7 +448,7 @@ async def registration_data(user_after_validation: NewUserModel = Depends(valida
 
     match user_after_validation.data_status:
         case "validated":
-            new_user = User(
+            new_user = models.User(
                 email=user_after_validation.email,
                 password=get_password_hash(user_after_validation.password),
                 username=user_after_validation.username,
