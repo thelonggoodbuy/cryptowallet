@@ -10,11 +10,6 @@
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/">
 
-    
-
-    <!-- Bootstrap core CSS -->
-<!-- <link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-  <!-- <link href="#" rel="stylesheet" id="bootsrap_min_css" > -->
   <link rel="stylesheet" href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="/static/static/css/sidebars.css">
 
@@ -34,34 +29,6 @@
         }
       }
     </style>
-
-    
-    <!-- Custom styles for this template -->
-    <!-- <link href="static/css/sidebars.css" rel="stylesheet" id="sidebars_css"> -->
-    
-    <!-- <link href="static/css/headers.css" rel="stylesheet"> -->
-
-    <!-- <script>
-
-
-      bootsrap_min_css = document.getElementById('bootsrap_min_css')
-      bootsrap_min_css.href=window.location.href.replace('users/profile/', '') + 'static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css'
-
-      sidebars_css = document.getElementById('sidebars_css')
-      sidebars_css.href=window.location.href.replace('users/profile/', '') + 'static/static/css/sidebars.css'
-
-
-
-
-      var links = document.getElementsByTagName("link");
-      for (var cl in links)
-      {
-          var link = links[cl];
-          if (link.rel === "stylesheet")
-              link.href += "";
-      }
-
-    </script> -->
 
 
   </head>
@@ -116,8 +83,7 @@
 
                 </ul>
                 <a href="#" class="nav-link px-2 mx-3 link-dark fs-4">Username</a>
-                <!-- <img src="static/image/portrait.jpg" alt="mdo" width="50" height="50" class="img-fluid" id="portrait_jpg"> -->
-                <img src="/static/static/image/portrait.jpg" alt="mdo" width="50" height="50" class="portrait_jpg img-fluid">
+                <img src="/static/static/image/empty_portrait.jpg" alt="mdo" width="50" height="50" class="portrait_jpg img-fluid">
               </div>
             <!-- </div> -->
           </header>
@@ -144,88 +110,94 @@
           </nav>
 
         <h3>Профіль користувача</h3>
+        <form enctype="multipart/form-data" method='post' id="imageform">
+          <div class="row my-3 border">
+            <!-- <form id="imageform" enctype="multipart/form-data"> -->
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6 my-3" style="max-height: 270px;">
+              <!-- user card -->
+              <div class="card bg-dark text-white mb-3" style="max-width: 540px; max-height: 270px;">
+                <div class="row g-0">
+                  <div class="col-6 col-lg-4">
+                    <img src="/static/static/image/empty_portrait.jpg" class="portrait_jpg img-fluid rounded-start" alt="Портрет користувача" style="max-height: 270px;">
+                    <!-- <img src="#" class="portrait_jpg img-fluid rounded-start" alt="Портрет користувача" style="max-height: 270px;"> -->
+                  </div>
+                  <div class="col-6  col-lg-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Username</h5>
+                      <div class="row">
+                        <div class="col-12 col-lg-6">
+                          <button type="button" id="image_button" class="btn btn-primary mt-5 mx-1">Оновити</button>
 
-        <div class="row my-3 border">
+                          <!-- <form enctype="multipart/form-data" method='post' id="imageform"> -->
+                            <input type="file" id="imageInput" name="photo" accept="image/png, image/jpeg" hidden/>
+                          <!-- </form> -->
 
-          <div class="col-12 col-sm-10 col-md-8 col-lg-6 my-3" style="max-height: 270px;">
-            <!-- user card -->
-            <div class="card bg-dark text-white mb-3" style="max-width: 540px; max-height: 270px;">
-              <div class="row g-0">
-                <div class="col-6 col-lg-4">
-                  <img src="/static/static/image/portrait.jpg" class="portrait_jpg img-fluid rounded-start" alt="Портрет користувача" style="max-height: 270px;">
-                  <!-- <img src="#" class="portrait_jpg img-fluid rounded-start" alt="Портрет користувача" style="max-height: 270px;"> -->
-                </div>
-                <div class="col-6  col-lg-8">
-                  <div class="card-body">
-                    <h5 class="card-title">Username</h5>
-                    <div class="row">
-                      <div class="col-12 col-lg-6">
-                        <button type="button" class="btn btn-primary mt-5 mx-1">Оновити</button>
-                      </div>
-                      <div class="col-12 col-lg-6">
-                        <button type="button" class="btn btn-light mt-5 mx-1">Видалити</button>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                          <button type="button" class="btn btn-light mt-5 mx-1">Видалити</button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>            
+            </div>
+            
+            <!-- end user card -->
+            <!-- change user data form -->
+            <div class="col-12">
+              <div class="row">
+
+                <div class="col-12 col-lg-6">
+                  <div class="form-group row my-3">
+                    <label for="inputUsername" class="col-sm-2 col-form-label">Юзернейм</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="inputUsername" placeholder="Username" name="username">
+                    </div>
+                  </div>  
+                </div>
+
+                <div class="col-12 col-lg-6">
+                  <div class="form-group row my-3">
+                    <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" id="inputEmail" placeholder="Email" name="email">
+                    </div>
+                  </div>
+                </div>
+
               </div>
-            </div>            
-          </div>
-          
-          <!-- end user card -->
-          <!-- change user data form -->
-          <div class="col-12">
+
+              <div class="row">
+                <div class="col-12 col-lg-6">
+                  <div class="form-group row my-3">
+                    <label for="inputPassword" class="col-sm-2 col-form-label">пароль</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" id="inputPassword" placeholder="пароль" name="password">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <div class="form-group row my-3">
+                    <label for="inputRepeatPassword" class="col-sm-2 col-form-label">повторіть пароль</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" id="inputRepeatPassword" placeholder="повторіть пароль" name="repeat_password">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            <!-- </form> -->
             <div class="row">
-
-              <div class="col-12 col-lg-6">
-                <div class="form-group row my-3">
-                  <label for="inputUsername" class="col-sm-2 col-form-label">Юзернейм</label>
-                  <div class="col-sm-10">
-                    <input class="form-control" id="inputUsername" placeholder="Username">
-                  </div>
-                </div>  
-              </div>
-
-              <div class="col-12 col-lg-6">
-                <div class="form-group row my-3">
-                  <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-                  <div class="col-sm-10">
-                    <input class="form-control" id="inputEmail" placeholder="Email">
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="row">
-              <div class="col-12 col-lg-6">
-                <div class="form-group row my-3">
-                  <label for="inputPassword" class="col-sm-2 col-form-label">пароль</label>
-                  <div class="col-sm-10">
-                    <input type="password" class="form-control" id="inputPassword" placeholder="пароль">
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 col-lg-6">
-                <div class="form-group row my-3">
-                  <label for="inputRepeatPassword" class="col-sm-2 col-form-label">повторіть пароль</label>
-                  <div class="col-sm-10">
-                    <input type="password" class="form-control" id="inputRepeatPassword" placeholder="повторіть пароль">
-                  </div>
-                </div>
+              <div class="col-4">
+                <button type="button" class="btn btn-success mt-1 mb-3" id="save_button">Зберігти</button>
               </div>
             </div>
-
-
-
-          <div class="row">
-            <div class="col-4">
-              <button type="button" class="btn btn-success mt-1 mb-3">Зберігти</button>
             </div>
+            <!-- end change user data form -->
           </div>
-          </div>
-          <!-- end change user data form -->
-        </div>
+        </form>
         <h3>Статистика</h3>
         <div class="row my-3 border">
           <div class="col-12 my-3">
@@ -349,60 +321,109 @@
 <script type="text/javascript" src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="/static/static/js/sidebars.js"></script>
 
-<!-- <script type="text/javascript">
-      var s = document.createElement("script");
-      s.type = "text/javascript";
-      s.src = window.location.href.replace('users/profile/', '') + 'static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js'
-      s.innerHTML = null;
-      s.id = "map";
-
-</script>
-
-<script type="text/javascript">
-  var s = document.createElement("script");
-  s.type = "text/javascript";
-  s.src = window.location.href.replace('users/profile/', '') + 'static/static/js/sidebars.js'
-  s.innerHTML = null;
-  s.id = "map";
-</script>
-
-
-<script type="text/javascript">
-  var new_script = document.createElement("script");
-  new_script.type = "text/javascript";
-  new_script.src = window.location.href.replace('users/profile/', '') + 'static/static/plugin/jquery/dist/jquery.min.js'
-  var head= document.getElementsByTagName('head')[0];
-  head.appendChild(new_script);
-
-</script> -->
-
 
 <script>
 
   window.onload = function() {
     $(document).ready(function () {
       var cookie_data = document.cookie
-      console.log(cookie_data)
+      // console.log(cookie_data)
 
       for (var cookie of cookie_data.split('; ')){
-        // if (cookie.startsWith('access_token=')){
-        //   var access_token = cookie.replace('access_token=', '')
+        if (cookie.startsWith('access_token=')){
+          var access_token = cookie.replace('access_token=', '')
 
-        //   $.ajax({
-        //     url: window.location.href.replace('profile/', 'validate_access_token/'),
-        //     type: "POST",
-        //     data: JSON.stringify({'access_token': access_token}), 
-        //     processData: false,
-        //     contentType: false,
-        //     success: function(result){ 
-        //       console.log(result['result'])
-        //       console.log(typeof result['result'])
-        //       if(result['result'] == false)
-        //       window.location.href = window.location.href.replace('profile/', 'login/')
-        //     }
-        //   });
-        // }
+          // request validate password
+          $.ajax({
+            url: window.location.href.replace('profile/', 'validate_access_token/'),
+            type: "POST",
+            data: JSON.stringify({'access_token': access_token}), 
+            processData: false,
+            contentType: false,
+            success: function(result){ 
+              if(result['result'] == false)
+              window.location.href = window.location.href.replace('profile/', 'login/')
+            }
+          });
+
+          // request get users data
+          $.ajax({
+            url: window.location.href.replace('profile/', 'get_current_user_data/'),
+            type: "POST",
+            data: JSON.stringify({'access_token': access_token}), 
+            processData: false,
+            contentType: false,
+            success: function(result){ 
+              console.log('userdata from AJAX:'),
+              console.log(result)
+              console.log('------------------')
+              var username_data = result['username']
+              var email_data = result['email']
+              $('#inputUsername').val(username_data)
+              $('#inputEmail').val(email_data).attr("readonly", true)
+
+            },
+            error: function(){
+              console.log('Error!')
+            }
+
+          })
+
+        }
       }
+
+      // ---------------Update users data-------------
+
+      $('#image_button').on('click', function(){
+        $('#imageInput').trigger('click')
+      })
+
+
+      $('#save_button').on('click', function(){
+        
+
+        username_input = $('#inputUsername').val()
+        // password_input = $('#inputPassword').val()
+        // repeat_password_input = $('#inputRepeatPassword').val()
+        // photo_input = $('#imageInput').val()
+        photo_input = $('#imageform')[0];
+
+        var fd = new FormData(photo_input);
+        // var fd = new FormData();
+
+        // fd.append('photo', photo_input, 'avatar.jpg')
+        // fd.append('username', username_input)
+
+        //console.log('Users form data')
+        //console.log(fd)
+        
+        for (const pair of fd.entries()) {
+            console.log(pair[0], pair[1]);
+          }
+
+
+        $.ajax({
+            url: window.location.href.replace('profile/', 'update_profile/'),
+            type: "POST",
+            data: fd,
+            contentType: false,
+            processData: false,
+            // headers: {
+            //   'Content-Type': 'multipart/form-data',
+            // },
+            success: function (result) {
+              console.log('Allright!')
+            },
+            error: function(){
+              console.log('Error!')
+              console.log(fd)
+            },
+            // cache: false,
+
+          });
+
+        // fd.append('scope', scope);
+      })
 
 
       
