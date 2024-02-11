@@ -250,6 +250,7 @@ async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_
 
 
 from sqlalchemy_file import File
+from sqlalchemy_file.storage import StorageManager
 
 @router.post("/users/get_current_user_data/")
 async def profile_current_data(current_user_or_redirect: Annotated[User, Depends(get_current_user)],
@@ -257,40 +258,16 @@ async def profile_current_data(current_user_or_redirect: Annotated[User, Depends
     
     match current_user_or_redirect:
         case UserInDB():
-            # user = get_user_by_email(db, email=current_user_or_redirect.email)
 
-            # print('-----')
-            # print(type(user))
-            # print('-----')
-
-            # new_username = user.username + '1'
-            # user.update({'username': new_username})
             user_query = db.query(models.User).filter(models.User.email==current_user_or_redirect.email)
             user = user_query.first()
-            # new_username = user_query.first().username + '1'
-
-            # user_query.update({"username": new_username, "photo": File(content=b"Hello world")})
-
-
-            # db.commit()
-
-            # user.username += '1'
-            # user.commit()
-
-            # with open('front/user_profile.html', 'r') as file:
-            #     data = file.read()
-            # return HTMLResponse(content=data, status_code=200)
-            # print('---All right!----')
-
-            # print(user.username)
-            # print(user.email)
-            # print(user.photo)
 
             data = {
                 'username': user.username,
                 'email': user.email,
-                'photo': user.photo
+                'photo_url': user.photo['url'][1:]
             }
+            print(data)
             
             return data
         
@@ -355,50 +332,18 @@ from io import StringIO
 # async def update_profile(photo: UploadFile):
 async def update_profile(request: Request, db: Session = Depends(get_db)):
     
-    # print('----UPDATE---PROFILE---USERNAME---')
-    # print(username)
-    print('----UPDATE---PROFILE---PHOTO------')
-    # print(request.headers)
-    # form = 
-    async with request.form() as form:
-        print('*')
-        print(type(db))
-        print(form["photo"].filename)
-        print(form["email"])
 
-        print(form["photo"])
+    async with request.form() as form:
 
         email = form["email"]
 
-        # db.update()
         user_object = db.query(models.User).filter(models.User.email == email).first()
-        print('*')
-        # user_object = db.execute(select(models.User).filter_by(models.User.email == email)).scalar_one()
-        print(user_object)
+
         reared_image = await form['photo'].read()
-        # print(reared_image)
         user_object.photo = reared_image
         db.commit()
-        # user_object.photo = 
 
-        # avatar_byte = await form["photo"].read()
-        # user_object.update({"photo": avatar_byte})
-        # db.commit()
-        # print(content)
         print('*')
-
-        # for item in form:
-        #     print('===')
-        #     print(form[item])
-        #     print(type(form[item]))
-
-            # if type(form[item]) == UploadFile():
-            #     print('*')
-            #     # print(form[item].file)
-            #     reared_image = await form[item].read()
-            #     print(reared_image)
-            #     print('*')
-        
 
     return {'photo': 'All right'}
 

@@ -297,25 +297,7 @@
 
     </div>
 
-
- 
-
-
-    <!-- header -->
-
-
     </main>
-
-    <!-- <script src="static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script> -->
-    <!-- <script src="static/js/sidebars.js"></script> -->
-    <script>
-      // var portraits = document.querySelectorAll('[class^=portrait_jpg]')
-      // portraits.forEach(portrait => portrait.src=window.location.href.replace('users/profile/', '') + 'static/static/image/portrait.jpg')
-
-      // var ethereum_icons = document.querySelectorAll('[class^=ethereum_icon]')
-      // ethereum_icons.forEach(ethereum_icon => ethereum_icon.src=window.location.href.replace('users/profile/', '') + 'static/static/image/ethereum-icon.png')
-
-    </script>
 
 <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -354,13 +336,21 @@
             processData: false,
             contentType: false,
             success: function(result){ 
+            //----->>><<<--------------------------------------///
               console.log('userdata from AJAX:'),
+              // console.log(result)
               console.log(result)
               console.log('------------------')
               var username_data = result['username']
               var email_data = result['email']
               $('#inputUsername').val(username_data)
               $('#inputEmail').val(email_data).attr("readonly", true)
+
+              $("[class^='portrait_jpg']").each(function(image_obj){
+                console.log($(this)[0])
+                $(this)[0].src=result['photo_url']
+              });
+
 
             },
             error: function(){
@@ -397,9 +387,9 @@
         //console.log('Users form data')
         //console.log(fd)
         
-        for (const pair of fd.entries()) {
-            console.log(pair[0], pair[1]);
-          }
+        // for (const pair of fd.entries()) {
+        //     console.log(pair[0], pair[1]);
+        //   }
 
 
         $.ajax({

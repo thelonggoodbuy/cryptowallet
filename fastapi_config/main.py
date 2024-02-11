@@ -32,7 +32,7 @@ database.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="front", html=True), name="static")
-
+app.mount("/media", StaticFiles(directory="media", html=True), name="media")
 
 app.include_router(users_routers.router)
 
