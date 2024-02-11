@@ -262,6 +262,8 @@ async def profile_current_data(current_user_or_redirect: Annotated[User, Depends
             user_query = db.query(models.User).filter(models.User.email==current_user_or_redirect.email)
             user = user_query.first()
 
+            print(user.photo['url'])
+
             data = {
                 'username': user.username,
                 'email': user.email,
@@ -310,6 +312,7 @@ class UpdateUserModel(BaseModel):
 
 
 from io import StringIO
+from starlette.datastructures import FormData
 
 @router.post("/users/update_profile/")
 # async def update_profile(current_user_or_redirect: Annotated[User, Depends(get_current_user)],
@@ -337,10 +340,29 @@ async def update_profile(request: Request, db: Session = Depends(get_db)):
 
         email = form["email"]
 
+        update_fields_dict = {}
         user_object = db.query(models.User).filter(models.User.email == email).first()
 
-        reared_image = await form['photo'].read()
-        user_object.photo = reared_image
+        print('---Iterations----')
+        for field in form:
+            match field:
+                case 'photo' if form['photo'].size != 0:
+                    reared_image = await form['photo'].read()
+                    update_fields_dict['photo'] = reared_image
+                case 'photo' if form['photo'].size == 0:
+                    pass
+                case 'email':
+                    pass
+                case _:
+                    if form[field] != '':
+                        update_fields_dict[field] = form[field]
+                    else:
+                        pass
+
+        # print(update_fields_dict)
+
+        for field in update_fields_dict: setattr(user_object, field, update_fields_dict[field])
+
         db.commit()
 
         print('*')
