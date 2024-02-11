@@ -22,6 +22,7 @@ email-validator = "^2.1.0.post1"
 password-validator = "^1.0"
 fasteners = "^0.19"
 aiofiles = "^23.2.1"
+pydantic = "^2.6.1"
 
 
 [build-system]

@@ -311,39 +311,41 @@ class UpdateUserModel(BaseModel):
 
 
 
-from io import StringIO
-from starlette.datastructures import FormData
+from pydantic import field_validator
 
-@router.post("/users/update_profile/")
-# async def update_profile(current_user_or_redirect: Annotated[User, Depends(get_current_user)],
-#                         update_user_model: UpdateUserModel = Depends(UpdateUserModel.as_form),
-#                         db: Session = Depends(get_db)):
-# async def update_profile(username: Annotated[str, Form()],
-#                          password: Annotated[str, Form()],
-#                          repeat_password: Annotated[str, Form()],
-#                          photo: Annotated[str, Form()]):
+class UpdateUserModel(BaseModel):
 
-# async def update_profile(username: Annotated[str, Form()] = None,
-#                          password: Annotated[str, Form()] = None,
-#                          repeat_password: Annotated[str, Form()] = None,
-#                          photo:  UploadFile | None = None):
+    email: str
+    username: str
+    password: str | None = None
+    repeat_password: str | None = None
+    photo: bytes | None = None
 
-# async def update_profile(username: Annotated[str, Form()], photo: Annotated[str, Form()]):
+    data_status: str = 'unvalidated'
+    cause: Optional[List[dict]] = []
 
-# async def update_profile(username: Annotated[str, Form()], photo: UploadFile):
+    class Config:
+        orm_mode = True
 
-# async def update_profile(photo: UploadFile):
-async def update_profile(request: Request, db: Session = Depends(get_db)):
+
+    # @field_validator('username')
+    # def username_havent_be_empty(cls, value, values):
+    #     print('***>>><<<***')
+    #     print(value)
+    #     print(type(value))
+    #     if value == "1":
+    #         cls.data_status = 'error'
+    #         cls.cause.append({"username": "Ім'я користувача є обов'язким"})
+
+from pydantic import ValidationError
+
+async def validate_update_user(request: Request, 
+                      db: Session = Depends(get_db)):
     
-
     async with request.form() as form:
-
-        email = form["email"]
-
+        # email = form["email"]
         update_fields_dict = {}
-        user_object = db.query(models.User).filter(models.User.email == email).first()
-
-        print('---Iterations----')
+        # user_object = db.query(models.User).filter(models.User.email == email).first()
         for field in form:
             match field:
                 case 'photo' if form['photo'].size != 0:
@@ -351,23 +353,114 @@ async def update_profile(request: Request, db: Session = Depends(get_db)):
                     update_fields_dict['photo'] = reared_image
                 case 'photo' if form['photo'].size == 0:
                     pass
-                case 'email':
-                    pass
                 case _:
                     if form[field] != '':
                         update_fields_dict[field] = form[field]
                     else:
                         pass
+    
+    # print('-------------------!!!-------------------------')
+    # print(update_fields_dict)
+    # print('--------------------------------------------')
+    try:
+        updated_user = UpdateUserModel(**update_fields_dict)
+        result = updated_user
+    except ValidationError as exc:
+        print('----ERROR!----')
+        print(exc.errors())
+        print('----******----')
+        # print(repr(exc.errors()[0]))
+        # print(repr(exc.errors()[0]['type']))
 
-        # print(update_fields_dict)
+    return updated_user
 
-        for field in update_fields_dict: setattr(user_object, field, update_fields_dict[field])
+    # return update_fields_dict
 
+
+
+
+@router.post("/users/update_profile/")
+async def update_profile(validated_update_user_or_error: UpdateUserModel|dict = Depends(validate_update_user),
+                         db: Session = Depends(get_db)):
+    
+    # print('====update===profile====')
+    # print(validated_update_user_or_error)
+    # print('========================')
+
+    if validated_update_user_or_error.data_status == 'error':
+        error_dict = {}
+        for error_key in validated_update_user_or_error.cause: error_dict[error_key] = validated_update_user_or_error.cause[error_key]
+        result = error_dict
+    else:
+        user_email = validated_update_user_or_error.email
+        # del validated_update_user_or_error['email']
+        user_object = db.query(models.User).filter(models.User.email == user_email).first()
+        # for field in validated_update_user_or_error: setattr(user_object, field, validated_update_user_or_error[field])
+        user_object.username = validated_update_user_or_error.username
+        user_object.photo = validated_update_user_or_error.photo
         db.commit()
+        result = 'All right!'
 
-        print('*')
+    return result
 
-    return {'photo': 'All right'}
+
+
+
+
+    # async with request.form() as form:
+    #     email = form["email"]
+    #     update_fields_dict = {}
+    #     user_object = db.query(models.User).filter(models.User.email == email).first()
+    #     for field in form:
+    #         match field:
+    #             case 'photo' if form['photo'].size != 0:
+    #                 reared_image = await form['photo'].read()
+    #                 update_fields_dict['photo'] = reared_image
+    #             case 'photo' if form['photo'].size == 0:
+    #                 pass
+    #             case 'email':
+    #                 pass
+    #             case _:
+    #                 if form[field] != '':
+    #                     update_fields_dict[field] = form[field]
+    #                 else:
+    #                     pass
+
+    #     for field in update_fields_dict: setattr(user_object, field, update_fields_dict[field])
+    #     db.commit()
+
+
+    # return {'photo': 'All right'}
+
+
+
+# @router.post("/users/update_profile/")
+# async def update_profile(request: Request, db: Session = Depends(get_db)):
+    
+#     async with request.form() as form:
+#         email = form["email"]
+#         update_fields_dict = {}
+#         user_object = db.query(models.User).filter(models.User.email == email).first()
+#         for field in form:
+#             match field:
+#                 case 'photo' if form['photo'].size != 0:
+#                     reared_image = await form['photo'].read()
+#                     update_fields_dict['photo'] = reared_image
+#                 case 'photo' if form['photo'].size == 0:
+#                     pass
+#                 case 'email':
+#                     pass
+#                 case _:
+#                     if form[field] != '':
+#                         update_fields_dict[field] = form[field]
+#                     else:
+#                         pass
+
+#         for field in update_fields_dict: setattr(user_object, field, update_fields_dict[field])
+#         db.commit()
+
+
+#     return {'photo': 'All right'}
 
 
 
@@ -425,6 +518,7 @@ class NewUserModel(BaseModel):
 
 
 from src.users import models
+
 
 
 def get_user_by_email(db: Session, email: str):
