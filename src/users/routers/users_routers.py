@@ -262,12 +262,16 @@ async def profile_current_data(current_user_or_redirect: Annotated[User, Depends
             user_query = db.query(models.User).filter(models.User.email==current_user_or_redirect.email)
             user = user_query.first()
 
-            print(user.photo['url'])
+            try:
+                photo_url = user.photo['url'][1:]
+            except TypeError:
+                photo_url = None
+            # print(user.photo['url'])
 
             data = {
                 'username': user.username,
                 'email': user.email,
-                'photo_url': user.photo['url'][1:]
+                'photo_url': photo_url
             }
             print(data)
             
@@ -279,63 +283,114 @@ async def profile_current_data(current_user_or_redirect: Annotated[User, Depends
 
 from typing import List
 
-class UpdateUserModel(BaseModel):
+# class UpdateUserModel(BaseModel):
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+#     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    username: str | None
-    password: str | None
-    repeat_password: str | None
-    # photo: File | None
-    photo: Union[File, UploadFile, str, None]
-    data_status: str | None
-    cause: Optional[List[dict]] = None
+#     username: str | None
+#     password: str | None
+#     repeat_password: str | None
+#     # photo: File | None
+#     photo: Union[File, UploadFile, str, None]
+#     data_status: str | None
+#     cause: Optional[List[dict]] = None
 
-    @classmethod
-    def as_form(
-        cls,
-        username: str = Form(default=None),
-        password: str = Form(default=None),
-        repeat_password: str = Form(default=None),
-        photo: str = Form(default=None),
-        data_status: str = 'unvalidated',
-        cause: List | None = []
-    ):
+#     @classmethod
+#     def as_form(
+#         cls,
+#         username: str = Form(default=None),
+#         password: str = Form(default=None),
+#         repeat_password: str = Form(default=None),
+#         photo: str = Form(default=None),
+#         data_status: str = 'unvalidated',
+#         cause: List | None = []
+#     ):
 
-        return cls(username=username, 
-                   password=password, 
-                   repeat_password=repeat_password,
-                   photo=photo,
-                   data_status=data_status,
-                   cause=cause)
+#         return cls(username=username, 
+#                    password=password, 
+#                    repeat_password=repeat_password,
+#                    photo=photo,
+#                    data_status=data_status,
+#                    cause=cause)
 
 
 
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
+from typing import Any
+from pydantic_core.core_schema import FieldValidationInfo
 
 class UpdateUserModel(BaseModel):
 
     email: str
     username: str
     password: str | None = None
+    # password: str
     repeat_password: str | None = None
+    # repeat_password: str
     photo: bytes | None = None
+    delete_image: bool = False
 
-    data_status: str = 'unvalidated'
-    cause: Optional[List[dict]] = []
+    # data_status: str = 'unvalidated'
+    # cause: Optional[List[dict]] = []
 
     class Config:
         orm_mode = True
 
 
-    # @field_validator('username')
-    # def username_havent_be_empty(cls, value, values):
-    #     print('***>>><<<***')
-    #     print(value)
-    #     print(type(value))
-    #     if value == "1":
-    #         cls.data_status = 'error'
-    #         cls.cause.append({"username": "Ім'я користувача є обов'язким"})
+    @field_validator('password')
+    def validate_password_structure(cls, value: str, values: FieldValidationInfo):
+        print('--Values in password--')
+        print(values)
+        print('----')
+        pasword_schema = PasswordValidator()
+
+        # if "repeat_password" not in values.data:
+        #     raise ValueError("Повторіть пароль")
+
+        if pasword_schema.min(8).validate(value) == False: 
+            raise ValueError('Пароль не може бути меньшим, ніж 8 символів')
+        
+        if pasword_schema.has().symbols().validate(value) == False: 
+            raise ValueError('Пароль повинен містити хочаб один знак')
+    
+        if pasword_schema.has().lowercase().validate(value) == False: 
+            raise ValueError('Пароль повинен містити хочаб одну маленьку літеру')
+
+        if pasword_schema.has().uppercase().validate(value) == False:
+            raise ValueError('Пароль повинен містити хочаб одну велику літеру')
+        
+        if pasword_schema.has().digits().validate(value) == False:
+            raise ValueError('Пароль повинен містити хочаб одну цифру')
+
+        return value
+    
+
+    
+    @field_validator('repeat_password')
+    def validate_repeat_password_match(cls, value: str, values: FieldValidationInfo):
+        print('--Values in password--')
+        print(values)
+        print('----')
+        if "password" in values.data and value != values.data['password']:
+            raise ValueError("Паролі не співпадають")
+
+        # if "password" not in values.data:
+        #     raise ValueError("Щоб змінити пароль, введіть його в поле пароль, та повторійть його")
+        
+
+    @model_validator(mode='before')
+    def validate_password_and_repeat_password_not_empty(cls, data):
+        print('!=====MODEL===VALIDATION===!')
+        print(data)
+        # return data
+
+        if ('password' in data and 'repeat_password' not in data) or\
+            ('password' not in data and 'repeat_password' in data):
+            raise ValueError('Для зміни паролю потрібно ввести пароль, та повторити його. Одне з полів пусте.')
+        else:
+            return data
+
+
 
 from pydantic import ValidationError
 
@@ -364,15 +419,33 @@ async def validate_update_user(request: Request,
     # print('--------------------------------------------')
     try:
         updated_user = UpdateUserModel(**update_fields_dict)
+        # print('--->>>updated_user<<<---')
+        # print(updated_user)
+        # print(type(updated_user))
+        # print('--->>>============<<<---')
         result = updated_user
     except ValidationError as exc:
-        print('----ERROR!----')
-        print(exc.errors())
-        print('----******----')
+        error_dict = {}
+        # print('----ERROR!----')
+        # print(exc.errors())
+        # print('----******----')
+        for error in exc.errors():
+            print('***')
+            print(len(error['loc']))
+            print('***')
+            if len(error['loc']) == 0:
+                error_dict['Помилка в формі'] = error['msg'].replace('Value error, ', '')
+            elif error['type'] == 'missing':
+                error_dict[error['loc'][0]] = "Це поле є обов'язковим для заповнення!"
+            elif error['type'] == 'value_error':
+                error_dict[error['loc'][0]] = error['msg'].replace('Value error, ', '')
+
+        result = error_dict
+
         # print(repr(exc.errors()[0]))
         # print(repr(exc.errors()[0]['type']))
 
-    return updated_user
+    return result
 
     # return update_fields_dict
 
@@ -383,26 +456,85 @@ async def validate_update_user(request: Request,
 async def update_profile(validated_update_user_or_error: UpdateUserModel|dict = Depends(validate_update_user),
                          db: Session = Depends(get_db)):
     
-    # print('====update===profile====')
-    # print(validated_update_user_or_error)
-    # print('========================')
 
-    if validated_update_user_or_error.data_status == 'error':
-        error_dict = {}
-        for error_key in validated_update_user_or_error.cause: error_dict[error_key] = validated_update_user_or_error.cause[error_key]
-        result = error_dict
-    else:
-        user_email = validated_update_user_or_error.email
-        # del validated_update_user_or_error['email']
-        user_object = db.query(models.User).filter(models.User.email == user_email).first()
-        # for field in validated_update_user_or_error: setattr(user_object, field, validated_update_user_or_error[field])
-        user_object.username = validated_update_user_or_error.username
-        user_object.photo = validated_update_user_or_error.photo
-        db.commit()
-        result = 'All right!'
+    match validated_update_user_or_error:
+        case dict():
+            print(validated_update_user_or_error)
+            # error_dict = {}
+            # for error_key in validated_update_user_or_error.cause: error_dict[error_key] = validated_update_user_or_error.cause[error_key]
+            result = {"status": "unvalidated", "errors": validated_update_user_or_error}
+
+        case UpdateUserModel:
+            # print('---UpdateUserModel---')
+            # print(UpdateUserModel)
+
+            user_email = validated_update_user_or_error.email
+            user_object = db.query(models.User).filter(models.User.email == user_email).first()
+
+            user_object.username = validated_update_user_or_error.username
+
+            print('-------------')
+            print(validated_update_user_or_error.delete_image)
+            print('-------------')
+
+            if validated_update_user_or_error.delete_image == True:
+                user_object.photo = None
+            elif validated_update_user_or_error.photo:
+                print('change photo!')
+                user_object.photo = validated_update_user_or_error.photo
+
+            if 'password' in UpdateUserModel:
+                user_object.password = get_password_hash(validated_update_user_or_error.password)
+
+            db.commit()
+
+            # print('====')
+            # print(user_object.photo)
+            # print(type(user_object))
+            # print('====')
+
+            if user_object.photo != None:
+                photo_url = user_object.photo['url'][1:]
+            else:
+                photo_url = None
+
+            # try:
+            #     photo_url = user_object.photo['url'][1:]
+            # except TypeError:
+            #     photo_url = None
+
+
+            updated_user_data = {
+                'username': user_object.username,
+                'email': user_object.email,
+                'photo_url': photo_url
+            }
+            # print('====')
+            # print(user_object)
+            # print(type(user_object))
+            # print('====')
+            
+            result = {'status': 'updated', 'data': updated_user_data}
 
     return result
 
+
+
+    # if validated_update_user_or_error.data_status == 'error':
+    #     error_dict = {}
+    #     for error_key in validated_update_user_or_error.cause: error_dict[error_key] = validated_update_user_or_error.cause[error_key]
+    #     result = error_dict
+    # else:
+    #     user_email = validated_update_user_or_error.email
+    #     # del validated_update_user_or_error['email']
+    #     user_object = db.query(models.User).filter(models.User.email == user_email).first()
+    #     # for field in validated_update_user_or_error: setattr(user_object, field, validated_update_user_or_error[field])
+    #     user_object.username = validated_update_user_or_error.username
+    #     user_object.photo = validated_update_user_or_error.photo
+    #     db.commit()
+    #     result = 'All right!'
+
+    # return result
 
 
 

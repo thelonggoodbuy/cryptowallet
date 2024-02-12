@@ -12,6 +12,7 @@
 
   <link rel="stylesheet" href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="/static/static/css/sidebars.css">
+  <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
 
 
     <style>
@@ -82,7 +83,7 @@
 
 
                 </ul>
-                <a href="#" class="nav-link px-2 mx-3 link-dark fs-4">Username</a>
+                <a href="#" class="username nav-link px-2 mx-3 link-dark fs-4">Username</a>
                 <img src="/static/static/image/empty_portrait.jpg" alt="mdo" width="50" height="50" class="portrait_jpg img-fluid">
               </div>
             <!-- </div> -->
@@ -96,7 +97,7 @@
                 <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Гаманець</a></span></li>
                 <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">iBay</a></span></li>
                 <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Чат</a></span></li>
-                <li><h5 class="text-white h4">Username</h5></li>
+                <li><h5 class="username text-white h4">Username</h5></li>
               </ul>
             </div>
           </div>
@@ -118,12 +119,12 @@
               <div class="card bg-dark text-white mb-3" style="max-width: 540px; max-height: 270px;">
                 <div class="row g-0">
                   <div class="col-6 col-lg-4">
-                    <img src="/static/static/image/empty_portrait.jpg" class="portrait_jpg img-fluid rounded-start" alt="Портрет користувача" style="max-height: 270px;">
+                    <img src="/static/static/image/empty_portrait.jpg" class="portrait_jpg img-fluid rounded-start" alt="Портрет користувача" style="max-height: 270px;" id="form-portrait">
                     <!-- <img src="#" class="portrait_jpg img-fluid rounded-start" alt="Портрет користувача" style="max-height: 270px;"> -->
                   </div>
                   <div class="col-6  col-lg-8">
                     <div class="card-body">
-                      <h5 class="card-title">Username</h5>
+                      <h5 class="username card-title">Username</h5>
                       <div class="row">
                         <div class="col-12 col-lg-6">
                           <button type="button" id="image_button" class="btn btn-primary mt-5 mx-1">Оновити</button>
@@ -134,7 +135,8 @@
 
                         </div>
                         <div class="col-12 col-lg-6">
-                          <button type="button" class="btn btn-light mt-5 mx-1">Видалити</button>
+                          <button type="button" class="btn btn-light mt-5 mx-1" id="delete_image_button">Видалити</button>
+                          <input type="checkbox" id="delete_check_box">
                         </div>
                       </div>
                     </div>
@@ -300,6 +302,7 @@
     </main>
 
 <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/static/static/plugin/toastr/build/toastr.min.js"></script>
 <script type="text/javascript" src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="/static/static/js/sidebars.js"></script>
 
@@ -336,19 +339,30 @@
             processData: false,
             contentType: false,
             success: function(result){ 
-            //----->>><<<--------------------------------------///
-              console.log('userdata from AJAX:'),
-              // console.log(result)
-              console.log(result)
-              console.log('------------------')
+
               var username_data = result['username']
               var email_data = result['email']
               $('#inputUsername').val(username_data)
+
+              for(element of $("[class^='username']")){
+                    $(element).text(username_data)
+              }
+              
               $('#inputEmail').val(email_data).attr("readonly", true)
 
+
+
               $("[class^='portrait_jpg']").each(function(image_obj){
-                console.log($(this)[0])
-                $(this)[0].src=result['photo_url']
+  
+                if(result['photo_url'] == null){
+                  // console.log(result['photo_url'])
+                  // console.log('opt 1')
+                } else {
+                  // console.log(result['photo_url'])
+                  // console.log('opt 2')
+                  $(this)[0].src=result['photo_url']
+                }
+
               });
 
 
@@ -362,42 +376,69 @@
         }
       }
 
-      // ---------------Update users data-------------
-
-      // $("#imageInput").on("change", function() { 
-
-      //       // alert('Text content changed!'); 
-      //       console.log($(this).name)
-      //       console.log($(this).name)
-      //   }); 
-
 
       $('#image_button').on('click', function(){
         $('#imageInput').trigger('click')
       })
 
 
+
+    $('#imageInput').on('change', function(){
+      var input = $(this)
+      var output = $(this).closest("form").find("img[id='form-portrait']")
+      var reader = new FileReader();
+      reader.onload = function () {
+            output.attr("src", reader.result);
+        };
+      reader.readAsDataURL(input[0].files[0]);
+      $('#delete_check_box').prop('checked', false);
+
+
+      // console.log($(this).closest("form").find("img[id='form-portrait']"))
+    })
+
+
+
+
+      // -----delete checkbox logic
+      $('#delete_image_button').on('click', function(){
+        $('#delete_check_box').prop('checked', true);
+        var portrait = $('#form-portrait')[0]
+        // console.log(portrait)
+        portrait.src = "/static/static/image/empty_portrait.jpg"
+        // console.log($('#form-portrait'))
+      })
+
+
       $('#save_button').on('click', function(){
         
 
-        username_input = $('#inputUsername').val()
-        // password_input = $('#inputPassword').val()
-        // repeat_password_input = $('#inputRepeatPassword').val()
-        // photo_input = $('#imageInput').val()
-        photo_input = $('#imageform')[0];
+        var username_input = $('#inputUsername').val()
+        var password_input = $('#inputPassword').val()
+        var repeat_password_input = $('#inputRepeatPassword').val()
 
-        var fd = new FormData(photo_input);
-        // var fd = new FormData();
+        var delete_image = $('#delete_check_box').prop('checked')
+        var email_input = $('#inputEmail').val()
 
-        // fd.append('photo', photo_input, 'avatar.jpg')
-        // fd.append('username', username_input)
+        // console.log('---------')
+        // console.log(delete_image)
+        // console.log('---------')
 
-        //console.log('Users form data')
-        //console.log(fd)
-        
-        // for (const pair of fd.entries()) {
-        //     console.log(pair[0], pair[1]);
-        //   }
+
+        if(delete_image == false){
+          photo_input = $('#imageform')[0];
+          var fd = new FormData(photo_input);
+
+        } else {
+          var fd = new FormData();
+        }
+
+        // var fd = new FormData(photo_input);
+        fd.append('email', email_input)
+        fd.append('delete_image', delete_image)
+        fd.append('username', username_input)
+        fd.append('password', password_input)
+        fd.append('repeat_password', repeat_password_input)
 
 
         $.ajax({
@@ -406,21 +447,44 @@
             data: fd,
             contentType: false,
             processData: false,
-            // headers: {
-            //   'Content-Type': 'multipart/form-data',
-            // },
+
             success: function (result) {
-              console.log('Allright!')
+              // console.log('Allright!')
+              // console.log(result)
+              if (result['status'] == 'updated'){
+                if (result['data'].hasOwnProperty("username")){
+                  for(element of $("[class^='username']")){
+                    $(element).text(result['data']['username'])
+                  }
+               
+                }
+
+                if (result['data']['photo_url'] != null){
+                  $("[class^='portrait_jpg']").each(function(image_obj){
+                    $(this)[0].src=result['data']['photo_url']
+                  })
+                
+                $('#inputPassword').val('')
+                $('#inputRepeatPassword').val('')
+                }
+                toastr.success(`Відомості про користувача ${result['data']['email']} змінено!`)
+              } else {
+                console.log(typeof result['errors'])
+                console.log(result['errors'])
+                for (key in result['errors']){
+                  toastr.warning(`${key}: ${result['errors'][key]}`)
+                }
+              }
             },
+
             error: function(){
               console.log('Error!')
               console.log(fd)
             },
-            // cache: false,
 
           });
 
-        // fd.append('scope', scope);
+
       })
 
 
@@ -431,6 +495,24 @@
   })
   }
   
+
+  toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "10000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
 
 </script>
 
