@@ -18,6 +18,7 @@ from src.users.models import User, Message
 from src.wallets.models import Wallet, Asset, Blockchain
 from src.etherium.models import Transaction
 from src.orders.models import Commodity, Order
+from socketio_config.server import socket_app
 
 # from sqlalchemy.ext.declarative import declarative_base
 
@@ -33,6 +34,7 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="front", html=True), name="static")
 app.mount("/media", StaticFiles(directory="media", html=True), name="media")
+app.mount("/socket", app=socket_app)
 
 app.include_router(users_routers.router)
 

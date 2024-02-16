@@ -13,7 +13,9 @@
     
 
     <!-- Bootstrap core CSS -->
-<link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- <link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+<link rel="stylesheet" href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" />
+
 
     <style>
       .bd-placeholder-img {
@@ -33,7 +35,8 @@
 
     
     <!-- Custom styles for this template -->
-    <link href="static/css/sidebars.css" rel="stylesheet">
+    <!-- <link href="static/css/sidebars.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/static/static/css/sidebars.css" />
     <!-- <link href="static/css/headers.css" rel="stylesheet"> -->
 
   </head>
@@ -88,7 +91,7 @@
 
                 </ul>
                 <a href="#" class="nav-link px-2 mx-3 link-dark fs-4">Username</a>
-                <img src="static/image/portrait.jpg" alt="mdo" width="50" height="50" class="img-fluid">
+                <img src="/static/static/image/portrait.jpg" alt="mdo" width="50" height="50" class="img-fluid">
               </div>
             <!-- </div> -->
           </header>
@@ -304,11 +307,11 @@
                             </li>
                             <li class="bg-white mb-3">
                               <div class="form-outline">
-                                <textarea class="form-control" id="textAreaExample2" rows="4"></textarea>
+                                <textarea class="form-control" id="textAreaExample2" rows="4" id="send_message_area"></textarea>
                                 <label class="form-label" for="textAreaExample2">Message</label>
                               </div>
                             </li>
-                            <button type="button" class="btn btn-info btn-rounded float-end">Send</button>
+                            <button type="button" class="btn btn-info btn-rounded float-end" id="send_message_button">Send</button>
                           </ul>
                   
                         </div>
@@ -337,7 +340,50 @@
 
     </main>
 
-    <script src="static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="static/js/sidebars.js"></script>
+    <script src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script> -->
+
+    <!-- <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
+    
+    <script src="/static/static/js/sidebars.js"></script>
+    <script>
+
+      
+
+      window.onload = function() {
+
+
+        // #1
+      // // var socket = io("http://localhost:8000/socket");
+      //   // const socket = io.connect("http://localhost:8000/socket", {transports: ['websocket']});
+      //   const socket = io.connect("http://localhost:8000/socket");
+      //   socket.on("connect_error", (err) => {
+      //     // the reason of the error, for example "xhr poll error"
+      //     console.log(err.message);
+      //     // some additional description, for example the status code of the initial HTTP response
+      //     console.log(err.description);
+      //     // some additional context, for example the XMLHttpRequest object
+      //     console.log(err.context);
+      //   });
+
+
+        // #2
+        const sio = io("ws://localhost:8000/", {
+          path: "/socket/ws/socket.io",
+        })
+
+        sio.on('connect', () => {
+          console.log('connected');
+        })
+
+        sio.on('disconnect', () => {
+          console.log('disconnected');
+        })
+
+    }
+
+      </script>
   </body>
 </html>

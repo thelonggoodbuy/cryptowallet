@@ -775,3 +775,17 @@ async def registration_data(response: Response,
 
     return result
 
+
+
+
+# ------------------------------CHAT--------LOGIC-------------------------------------------
+
+@router.get("/users/chat/", response_class=HTMLResponse)
+async def registration(request: Request):
+
+    with open('front/chat.html', 'r') as file:
+        data = file.read()
+    # print('---login---cookie---')
+    # print(request.cookies)
+    # print('--------------------')
+    return HTMLResponse(content=data, status_code=200)
