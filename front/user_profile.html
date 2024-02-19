@@ -60,7 +60,7 @@
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white fs-4">
+            <a href="#" class="nav-link text-white fs-4" id="chat_link">
             Чат
             </a>
         </li>
@@ -375,6 +375,8 @@
 
         }
       }
+
+      $('#chat_link').attr('href', window.location.href.replace('profile/', 'chat/'))
 
 
       $('#image_button').on('click', function(){

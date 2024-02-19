@@ -781,11 +781,39 @@ async def registration_data(response: Response,
 # ------------------------------CHAT--------LOGIC-------------------------------------------
 
 @router.get("/users/chat/", response_class=HTMLResponse)
-async def registration(request: Request):
+async def chat(request: Request, current_user_or_redirect: Annotated[User, Depends(get_current_user)]):
 
-    with open('front/chat.html', 'r') as file:
-        data = file.read()
-    # print('---login---cookie---')
-    # print(request.cookies)
-    # print('--------------------')
-    return HTMLResponse(content=data, status_code=200)
+    match current_user_or_redirect:
+        case UserInDB():
+            with open('front/chat.html', 'r') as file:
+                data = file.read()
+            return HTMLResponse(content=data, status_code=200)
+        
+        case RedirectResponse():
+            return current_user_or_redirect
+
+
+
+
+    # with open('front/chat.html', 'r') as file:
+    #     data = file.read()
+    # # print('---login---cookie---')
+    # # print(request.cookies)
+    # # print('--------------------')
+    # return HTMLResponse(content=data, status_code=200)
+
+
+
+
+
+# @router.get("/users/profile/", response_class=HTMLResponse)
+# async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_user)]):
+    
+#     match current_user_or_redirect:
+#         case UserInDB():
+#             with open('front/user_profile.html', 'r') as file:
+#                 data = file.read()
+#             return HTMLResponse(content=data, status_code=200)
+        
+#         case RedirectResponse():
+#             return current_user_or_redirect

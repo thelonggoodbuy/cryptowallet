@@ -354,35 +354,45 @@
 
       window.onload = function() {
 
-
-        // #1
-      // // var socket = io("http://localhost:8000/socket");
-      //   // const socket = io.connect("http://localhost:8000/socket", {transports: ['websocket']});
-      //   const socket = io.connect("http://localhost:8000/socket");
-      //   socket.on("connect_error", (err) => {
-      //     // the reason of the error, for example "xhr poll error"
-      //     console.log(err.message);
-      //     // some additional description, for example the status code of the initial HTTP response
-      //     console.log(err.description);
-      //     // some additional context, for example the XMLHttpRequest object
-      //     console.log(err.context);
-      //   });
+        var cookie_data = document.cookie
+        console.log('----cookie-----')
+        console.log(cookie_data)
+        console.log('----cookie-----')
 
 
-        // #2
-        const sio = io("ws://localhost:8000/", {
+        for (var cookie of cookie_data.split('; ')){
+        if (cookie.startsWith('access_token=')){
+          var access_token = cookie.replace('access_token=', '')}}
+
+
+
+        // connection to socket logic
+        var chat_socket = io("ws://localhost:8000/messaging", {
           path: "/socket/ws/socket.io",
+          auth: {
+            token: access_token
+          }
+
         })
 
-        sio.on('connect', () => {
-          console.log('connected');
+
+
+        chat_socket.on('connect', () => {
+          console.log('connected to chat');
         })
 
-        sio.on('disconnect', () => {
-          console.log('disconnected');
+
+
+        chat_socket.on('disconnect', () => {
+          console.log('disconnected from chat');
         })
 
-    }
+
+
+
+
+
+   }
 
       </script>
   </body>
