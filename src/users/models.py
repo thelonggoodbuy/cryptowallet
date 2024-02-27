@@ -47,3 +47,5 @@ class Message(Base):
     # user FK
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship(backref="messages")
+    photo = Column(FileField)
+

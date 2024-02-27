@@ -39,20 +39,11 @@ async def delete_user_from_chat_redis_hash(sid, email):
     user_data_dict = ast.literal_eval(user_data.decode('utf-8'))
     user_data_dict['connection_quantity'] -= 1
 
-    print('***')
-    print(user_data_dict)
-    print('***')
-
     if user_data_dict['connection_quantity'] <= 0:
         await redis_connection.hdel('users_in_chat', email)
     else:
         sid_list = user_data_dict['sid_list']
-        print('----sid---list----')
-        print(sid_list)
-        print('------------------')
         sid_list.remove(sid)
-        print(sid_list)
-        print('------------------')
         user_data_dict['sid_list'] = sid_list
         await redis_connection.hmset('users_in_chat', mapping={email: str(user_data_dict)})
 

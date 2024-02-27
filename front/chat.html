@@ -14,6 +14,7 @@
 
     <!-- Bootstrap core CSS -->
 <!-- <link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+
 <link rel="stylesheet" href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" />
 
 
@@ -305,13 +306,20 @@
                                 </div>
                               </div>
                             </li>
-                            <li class="bg-white mb-3">
-                              <div class="form-outline">
-                                <textarea class="form-control" id="textAreaExample2" rows="4" id="send_message_area"></textarea>
-                                <label class="form-label" for="textAreaExample2">Message</label>
-                              </div>
-                            </li>
-                            <button type="button" class="btn btn-info btn-rounded float-end" id="send_message_button">Send</button>
+                            <form enctype="multipart/form-data" method='post' id="messageform">
+                              <li class="bg-white mb-3">
+                                <div class="form-outline">
+                                  <textarea class="form-control" rows="4" id="send_message_area" name="message"></textarea>
+                                  <!-- <label class="form-label" for="textAreaExample2">Message</label> -->
+                                </div>
+                              </li>
+
+                              <button type="button" class="btn btn-info btn-rounded float-end mx-3" id="send_message_button">Send</button>
+                              <button type="button" class="btn btn-info btn-rounded float-end mx-3" id="add_image">img</button>
+                              <!-- <form enctype="multipart/form-data" method='post' id="messageform"> -->
+                              <input type="file" id="imageInput" name="photo" accept="image/png, image/jpeg"/>
+                            </form>
+                            <!-- <button type="button" class="btn btn-info btn-rounded float-end mx-3" id="send_message_button">Send</button> -->
                           </ul>
                   
                         </div>
@@ -339,6 +347,8 @@
 
 
     </main>
+    <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
+
 
     <script src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -353,11 +363,12 @@
       
 
       window.onload = function() {
+        $(document).ready(function () {
 
         var cookie_data = document.cookie
-        console.log('----cookie-----')
-        console.log(cookie_data)
-        console.log('----cookie-----')
+        // console.log('----cookie-----')
+        // console.log(cookie_data)
+        // console.log('----cookie-----')
 
 
         for (var cookie of cookie_data.split('; ')){
@@ -376,21 +387,71 @@
         })
 
 
-
+        // connect logic
         chat_socket.on('connect', () => {
           console.log('connected to chat');
+          
         })
 
 
-
+        // disconnect logic
         chat_socket.on('disconnect', () => {
           console.log('disconnected from chat');
         })
 
 
 
+        // send message logic
+        $("#send_message_button").on('click', function(){
+
+          var send_text = $('#send_message_area').val()
+          // console.log(send_text)
+
+            if(send_text){
+            message_form = $('#messageform')[0]
+            var messageFormData = new FormData(message_form);
+
+            // message_dict = {}
+
+            // for(key of messageFormData.keys()){
+            //   console.log(key)
+            //   console.log(messageFormData.get(key))
+            //   message_dict[key] = messageFormData.get(key)
+            // }
+
+            // message_dict['token'] = access_token
+
+            // message = messageFormData.getAll('message')
+            // console.log(typeof messageFormData)
 
 
+
+            // message_dict = {'message': messageFormData.get('message'),
+            //                 'photo': messageFormData.get('photo')}
+
+            message_dict = {'message': messageFormData.get('message'),
+                            'token': access_token}
+
+            if ($('#imageInput').get(0).files.length !== 0) {
+              console.log("You select file!");
+              message_dict['photo'] = messageFormData.get('photo')
+            } else {
+              console.log("You doesn`t choose file!");
+            }
+
+            // strFormData = messageFormData.toString()
+            console.log(message_dict)
+            chat_socket.emit('send_message', message_dict)
+
+          }
+        })
+
+
+        // chat_socket.emit("send_message", {'data': 'test_data'})
+
+
+
+      });
 
    }
 
