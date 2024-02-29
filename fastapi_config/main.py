@@ -26,6 +26,7 @@ from propan_config.router import rabbit_router
 # new!
 from contextlib import asynccontextmanager
 from src.users.listeners import rabbit_users_listener_router
+from socketio_config.listeners import rabbit_sockets_listener_router
 
 
 database.Base.metadata.create_all(bind=engine)
@@ -62,6 +63,7 @@ app.include_router(users_routers.router)
 # new!
 app.include_router(rabbit_router)
 app.include_router(rabbit_users_listener_router)
+app.include_router(rabbit_sockets_listener_router)
 
 
 @app.get("/")

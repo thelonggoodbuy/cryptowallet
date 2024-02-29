@@ -28,6 +28,7 @@ redis = "^5.0.1"
 aioredis = "2.0.0"
 propan = {extras = ["async-rabbit"], version = "^0.1.5.26"}
 aiokafka = "^0.10.0"
+aio-pika = "^9.4.0"
 
 
 [build-system]

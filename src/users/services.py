@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from db_config.database import get_db
 from fastapi import Depends
 import os
+from propan_config.router import add_to_returning_saved_message_query
 
 
 # @rabbit_router.broker.handle(queue_1, exch)
@@ -27,5 +28,25 @@ async def save_new_message(message_from_socket: MessageFromChatModel):
         session.add(message)
         session.commit()
 
-    print(message)
-    print(type(message))
+    print('----new message----')
+    # print(message)
+    # print(message.user.photo)
+    # user_photo_url = message.user.photo['url'][1:]
+    # print(user_photo_url)
+    message_dict = {}
+    message_dict = {'message': message.text,
+                    'username': user.username}
+    if user.photo:
+        message_dict['user_phoro'] = user.photo['url'][1:]
+    else:
+        message_dict['user_phoro'] = None
+
+    if message.photo:
+        message_dict['message_phoro'] = message.photo['url'][1:]
+
+    print(message_dict)
+    await add_to_returning_saved_message_query(message_dict)
+    print('----new message----')
+    # add_to_returning_saved_message_query()
+    # print(type(message))
+

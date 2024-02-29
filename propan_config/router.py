@@ -28,8 +28,8 @@ exch = RabbitExchange("exchange", auto_delete=True)
 queue_1 = RabbitQueue("chat_message_query", auto_delete=True)
 
 
-# new_message_exchange = RabbitExchange("exchange", auto_delete=True)
-# queue_1 = RabbitQueue("chat_message_query", auto_delete=True)
+exchange_return_saved_messages = RabbitExchange("return_saved_messages_exchange", auto_delete=True)
+queue_return_saved_messages = RabbitQueue("return_saved_message", auto_delete=True)
 
 
 
@@ -37,4 +37,14 @@ async def add_to_message_query(message):
     await rabbit_router.broker.publish(message, queue="chat_message_query", exchange=exch)
     
 
-# async def return_saved_message(message):
+async def add_to_returning_saved_message_query(message):
+    await rabbit_router.broker.publish(message, queue="return_saved_message", exchange=exchange_return_saved_messages)
+
+
+
+# @rabbit_router.broker.handle(queue_return_saved_messages, exchange_return_saved_messages)
+# async def receive_saved_chat_message(message: dict):
+
+#     print('----you---send---message---for----saving---chat---message----')
+#     print(message)
+#     print('-------------------------------------------------------------')

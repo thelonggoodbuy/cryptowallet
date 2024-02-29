@@ -446,9 +446,14 @@
           }
         })
 
+        // emit messages from backend
+        chat_socket.on("show_saved_message", (message) => {
+           console.log('---received---new----message---')
+           console.log(message)
+           console.log('--------')
+          })
 
-        // chat_socket.emit("send_message", {'data': 'test_data'})
-
+        
 
 
       });

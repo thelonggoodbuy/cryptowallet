@@ -13,14 +13,12 @@ rabbit_users_listener_router = RabbitRouter("amqp://guest:guest@localhost:5672")
 
 
 @rabbit_router.broker.handle(queue_1, exch)
-async def receive_chat_message(message: str, email: str, photo: str | None, d = Depends(call), db: Session = Depends(get_db)):
-    print('---Listenet---')
+async def receive_chat_message(message: str, email: str, photo: str | None, 
+                               d = Depends(call), 
+                               db: Session = Depends(get_db)):
+
     message = MessageFromChatModel(message=message,
                                    email=email,
                                    photo=photo)
-    print(message)
-    print(email)
-    print(photo)
-    await save_new_message(message)
 
-    # return { "response": "Hello, Rabbit!" }
+    await save_new_message(message)
