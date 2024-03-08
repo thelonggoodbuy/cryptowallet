@@ -1,24 +1,13 @@
 
-from sqlalchemy import String, Boolean, TEXT, ForeignKey, DECIMAL, Integer
-from sqlalchemy import UniqueConstraint, Column
+from sqlalchemy import String, TEXT, ForeignKey
+from sqlalchemy import UniqueConstraint, Column, DateTime
 
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.orm import relationship
 
-from sqlalchemy.dialects.postgresql import ENUM
-
 from sqlalchemy_file import FileField
-
-# from db_config.models import Base
-
-# class Base(DeclarativeBase):
-#     pass
-
-# from db_config.database import Base
-
 from db_config.database import Base
-
-# from db_config.models import Base
+from sqlalchemy.sql import func
 
 
 class User(Base):
@@ -48,4 +37,5 @@ class Message(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship(backref="messages")
     photo = Column(FileField)
+    time_created = Column(DateTime(timezone=True), server_default=func.now())
 
