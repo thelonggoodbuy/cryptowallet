@@ -1,34 +1,28 @@
-
-from src.users.pydantic_models import MessageFromChatModel
-from .models import User, Message
-from sqlalchemy.orm import Session
 from sqlalchemy import select
 from db_config.database import get_db
-from fastapi import Depends
 import os
+
+from src.users.schemas import MessageFromChatModel
+from src.users.models import User, Message
 from propan_config.router import add_to_returning_saved_message_query
-
-
-import pprint
 import locale
+
+
 locale.setlocale(locale.LC_TIME, "uk_UA")
 
-# @rabbit_router.broker.handle(queue_1, exch)
-async def save_new_message(message_from_socket: MessageFromChatModel):
 
+async def save_new_message(message_from_socket: MessageFromChatModel):
     generator = get_db()
     session = next(generator)
     user = session.query(User).filter(User.email==message_from_socket.email).first()
     message = Message(text=message_from_socket.message)
     message.user = user
-
     if message_from_socket.photo != None:
         with open(f'media/external_storage/{message_from_socket.photo}', 'rb') as photo: 
             message.photo = photo
             session.add(message)
             session.commit()
         os.remove(f'media/external_storage/{message_from_socket.photo}')
-
     else:
         session.add(message)
         session.commit()
@@ -42,26 +36,17 @@ async def save_new_message(message_from_socket: MessageFromChatModel):
         message_dict['user_photo'] = user.photo['url'][1:]
     else:
         message_dict['user_photo'] = None
-
     if message.photo:
         message_dict['message_photo'] = message.photo['url'][1:]
-
-
     await add_to_returning_saved_message_query(message_dict)
 
 
-
-
 async def return_last_messages():
-
     generator = get_db()
     session = next(generator)
     query = select(Message).join(User).order_by(Message.id.desc()).limit(10).order_by(Message.id.asc())
     messages = session.execute(query).scalars()
-
     messages_dict = {}
-    
-
     for message in messages:
         messages_dict[message.id] = {}
         messages_dict[message.id]['id'] = message.id
@@ -76,5 +61,19 @@ async def return_last_messages():
             messages_dict[message.id]['message_photo'] = message.photo['url'][1:]
         else:
             messages_dict[message.id]['message_photo'] = None
-
     return messages_dict
+
+
+async def return_user_data_by_id(user_id):
+    generator = get_db()
+    session = next(generator)
+    query = select(User).filter(User.id==user_id)
+    user = session.execute(query).scalars().first()
+    user_dict = {'username': user.username,
+                 'email': user.email,
+                 }
+    if user.photo != None:
+        user_dict['user_photo'] = user.photo['url'][1:]
+    else:
+        user_dict['user_photo'] = None
+    return user_dict

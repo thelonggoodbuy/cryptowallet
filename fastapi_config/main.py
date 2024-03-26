@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI
 
-from src.users.routers import users_routers
+from src.users import routers as users_routers
+from src.wallets import routers as wallet_routers
 
 # from src.users.models import User, Message
 # from src.wallets.models import Wallet, Asset, Blockchain
@@ -28,27 +29,11 @@ from contextlib import asynccontextmanager
 from src.users.listeners import rabbit_users_listener_router
 from socketio_config.listeners import rabbit_sockets_listener_router
 
+from web3 import Web3, AsyncWeb3
+
+
 
 database.Base.metadata.create_all(bind=engine)
-
-
-
-
-
-# lifespan_dict = {}
-
-
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     # Load the ML model
-#     # ml_models["answer_to_everything"] = fake_answer_to_everything_ml_model
-#     lifespan_dict['rabbit_router'] = rabbit_router.lifespan_context
-#     yield
-#     # Clean up the ML models and release the resources
-#     # ml_models.clear()
-
-
-# app = FastAPI(lifespan=lifespan)
 
 
 app = FastAPI(lifespan=rabbit_router.lifespan_context)
@@ -60,10 +45,16 @@ app.mount("/socket", app=socket_app)
 
 
 app.include_router(users_routers.router)
+app.include_router(wallet_routers.router)
 # new!
 app.include_router(rabbit_router)
 app.include_router(rabbit_users_listener_router)
 app.include_router(rabbit_sockets_listener_router)
+
+# connection to Infura node
+# w3_connection = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/245f010db1cf410f87552fb31909a726'))
+# print('Web3 connction status')
+# print(w3_connection.is_connected())
 
 
 @app.get("/")

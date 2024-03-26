@@ -37,7 +37,7 @@ class Wallet(Base):
     balance = Column(DECIMAL(10, 9))
     # assey FK
     asset_id: Mapped[int] = mapped_column(ForeignKey("asset.id"))
-    user: Mapped["Asset"] = relationship(backref="wallets")
+    asset: Mapped["Asset"] = relationship(backref="wallets")
 
 
 class Asset(Base):

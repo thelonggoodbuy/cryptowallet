@@ -50,7 +50,7 @@
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white fs-4">
+            <a href="#" class="nav-link text-white fs-4" id="wallets_link">
             Гаманець
             </a>
         </li>
@@ -209,10 +209,10 @@
         </div>
 
         <h3>Управління гаманцями</h3>
-        <div class="row my-3 border py-3">
+        <div class="row my-3 border py-3" id="profile_wallet_container">
 
 
-          <div class="col-12 col-lg-6">
+          <!-- <div class="col-12 col-lg-6">
             <div class="card border-0 mb-3" style="max-height: 100px;">
               <div class="row g-0">
                 <div class="col-2">
@@ -269,13 +269,12 @@
                 </div>
               </div>
             </div> 
-          </div>
+          </div> -->
 
-          <div class="col-12 col-lg-6">
+          <!-- <div class="col-12 col-lg-6">
             <div class="card border-0 mb-3" style="max-height: 100px;">
               <div class="row g-0">
                 <div class="col-2">
-                  <!-- <img src="static/image/ethereum-icon.png" class="ethereum_icon img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти"> -->
                   <img src="/static/static/image/ethereum-icon.png" class="ethereum_icon img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
                 </div>
                 <div class="col-10">
@@ -285,16 +284,40 @@
                 </div>
               </div>
             </div> 
-          </div>
+          </div> -->
 
 
 
 
-          <div class="col-11 text-center">
-            <button type="button" class="btn btn-success mt-5 mx-1">Імпортувати ETH гаманець</button>
-            <button type="button" class="btn btn-success mt-5 mx-1">Create ETH гаманець</button>
+          <div class="col-11 text-center" id="adding_buttons">
+            <button type="button" class="btn btn-success mt-5 mx-1" data-bs-toggle="modal" data-bs-target="#import_wallet_modal">Імпортувати ETH гаманець</button>
+            <button type="button" class="btn btn-success mt-5 mx-1" id="create_etc_wallet_button">Create ETH гаманець</button>
           </div>
         </div>
+
+        <div class="modal" id="import_wallet_modal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h4 class="modal-title">Імпортувати ETH гаманець</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="adding_wallet_private_key" class="form-label">private key гаманця</label>
+                  <input class="form-control" id="adding_wallet_private_key">
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="send_import_wallet_data">Імпортувати гаманець</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
 
     </div>
@@ -305,12 +328,38 @@
 <script type="text/javascript" src="/static/static/plugin/toastr/build/toastr.min.js"></script>
 <script type="text/javascript" src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="/static/static/js/sidebars.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
 
 
 <script>
 
+  
+
+
+
+
   window.onload = function() {
     $(document).ready(function () {
+
+
+
+      // var fblightbox = $('#fblightbox');
+      // fblightbox.css({'margin-left':'-'+(fblightbox.width()/2)+'px','margin-top':'-'+(fblightbox.height()/2)+'px'});
+
+      // $("#launch").click(function() {
+      //   $('.overlay').fadeIn();
+      //   fblightbox.fadeIn();
+      // });
+      // $("#close").click(function() {
+      //   $('.overlay').fadeOut();
+      //   fblightbox.fadeOut();
+      // });
+
+
+
+
+
+
       var cookie_data = document.cookie
       // console.log(cookie_data)
 
@@ -377,6 +426,8 @@
       }
 
       $('#chat_link').attr('href', window.location.href.replace('profile/', 'chat/'))
+
+      $('#wallets_link').attr('href', window.location.href.replace('users/profile/', 'wallets/'))
 
 
       $('#image_button').on('click', function(){
@@ -490,9 +541,122 @@
       })
 
 
-      
-      
+      // work with sockets
 
+      var cookie_data = document.cookie
+
+
+      for (var cookie of cookie_data.split('; ')){
+      if (cookie.startsWith('access_token=')){
+        var access_token = cookie.replace('access_token=', '')}}
+
+
+      // connection to socket logic
+      var profile_wallet_socket = io("ws://localhost:8000/profile_wallets", {
+          path: "/socket/ws/socket.io",
+          auth: {
+            token: access_token
+          }
+        })
+
+
+
+
+      // connect logic
+      profile_wallet_socket.on('connect', () => {
+          console.log('connected to wallets');          
+        })
+      
+      // disconnect logic
+      profile_wallet_socket.on('disconnect', () => {
+          console.log('disconnected from wallets');
+          $('div[id^="wallet_"]').remove();
+          // console.log()
+        })
+        
+
+
+      profile_wallet_socket.on('return_list_of_user_wallets', (wallet_data) => {
+        console.log('-->>>This is wallet data!')
+        console.log(wallet_data)
+        all_users_wallets = wallet_data['all_users_wallets']
+
+        for (wallet_id in all_users_wallets){
+          $('#profile_wallet_container').prepend(
+
+          `<div class="col-12 col-lg-6" id=wallet_${wallet_id}>
+            <div class="card border-0 mb-3" style="max-height: 100px;">
+              <div class="row g-0">
+                <div class="col-2">
+                  <img src="${all_users_wallets[wallet_id]['blockchain_photo']}" class="ethereum_icon img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
+                </div>
+                <div class="col-10">
+                  <div class="card-body">
+                    <p class="card-text border">${all_users_wallets[wallet_id]['address']}</p>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>`
+
+            )
+          console.log(wallet_id)
+          }
+
+        console.log('-------------------------')
+      });
+
+
+      $('#create_etc_wallet_button').on('click', function(){
+        profile_wallet_socket.emit("create_wallet", data={"token": access_token})
+      })
+
+
+      $('#send_import_wallet_data').on('click', function(){
+        var private_key_obj = $('#adding_wallet_private_key')
+        if (private_key_obj.val()){
+          // console.log(`Private key is ${private_key.val()}`)
+          var private_key = private_key_obj.val()
+          console.log('***')
+          console.log(private_key)
+          console.log('***')
+          private_key_obj.val("")
+          profile_wallet_socket.emit("import_wallet", data={"token": access_token, 'private_key': private_key})
+          
+        } else {
+          // console.log('Private key is EMPTY!!!')
+          toastr.warning('Для того, щоб імпортувати гаманець, введіть приватний ключ гаманця.')
+        }
+
+      })
+
+
+      profile_wallet_socket.on('show_new_wallet', (data) => {
+        console.log('You want to show new wallet!')
+        console.log(data)
+        if(data['status'] == 'success'){
+        $(`
+        <div class="col-12 col-lg-6" id=wallet_${data['id']}>
+            <div class="card border-0 mb-3" style="max-height: 100px;">
+              <div class="row g-0">
+                <div class="col-2">
+                  <img src="${data['blockchain_photo']}" class="ethereum_icon img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
+                </div>
+                <div class="col-10">
+                  <div class="card-body">
+                    <p class="card-text border">${data['address']}</p>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div> 
+        `).insertBefore($('#adding_buttons'))} else {
+
+          toastr.warning(data['text'])
+
+        }
+
+      })
 
   })
   }

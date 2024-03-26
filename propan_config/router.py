@@ -31,6 +31,11 @@ queue_1 = RabbitQueue("chat_message_query", auto_delete=True)
 exchange_return_saved_messages = RabbitExchange("return_saved_messages_exchange", auto_delete=True)
 queue_return_saved_messages = RabbitQueue("return_saved_message", auto_delete=True)
 
+exchange_return_new_wallet = RabbitExchange("return_new_wallet_exchange", auto_delete=True)
+queue_return_new_wallet = RabbitQueue("return_new_wallet_query", auto_delete=True)
+
+exchange_update_wallet_list = RabbitExchange("return_update_wallet_list", auto_delete=True)
+queue_update_wallet_list = RabbitQueue("update_wallet_list_query", auto_delete=True)
 
 
 async def add_to_message_query(message):
@@ -41,10 +46,10 @@ async def add_to_returning_saved_message_query(message):
     await rabbit_router.broker.publish(message, queue="return_saved_message", exchange=exchange_return_saved_messages)
 
 
+async def return_new_wallet(message):
+    await rabbit_router.broker.publish(message, queue="return_new_wallet_query", exchange=exchange_return_new_wallet)
 
-# @rabbit_router.broker.handle(queue_return_saved_messages, exchange_return_saved_messages)
-# async def receive_saved_chat_message(message: dict):
 
-#     print('----you---send---message---for----saving---chat---message----')
-#     print(message)
-#     print('-------------------------------------------------------------')
+async def add_update_wallet_list_query(message):
+    print('---publishing----update----wallet---')
+    await rabbit_router.broker.publish(message, queue="update_wallet_list_query", exchange=exchange_update_wallet_list)

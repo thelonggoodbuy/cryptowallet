@@ -1,13 +1,13 @@
-from propan_config.router import queue_1, exch, Incoming, call, rabbit_router
 from fastapi import Depends
-# from fastapi_config.main import app
 from propan.fastapi import RabbitRouter
-from src.users.pydantic_models import MessageFromChatModel
-from src.users.services import save_new_message
 from sqlalchemy.orm import Session
-# from .main import app
-# from main import
 from db_config.database import get_db
+from propan_config.router import queue_1, exch, call, rabbit_router
+
+from src.users.schemas import MessageFromChatModel
+from src.users.services import save_new_message
+
+
 
 rabbit_users_listener_router = RabbitRouter("amqp://guest:guest@localhost:5672")
 

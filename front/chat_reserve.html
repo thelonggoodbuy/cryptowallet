@@ -38,7 +38,6 @@
     <!-- Custom styles for this template -->
     <!-- <link href="static/css/sidebars.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="/static/static/css/sidebars.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
     <!-- <link href="static/css/headers.css" rel="stylesheet"> -->
 
   </head>
@@ -129,21 +128,19 @@
                 <section style="background-color: #eee;">
                     <div class="container py-5">
                   
-                      <div class="row overflow-auto" style="height: 35rem;" id="test_row">
-                        <!-- <div class="row overflow-auto"> -->
+                      <!-- <div class="row overflow-auto" style="height: 700px;" > -->
+                        <div class="row overflow-auto">
                         
                   
                         <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
                   
                           <h5 class="font-weight-bold mb-3 text-center text-lg-start">Member</h5>
                   
-                          <div class="card overflow-auto" id="user_from_list"  style="height: 25rem;">
+                          <div class="card"  style="height: 700px;">
                             <div class="card-body">
                   
                               <ul class="list-unstyled mb-0" id="users_online_list">
 
-
-                                
                               </ul>
                   
                             </div>
@@ -183,17 +180,6 @@
                     </div>
                   </section>
                 <!-- END--DIRECT--CHAT -->
-                <!-- Modal window -->
-
-
-                <div id="ex1">
-                  <p>Thanks for clicking. That felt good.</p>
-
-                  <a href="#" rel="modal:close">Close</a>
-                </div>
-
-
-                <!-- end modal window -->
             </div>
         </div>
 
@@ -223,9 +209,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
     
     <script src="/static/static/js/sidebars.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
-
     <script>
 
       
@@ -261,7 +244,7 @@
 
         chat_socket.on('receive_last_messages_from_chat', (data) => {
           for (message_index in data){
-            // console.log(data[message_index]['message_photo'])
+            console.log(data[message_index]['message_photo'])
 
             if(data[message_index]['message_photo']){
 
@@ -306,14 +289,14 @@
 
         // show users online
         chat_socket.on('show_online_users', (data) => {
-          // console.log('-----users---online----data-----')
+          console.log('-----users---online----data-----')
           // console.log(message)
           for (user of data){
             var current_user_quantity = $(`#user_${user['id']}`).length
             if (current_user_quantity == 0){
             $('#users_online_list').append(
-              `<li class="p-2 border-bottom user_from_list" style="background-color: #eee;" id='user_${user['id']}'>
-                  <a href="javascript:void(0);" class="d-flex justify-content-between">
+              `<li class="p-2 border-bottom" style="background-color: #eee;" id='user_${user['id']}'>
+                  <a href="#!" class="d-flex justify-content-between">
                     <div class="d-flex flex-row">
                       <img src="${user['user_photo']}" alt="avatar"
                         class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60"/>
@@ -390,9 +373,9 @@
         // listen messages from backend
         chat_socket.on("show_saved_message", (data) => {
 
-          // console.log('---received---new----message---')
-          // console.log(data)
-          // console.log($('#users_online_list'))
+          console.log('---received---new----message---')
+          console.log(data)
+          console.log($('#users_online_list'))
 
           if (data['message']['message_photo'])
           {$('#list_of_message').append(
@@ -436,8 +419,8 @@
           if (!$(`#user_${user_data['id']}`).length){
 
           $('#users_online_list').append(
-              `<li class="p-2 border-bottom user_from_list" style="background-color: #eee;" id='user_${user_data['id']}'>
-                  <a href="javascript:void(0);" class="d-flex justify-content-between">
+              `<li class="p-2 border-bottom" style="background-color: #eee;" id='user_${user_data['id']}'>
+                  <a href="#!" class="d-flex justify-content-between">
                     <div class="d-flex flex-row">
                       <img src="${user_data['user_photo']}" alt="avatar"
                         class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60"/>
@@ -457,31 +440,13 @@
 
         // listener for remove user from chat
         chat_socket.on("remove_user_from_chat", (data) => {
+          // console.log('----user---was---been---deleted---')
           var user_id = data['data']['id']
           user_obj = $(`#user_${user_id}`)
           user_obj.remove()
+          // console.log(user_obj)
           })
         
-
-
-        // return users data
-        // user_from_list
-        $('#user_from_list').on('click', "li[class$='user_from_list']", function() {
-          var user_id = ($(this)[0].id).replace('user_', '')
-          data = {'user_id': user_id}
-          chat_socket.emit("get_other_user_data", data)
-        })
-
-        chat_socket.on('receive_other_user_data', (data) => {
-          console.log('!------user--data----!')
-          console.log(data)
-          window.alert(data)
-
-          // $.get(this.href, function(html) {
-          //   $(html).appendTo('body').modal();
-          // });
-        })
-
 
 
       });

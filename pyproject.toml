@@ -29,6 +29,9 @@ aioredis = "2.0.0"
 propan = {extras = ["async-rabbit"], version = "^0.1.5.26"}
 aiokafka = "^0.10.0"
 aio-pika = "^9.4.0"
+web3 = "^6.15.1"
+celery = "^5.3.6"
+asgiref = "^3.8.1"
 
 
 [build-system]
