@@ -9,6 +9,7 @@
     <title>Sidebars · Bootstrap v5.0</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/">
+    <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
 
     
 
@@ -213,6 +214,38 @@
 
 
 </div>
+
+<div class="modal" id="send_transaction_modal_window">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title">Відправити транзакцію</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="address_input" class="form-label">відправити на адрессу</label>
+          <input class="form-control" id="address_input">
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="value_input" class="form-label">ETH</label>
+          <input class="form-control" id="value_input">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="send_transaction_button">Відправити транзакцію</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- <h1>3</h1> -->
 
  
@@ -223,9 +256,11 @@
 
     </main>
 
-    <script src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/static/plugin/toastr/build/toastr.min.js"></script>
+    <script src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
+
 
 
 
@@ -234,6 +269,9 @@
     <script>
     window.onload = function() {
         $(document).ready(function () {
+
+        toastr.warning('@@@@@')
+
         var cookie_data = document.cookie
 
 
@@ -301,7 +339,7 @@
                                         <button type="button" class="btn btn-primary" id="transactions_list_${wallet_id}"><h6>Подивитися транзакції</h6></button>
                                     </div>
                                     <div class="col-12 col-xxl-4 my-1">
-                                        <button type="button" class="btn btn-success" id="send_transaction_${wallet_id}"><h6>Відправити транзакцію</h6></button>
+                                        <button type="button" class="btn btn-success" id="send_transaction_${wallet_id}" data-bs-toggle="modal" data-bs-target="#send_transaction_modal_window"><h6>Відправити транзакцію</h6></button>
                                     </div>
                                     <div class="col-12 col-xxl-4 my-1">
                                         <button type="button" class="btn btn-warning" id="demand_money_${wallet_id}"><h6>Отримати 10 ETH</h6></button>
@@ -315,12 +353,77 @@
         });
 
 
+        // console.log('===')
+        // console.log($('#wallets_container'))
+
+        $('#wallets_container').on('click', '*[id^="send_transaction_"]', function(){
+          console.log('----sending---!!!')
+          var current_wallet_id = $(this)[0].id.replace('send_transaction_', '')
+
+          $('#send_transaction_button').off('click').on('click', function(){
+            var address = $('#address_input').val()
+            var value = $('#value_input').val()
+
+            profile_wallet_socket.emit("send_transaction", data={"address": address,
+                                                                  "value": value,
+                                                                  "current_wallet_id": current_wallet_id})
+
+
+            $('#address_input').val("")
+            $('#value_input').val("")
+
+          })
+
+          // console.log(current_wallet_id)
+
+        })
+
+
+
+      profile_wallet_socket.on('transaction_error', function(data){
+        // console.log('problem with transaction')
+        console.log(data['error'])
+        // console.log('************************')
+        // toastr.warning(`${data['error']}`)
+
+        toastr.warning(data['error'])
+
+      })
+
+
+
+
+        // $('*[id^="send_transaction_"]').on('click', function(){
+        //     var wallet_number = $(this)
+        //     console.log('*****')
+        //     console.log(wallet_number[0])
+        //     console.log('*****')
+        //   }
+        // )
 
 
 
 
         })
     }
+
+  toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": true,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "10000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+  }
     </script>
 
   </body>

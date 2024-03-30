@@ -16,7 +16,11 @@ from src.users.schemas import MessageFromChatModel
 from src.users.services import save_new_message,\
                             return_last_messages,\
                             return_user_data_by_id
+
+from src.wallets.data_adapters.db_services import send_eth_to_account
 from datetime import datetime
+from web3 import Web3
+from web3.exceptions import InvalidAddress
 
 
 
@@ -31,6 +35,8 @@ url= 'amqp://guest:guest@localhost:5672'
 client_manager = socketio.AsyncAioPikaManager(url)
 server = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*", client_manager=client_manager)
 socket_app = socketio.ASGIApp(socketio_server=server, socketio_path='socket')
+w3_connection = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/245f010db1cf410f87552fb31909a726'))
+
 # socket_manager = socketio.AsyncAioPikaManager('amqp://')
 
 # socket_app = socketio.ASGIApp(socketio_server=sio, socketio_path='socket')
@@ -130,15 +136,11 @@ server.register_namespace(MessagingNamespace('/messaging'))
 
 
 from src.wallets.data_adapters.db_services import return_wallets_per_user, create_wallet_for_user, import_wallet_for_user
-import json
-# from fastapi_config.main import w3_connection
-
-
 from celery_config.config import monitoring_wallets_state_task, app
+
 # --------->>>>>wallets logic<<<<<<<<-------------------------------------------
 class WalletProfileNamespace(socketio.AsyncNamespace):
     run_tasks = {}
-
 
     async def on_connect(self, sid, environ, auth):
 
@@ -149,23 +151,8 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
         all_users_wallets = await return_wallets_per_user(email)
         wallets_data = {'all_users_wallets': all_users_wallets}
 
-        print('****')
-        print(sid)
-        print(email)
-        print('****')
-
-
-        # serialized_data = json.dumps({'sid': sid, 'email': email})
-        # serialized_data = [sid, email]
-
-        
-
         task = monitoring_wallets_state_task.delay(sid, email)
         self.run_tasks[sid] = task.id
-
-        print('---<<<connection to wallet socket>>>---')
-        print(self.run_tasks)
-        print('----------------->>><<<---------------------')
 
         await client_manager.emit('return_list_of_user_wallets', \
                             data=wallets_data, \
@@ -175,9 +162,7 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
 
 
     async def on_disconnect(self, sid):
-        print('---<<<disconnection from wallet socket>>>---')
-        print(self.run_tasks)
-        print('----------------->>><<<---------------------')
+
         task_id = self.run_tasks.pop(sid)
         app.control.revoke(task_id, terminate=True, signal='SIGKILL')
 
@@ -197,12 +182,35 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
         import_wallet_data = {'token': data['token'],
                               'private_key': data['private_key'],
                                'sid': sid}
-        print('===you want to import wallet===')
-        print(import_wallet_data)
-        print('===============================')
+        # print('===you want to import wallet===')
+        # print(import_wallet_data)
+        # print('===============================')
         await import_wallet_for_user(import_wallet_data)
 
 
+    async def on_send_transaction(self, sid, data):
+        # print('===transaction===data===')
+        # print(sid)
+        # print(data)
+        # error_data = {'error': data}
+        print('!!!')
+        if data['address'] == '':
+            error_data = {'error': 'введіть адрессу отримувача'}
+            await client_manager.emit('transaction_error', data=error_data, room=sid, namespace='/profile_wallets')
+        elif data['value'] == '':
+            error_data = {'error': 'введіть сумму для транзакції'}
+            await client_manager.emit('transaction_error', data=error_data, room=sid, namespace='/profile_wallets')
+
+        try:
+            w3_connection.eth.get_balance(data['address'])
+            print('---sending data---')
+            await send_eth_to_account(data)
+
+        except InvalidAddress:
+            error_data = {'error': 'адресса отримувача не валідна'}
+            await client_manager.emit('transaction_error', data=error_data, room=sid, namespace='/profile_wallets')
+
+        # print('========================')
 
 
 async def return_new_wallet(message):

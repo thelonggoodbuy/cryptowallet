@@ -29,6 +29,7 @@ def monitoring_wallets_state_task(sid, email):
 
     update_wallet_data_message = {'walet_dict': wallet_dict, 'sid': sid}
 
+    # add_update_wallet_list_query(update_wallet_data_message)
 
     async def body(update_wallet_data_message):
         print(update_wallet_data_message)

@@ -53,3 +53,7 @@ async def return_new_wallet(message):
 async def add_update_wallet_list_query(message):
     print('---publishing----update----wallet---')
     await rabbit_router.broker.publish(message, queue="update_wallet_list_query", exchange=exchange_update_wallet_list)
+
+# def add_update_wallet_list_query(message):
+#     print('---publishing----update----wallet---')
+#     rabbit_router.broker.publish(message, queue="update_wallet_list_query", exchange=exchange_update_wallet_list)
