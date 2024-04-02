@@ -5,7 +5,7 @@ from db_config.database import get_db
 from propan_config.router import queue_1, exch, call, rabbit_router
 
 from src.users.schemas import MessageFromChatModel
-from src.users.services import save_new_message
+from src.users.services.services import save_new_message
 
 
 

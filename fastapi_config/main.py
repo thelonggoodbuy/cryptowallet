@@ -8,7 +8,7 @@ from src.wallets import routers as wallet_routers
 # from src.etherium.models import Transaction
 # from src.orders.models import Commodity, Order
 
-from db_config.database import engine
+from db_config.database import engine, Base
 from db_config import database
 # from propan_config.app import rabbit_router
 
@@ -33,7 +33,14 @@ from web3 import Web3, AsyncWeb3
 
 
 
-database.Base.metadata.create_all(bind=engine)
+# database.Base.metadata.create_all(bind=engine)
+async def init_models():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+        
+init_models()
+# asyncio.run(init_models())
 
 
 app = FastAPI(lifespan=rabbit_router.lifespan_context)

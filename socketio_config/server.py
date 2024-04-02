@@ -13,7 +13,7 @@ from propan_config.router import add_to_message_query, queue_1, exch, Incoming, 
 # from src.users.senders import add_to_message_query
 from fastapi import Depends
 from src.users.schemas import MessageFromChatModel
-from src.users.services import save_new_message,\
+from src.users.services.services import save_new_message,\
                             return_last_messages,\
                             return_user_data_by_id
 
@@ -138,42 +138,32 @@ server.register_namespace(MessagingNamespace('/messaging'))
 from src.wallets.data_adapters.db_services import return_wallets_per_user, create_wallet_for_user, import_wallet_for_user
 from celery_config.config import monitoring_wallets_state_task, app
 
+from src.wallets.services.wallet_etherium_service import WalletEtheriumService
+from src.users.services.user_service import UserService
+
 # --------->>>>>wallets logic<<<<<<<<-------------------------------------------
 class WalletProfileNamespace(socketio.AsyncNamespace):
-    run_tasks = {}
+
 
     async def on_connect(self, sid, environ, auth):
-
-        token = auth['token']
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-
-        all_users_wallets = await return_wallets_per_user(email)
+        email = await UserService.return_email_by_token(token = auth['token'])
+        all_users_wallets = await WalletEtheriumService.return_wallets_per_user_email(email = email)
         wallets_data = {'all_users_wallets': all_users_wallets}
-
-        task = monitoring_wallets_state_task.delay(sid, email)
-        self.run_tasks[sid] = task.id
-
         await client_manager.emit('return_list_of_user_wallets', \
                             data=wallets_data, \
                             room=sid, \
                             namespace='/profile_wallets')
 
 
-
     async def on_disconnect(self, sid):
-
-        task_id = self.run_tasks.pop(sid)
-        app.control.revoke(task_id, terminate=True, signal='SIGKILL')
-
-
-
-
+        pass
 
 
     async def on_create_wallet(self, sid, data):
         new_wallet_data = {'token': data['token'], 'sid': sid}
-        await create_wallet_for_user(new_wallet_data)
+        new_walet_dict = await WalletEtheriumService.create_wallet_for_user(new_wallet_data)
+        await return_new_wallet(new_walet_dict)
+        
 
 
 
@@ -182,17 +172,12 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
         import_wallet_data = {'token': data['token'],
                               'private_key': data['private_key'],
                                'sid': sid}
-        # print('===you want to import wallet===')
-        # print(import_wallet_data)
-        # print('===============================')
-        await import_wallet_for_user(import_wallet_data)
+
+        await WalletEtheriumService.import_wallet_for_user(import_wallet_data)
 
 
     async def on_send_transaction(self, sid, data):
-        # print('===transaction===data===')
-        # print(sid)
-        # print(data)
-        # error_data = {'error': data}
+
         print('!!!')
         if data['address'] == '':
             error_data = {'error': 'введіть адрессу отримувача'}
