@@ -26,7 +26,7 @@ from src.users.schemas import Token, User, UserInDB, UpdateUserModel, NewUserMod
 from src.users import models
 
 from src.users.dependencies import pwd_context, oauth2_scheme, verify_password, \
-                                    get_password_hash, get_user_by_email, get_user,\
+                                    get_password_hash,\
                                     authenticate_user, create_access_token, get_current_user,\
                                     validate_update_user, validate_new_user
 
@@ -64,7 +64,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
                                 response: Response,
                                 db: Session = Depends(get_db)):
 
-    user = authenticate_user(db, form_data.username, form_data.password)
+    user = await authenticate_user(form_data.username, form_data.password)
 
     if not user:
         raise HTTPException(

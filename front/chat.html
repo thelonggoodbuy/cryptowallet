@@ -260,11 +260,19 @@
 
 
         chat_socket.on('receive_last_messages_from_chat', (data) => {
+
+          console.log('===message===in===chat===')
+          console.log(data)
+          console.log('=========================')
+
           for (message_index in data){
             // console.log(data[message_index]['message_photo'])
+            
+            console.log(data[message_index]['message_photo'])
 
             if(data[message_index]['message_photo']){
-
+              // console.log(data[message_index]['message_photo'])
+              // console.log('not null!')
             $('#list_of_message').append(
               `<li class="d-flex justify-content-between mb-4">
                <img src="${data[message_index]['user_photo']}" alt="avatar"
@@ -283,6 +291,7 @@
             )
 
           } else {
+            $('#list_of_message').append(
             `<li class="d-flex justify-content-between mb-4">
                <img src="${data[message_index]['user_photo']}" alt="avatar"
                  class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60">
@@ -295,7 +304,8 @@
                    <p class="mb-0">${data[message_index]['id']}: ${data[message_index]['message']}</p>
                  </div>
                </div>
-               </li>`            
+               </li>`
+            )
           }
 
           }
@@ -413,6 +423,7 @@
                </div>
               </li>`
           )} else {
+            $('#list_of_message').append(
             `<li class="d-flex justify-content-between mb-4">
                <img src="${data['message']['user_photo']}" alt="avatar"
                  class="rounded-circle d-flex align-self-start me-3 shadow-1-strong" width="60">
@@ -426,6 +437,7 @@
                  </div>
                </div>
               </li>`
+              )
           }
           })
         

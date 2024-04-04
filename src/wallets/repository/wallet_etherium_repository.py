@@ -16,9 +16,6 @@ from sqlalchemy.orm import lazyload
 
 class WalletEtheriumRepository(WalletAbstractRepository):
 
-    def __init__(self) -> None:
-        self.db: Session = get_async_session()
-
 
     async def return_wallets_per_user(self, user):
         async_session = async_sessionmaker(engine, expire_on_commit=False)
@@ -31,6 +28,18 @@ class WalletEtheriumRepository(WalletAbstractRepository):
             result = wallets.scalars()
             await session.commit()
         return result
+
+
+    async def return_wallet_per_id(self, id):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(Wallet).options(contains_eager(Wallet.asset)\
+                                    .contains_eager(Asset.blockchain))\
+                                    .filter(Wallet.id == int(id)).limit(1)
+            result = await session.execute(query)
+            wallet = result.scalars().one()
+            await session.commit()
+        return wallet
 
 
     async def update_wallet_ballance(self, wallet_id, new_balance):

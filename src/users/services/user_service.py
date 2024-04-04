@@ -1,5 +1,7 @@
 from jose import jwt
-from src.users.services.user_repository import user_rep_link
+from src.users.repository.user_repository import user_rep_link
+
+import locale
 
 
 
@@ -21,3 +23,15 @@ class UserService():
         return user
     
 
+    async def return_user_data_by_id(user_id):
+        user = await user_rep_link.return_user_data_by_id(user_id)
+        user_dict = {'username': user.username,
+                    'email': user.email}
+        if user.photo != None:
+            user_dict['user_photo'] = user.photo['url'][1:]
+        else:
+            user_dict['user_photo'] = None
+        return user_dict
+
+
+    

@@ -14,6 +14,8 @@ from src.users import models as user_models
 from src.users.utils import OAuth2PasswordBearerWithCookie
 from db_config.database import get_db
 
+from src.users.services.user_service import UserService
+
 
 
 
@@ -34,20 +36,23 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
+# !
+# async def get_user_by_email(db: Session, email: str):
+#     user = await UserService.return_user_per_email(email)
+#     return user
+    # return db.query(user_models.User).filter(user_models.User.email==email).first()
 
-def get_user_by_email(db: Session, email: str):
-    return db.query(user_models.User).filter(user_models.User.email==email).first()
-
-
-def get_user(db: Session, email: str):
-    user = get_user_by_email(db, email)
+# !
+async def get_user(email: str):
+    # user = get_user_by_email(db, email)
+    user = await UserService.return_user_per_email(email)
     if user:
         user_dict = {"hashed_password": user.password, "email": user.email}
         return UserInDB(**user_dict)
     
 
-def authenticate_user(db: Session, username: str, password: str):
-    user = get_user(db, username)
+async def authenticate_user(username: str, password: str):
+    user = await get_user(username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -64,8 +69,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-async def get_current_user(request:Request,
-                           db: Session = Depends(get_db)):
+async def get_current_user(request:Request):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -79,7 +83,7 @@ async def get_current_user(request:Request,
             raise credentials_exception
         token_data = TokenData(username=username)
 
-        user = get_user(db, email=token_data.username)
+        user = await get_user(email=token_data.username)
         if user is None:
             raise credentials_exception
         return user
@@ -95,8 +99,7 @@ async def get_current_user(request:Request,
         return RedirectResponse(url=redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
     
 
-async def validate_update_user(request: Request, 
-                      db: Session = Depends(get_db)):
+async def validate_update_user(request: Request):
     
     async with request.form() as form:
         update_fields_dict = {}
@@ -127,14 +130,14 @@ async def validate_update_user(request: Request,
         result = error_dict
     return result
 
-
-def validate_new_user(new_user_model: NewUserModel = Depends(NewUserModel.as_form),
-                      db: Session = Depends(get_db)):
+# !
+async def validate_new_user(new_user_model: NewUserModel = Depends(NewUserModel.as_form)):
     try:
         emailinfo = validate_email(new_user_model.email, check_deliverability=False)
         normalized_form =  emailinfo.normalized
         new_user_model.email = normalized_form
-        db_user = get_user_by_email(db, email=new_user_model.email)
+        # db_user = get_user_by_email(db, email=new_user_model.email)
+        db_user = await UserService.return_user_per_email(email=new_user_model.email)
         if db_user:
             new_user_model.cause.append({'email':'Цей емейл вже використовeється іншим користувачем.'})
     except EmailNotValidError:

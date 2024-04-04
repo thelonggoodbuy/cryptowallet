@@ -5,8 +5,8 @@ from db_config.database import get_db
 from propan_config.router import queue_1, exch, call, rabbit_router
 
 from src.users.schemas import MessageFromChatModel
-from src.users.services.services import save_new_message
-
+# from src.users.services.services import save_new_message
+from src.users.services.message_service import MessageService
 
 
 rabbit_users_listener_router = RabbitRouter("amqp://guest:guest@localhost:5672")
@@ -21,4 +21,4 @@ async def receive_chat_message(message: str, email: str, photo: str | None,
                                    email=email,
                                    photo=photo)
 
-    await save_new_message(message)
+    await MessageService.save_new_message(message)

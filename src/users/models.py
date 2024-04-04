@@ -1,6 +1,7 @@
 
 from sqlalchemy import String, TEXT, ForeignKey
 from sqlalchemy import UniqueConstraint, Column, DateTime
+from typing import List
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm import relationship
@@ -21,10 +22,10 @@ class User(Base):
     password: Mapped[str] = mapped_column(String(70))
     username: Mapped[str] = mapped_column(String(70))
     is_active: Mapped[bool] = mapped_column(default=False)
-    # photo: mapped_column(FileField())
     photo = Column(FileField)
+    # !
+    messages: Mapped[List["Message"]] = relationship(back_populates="user")
 
-    # biography: Mapped[str] = mapped_column(TEXT)
 
 
 class Message(Base):
@@ -33,9 +34,8 @@ class Message(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     text: Mapped[str] = mapped_column(TEXT)
-    # user FK
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user: Mapped["User"] = relationship(backref="messages")
     photo = Column(FileField)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
-
+    # user FK
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="messages")

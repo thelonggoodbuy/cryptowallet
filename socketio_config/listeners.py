@@ -10,6 +10,7 @@ rabbit_sockets_listener_router = RabbitRouter("amqp://guest:guest@localhost:5672
 
 @rabbit_router.broker.handle(queue_return_saved_messages, exchange_return_saved_messages)
 async def receive_saved_chat_message(message: dict):
+    print('---listner save message---')
     await return_saved_message(message)
 
 
@@ -24,4 +25,3 @@ async def return_updated_wallets(message: dict):
     print('---you want to update wallet!---')
     print(message)
     print('--------------------------------')
-    # await update_wallet_state(message)

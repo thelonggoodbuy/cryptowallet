@@ -9,33 +9,28 @@ from propan import PropanApp, RabbitBroker
 from propan.annotations import Logger
 from propan.brokers.rabbit import RabbitExchange, RabbitQueue
 from propan_config.router import add_to_message_query, queue_1, exch, Incoming, call, rabbit_router
-# from propan_config.router import queue_1, exch, Incoming, call, rabbit_router
-# from src.users.senders import add_to_message_query
 from fastapi import Depends
 from src.users.schemas import MessageFromChatModel
-from src.users.services.services import save_new_message,\
-                            return_last_messages,\
-                            return_user_data_by_id
 
-from src.wallets.data_adapters.db_services import send_eth_to_account
+from src.etherium.services.transaction_eth_service import TransTransactionETHService
 from datetime import datetime
 from web3 import Web3
 from web3.exceptions import InvalidAddress
+from src.users.services.user_service import UserService
+from src.users.services.message_service import MessageService
 
+from etherium_config.settings import w3_connection
 
 
 SOCKETIO_PATH = "socket"
-# While some tutorials use "*" as the cors_allowed_origins value, this is not safe practice.
 CLIENT_URLS = ["http://localhost:8000", "ws://localhost:8000"]
 
-# sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
-
 url= 'amqp://guest:guest@localhost:5672'
-# server = socketio.Server(client_manager=socketio.AsyncAioPikaManager(url))
+
 client_manager = socketio.AsyncAioPikaManager(url)
 server = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*", client_manager=client_manager)
 socket_app = socketio.ASGIApp(socketio_server=server, socketio_path='socket')
-w3_connection = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/245f010db1cf410f87552fb31909a726'))
+# w3_connection = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/245f010db1cf410f87552fb31909a726'))
 
 # socket_manager = socketio.AsyncAioPikaManager('amqp://')
 
@@ -107,26 +102,28 @@ class MessagingNamespace(socketio.AsyncNamespace):
                 f.write(data['photo'])
 
             data_obj.photo = filename
-
-        await save_new_message(data_obj)
+        # 
+        print('---Data---object---')
+        print(data_obj)
+        print('-------------------')
+        await MessageService.save_new_message(data_obj)
 
     async def on_return_last_messages_from_chat(self, sid):
-
-        last_messages = await return_last_messages()
+        last_messages = await MessageService.return_last_messages()
 
         await client_manager.emit('receive_last_messages_from_chat', data=last_messages, room=sid, namespace='/messaging')
 
 
     async def on_get_other_user_data(self, sid, data):
         user_id = data['user_id']
-        user_data = await return_user_data_by_id(user_id)
-        print('-----users---data---is-----')
+        user_data = await UserService.return_user_data_by_id(user_id)
         await client_manager.emit('receive_other_user_data', data=user_data, room=sid, namespace='/messaging')
 
 
 
 # show send message
 async def return_saved_message(message):
+    # print('---socketio--return---saved---message---')
     await  client_manager.emit('show_saved_message', data={'message': message}, room='chat_room', namespace='/messaging')
 
 
@@ -135,12 +132,14 @@ async def return_saved_message(message):
 server.register_namespace(MessagingNamespace('/messaging'))
 
 
-from src.wallets.data_adapters.db_services import return_wallets_per_user, create_wallet_for_user, import_wallet_for_user
+# from src.wallets.data_adapters.db_services import return_wallets_per_user, create_wallet_for_user, import_wallet_for_user
+from src.wallets.services.wallet_etherium_service import WalletEtheriumService
+
 from celery_config.config import monitoring_wallets_state_task, app
 
 from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 from src.users.services.user_service import UserService
-
+from src.etherium.services.transaction_eth_service import TransTransactionETHService
 # --------->>>>>wallets logic<<<<<<<<-------------------------------------------
 class WalletProfileNamespace(socketio.AsyncNamespace):
 
@@ -168,11 +167,9 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
 
 
     async def on_import_wallet(self, sid, data):
-        # balance = 
         import_wallet_data = {'token': data['token'],
                               'private_key': data['private_key'],
                                'sid': sid}
-
         await WalletEtheriumService.import_wallet_for_user(import_wallet_data)
 
 
@@ -187,9 +184,11 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
             await client_manager.emit('transaction_error', data=error_data, room=sid, namespace='/profile_wallets')
 
         try:
-            w3_connection.eth.get_balance(data['address'])
+            await w3_connection.eth.get_balance(data['address'])
             print('---sending data---')
-            await send_eth_to_account(data)
+            # await send_eth_to_account(data)
+            await TransTransactionETHService.send_eth_to_account(data)
+
 
         except InvalidAddress:
             error_data = {'error': 'адресса отримувача не валідна'}

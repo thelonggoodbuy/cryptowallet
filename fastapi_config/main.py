@@ -34,12 +34,13 @@ from web3 import Web3, AsyncWeb3
 
 
 # database.Base.metadata.create_all(bind=engine)
-async def init_models():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+
+# async def init_models():
+#     async with engine.begin() as conn:
+#         await conn.run_sync(Base.metadata.drop_all)
+#         await conn.run_sync(Base.metadata.create_all)
         
-init_models()
+# init_models()
 # asyncio.run(init_models())
 
 

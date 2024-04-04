@@ -2,7 +2,8 @@ import time
 from celery import Celery
 from redis_config.redis_config import redis_url
 from celery import shared_task
-from src.wallets.data_adapters.db_services import return_wallets_per_user
+# from src.wallets.data_adapters.db_services import return_wallets_per_user
+from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 
 from propan_config.router import add_update_wallet_list_query
 # from socketio_config.server import update_wallet_state
@@ -21,7 +22,7 @@ app.conf.result_backend = redis_url
 # @app.task
 @shared_task(queue="wallets_queue")
 def monitoring_wallets_state_task(sid, email):
-    wallet_dict = async_to_sync(return_wallets_per_user)(email)
+    wallet_dict = async_to_sync(WalletEtheriumService.return_wallets_per_user)(email)
 
     # print('--------wallet_dict-------')
     # print(wallet_dict)

@@ -16,12 +16,15 @@ from sqlalchemy.exc import IntegrityError
 from src.wallets.repository.wallet_etherium_repository import wallet_eth_rep_link
 from src.wallets.repository.asset_repository import asset_rep_link
 
+from etherium_config.settings import w3_connection
 
-w3_connection = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/245f010db1cf410f87552fb31909a726'))
-SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
-ALGORITHM = "HS256"
+
+# w3_connection = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/245f010db1cf410f87552fb31909a726'))
+
 
 from src.users.services.user_service import UserService
+from concurrent.futures import ThreadPoolExecutor
+
 
 class WalletEtheriumService(AbstractWalletService):
 
@@ -31,7 +34,7 @@ class WalletEtheriumService(AbstractWalletService):
         wallets = await wallet_eth_rep_link.return_wallets_per_user(user)
         wallets_dict = {}
         for wallet in wallets:
-            balance = w3_connection.eth.get_balance(wallet.address)
+            balance = await w3_connection.eth.get_balance(wallet.address)
             balance_in_ether = w3_connection.from_wei(balance, 'ether')
             if balance_in_ether != wallet.balance: 
                 wallet = await wallet_eth_rep_link.update_wallet_ballance(wallet.id, balance_in_ether)
@@ -45,16 +48,27 @@ class WalletEtheriumService(AbstractWalletService):
         return wallets_dict
     
 
+    async def return_wallet_per_id(id: int) -> dict:
+        wallet = await wallet_eth_rep_link.return_wallet_per_id(id)
+        return wallet
+       
+    def create_account():
+        return w3_connection.eth.account.create()
 
     async def create_wallet_for_user(new_wallet_data: dict) -> dict:
         email = await UserService.return_email_by_token(token = new_wallet_data['token'])
         user = await UserService.return_user_per_email(email)
         asset = await asset_rep_link.return_asset_per_code(code='ETH')
-        new_account = w3_connection.eth.account.create()
-        new_wallet = await wallet_eth_rep_link.create_new_wallet(private_key=w3_connection.to_hex(new_account.key),
-                        user=user,
-                        address=new_account.address,
-                        asset=asset)
+
+        with ThreadPoolExecutor() as executor:
+            future = executor.submit(w3_connection.eth.account.create)
+            new_account = future.result()
+
+        new_account_private_key = w3_connection.to_hex(new_account.key)
+        new_wallet = await wallet_eth_rep_link.create_new_wallet(private_key=new_account_private_key,
+                                                                user=user,
+                                                                address=new_account.address,
+                                                                asset=asset)
 
         new_wallet_dictionary = {
                 'status': 'success',
@@ -71,19 +85,21 @@ class WalletEtheriumService(AbstractWalletService):
 
         try:
             private_key = wallet_data['private_key']
-            account= Account.from_key(private_key)
+            account = Account.from_key(private_key)
             email = await UserService.return_email_by_token(token = wallet_data['token'])
             user = await UserService.return_user_per_email(email)
             asset = await asset_rep_link.return_asset_per_code(code='ETH')
 
-            balance = w3_connection.eth.get_balance(account.address)
+            balance = await w3_connection.eth.get_balance(account.address)
             balance_in_ether = w3_connection.from_wei(balance, 'ether')
 
-            imported_wallet = await wallet_eth_rep_link.create_new_wallet(private_key=w3_connection.to_hex(account.key),
-                        user=user,
-                        address=account.address,
-                        asset=asset,
-                        balance=balance_in_ether)
+            import_wallet_private_key = w3_connection.to_hex(account.key)
+
+            imported_wallet = await wallet_eth_rep_link.create_new_wallet(private_key=import_wallet_private_key,
+                                                                            user=user,
+                                                                            address=account.address,
+                                                                            asset=asset,
+                                                                            balance=balance_in_ether)
 
             imported_wallet_dictionary = {
                 'status': 'success',

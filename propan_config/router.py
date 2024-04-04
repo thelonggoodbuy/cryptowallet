@@ -43,6 +43,7 @@ async def add_to_message_query(message):
     
 
 async def add_to_returning_saved_message_query(message):
+    print('===adding to query new message===')
     await rabbit_router.broker.publish(message, queue="return_saved_message", exchange=exchange_return_saved_messages)
 
 
