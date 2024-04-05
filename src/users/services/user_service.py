@@ -2,7 +2,8 @@ from jose import jwt
 from src.users.repository.user_repository import user_rep_link
 
 import locale
-
+from src.users.schemas import UpdateUserModel
+from src.users.dependencies import get_password_hash
 
 
 SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
@@ -32,6 +33,46 @@ class UserService():
         else:
             user_dict['user_photo'] = None
         return user_dict
+    
+
+    async def update_user(validated_update_user_or_error):
+        match validated_update_user_or_error:
+            case dict():
+                result = {"status": "unvalidated", "errors": validated_update_user_or_error}
+
+            case UpdateUserModel:
+                updated_user_data = user_rep_link.update_user(validated_update_user_or_error)
+
+                # user_email = validated_update_user_or_error.email
+                # # user_object = db.query(models.User).filter(models.User.email == user_email).first()
+
+                # user_object = user_rep_link.return_user_per_email(email=user_email)
+                # user_object.username = validated_update_user_or_error.username
+
+                # if validated_update_user_or_error.delete_image == True:
+                #     user_object.photo = None
+                # elif validated_update_user_or_error.photo:
+                #     print('change photo!')
+                #     user_object.photo = validated_update_user_or_error.photo
+                # if 'password' in UpdateUserModel:
+                #     user_object.password = get_password_hash(validated_update_user_or_error.password)
+
+                # db.commit()
+
+                # if user_object.photo != None:
+                #     photo_url = user_object.photo['url'][1:]
+                # else:
+                #     photo_url = None
+
+                # updated_user_data = {
+                #     'username': user_object.username,
+                #     'email': user_object.email,
+                #     'photo_url': photo_url
+                # }
+
+                result = {'status': 'updated', 'data': updated_user_data}
+
+        return result
 
 
     

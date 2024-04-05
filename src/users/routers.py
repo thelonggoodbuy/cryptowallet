@@ -61,8 +61,7 @@ async def validate_access_token(request: Request):
 
 @router.post("/token")
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
-                                response: Response,
-                                db: Session = Depends(get_db)):
+                                response: Response):
 
     user = await authenticate_user(form_data.username, form_data.password)
 
@@ -114,18 +113,15 @@ async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_
             return current_user_or_redirect
         
 
-
+from src.users.services.user_service import UserService
 
 @router.post("/users/get_current_user_data/")
-async def profile_current_data(current_user_or_redirect: Annotated[User, Depends(get_current_user)],
-                               db: Session = Depends(get_db)):
+async def profile_current_data(current_user_or_redirect: Annotated[User, Depends(get_current_user)]):
     
     match current_user_or_redirect:
         case UserInDB():
 
-            user_query = db.query(models.User).filter(models.User.email==current_user_or_redirect.email)
-            user = user_query.first()
-
+            user = await UserService.return_user_per_email(email=current_user_or_redirect.email)
             try:
                 photo_url = user.photo['url'][1:]
             except TypeError:
@@ -146,41 +142,40 @@ async def profile_current_data(current_user_or_redirect: Annotated[User, Depends
 
 
 @router.post("/users/update_profile/")
-async def update_profile(validated_update_user_or_error: UpdateUserModel|dict = Depends(validate_update_user),
-                         db: Session = Depends(get_db)):
-    
+async def update_profile(validated_update_user_or_error: UpdateUserModel|dict = Depends(validate_update_user)):
+    return await UserService.update_user(validated_update_user_or_error)
 
-    match validated_update_user_or_error:
-        case dict():
-            result = {"status": "unvalidated", "errors": validated_update_user_or_error}
+    # match validated_update_user_or_error:
+    #     case dict():
+    #         result = {"status": "unvalidated", "errors": validated_update_user_or_error}
 
-        case UpdateUserModel:
-            user_email = validated_update_user_or_error.email
-            user_object = db.query(models.User).filter(models.User.email == user_email).first()
-            user_object.username = validated_update_user_or_error.username
+    #     case UpdateUserModel:
+    #         user_email = validated_update_user_or_error.email
+    #         user_object = db.query(models.User).filter(models.User.email == user_email).first()
+    #         user_object.username = validated_update_user_or_error.username
 
-            if validated_update_user_or_error.delete_image == True:
-                user_object.photo = None
-            elif validated_update_user_or_error.photo:
-                print('change photo!')
-                user_object.photo = validated_update_user_or_error.photo
-            if 'password' in UpdateUserModel:
-                user_object.password = get_password_hash(validated_update_user_or_error.password)
+    #         if validated_update_user_or_error.delete_image == True:
+    #             user_object.photo = None
+    #         elif validated_update_user_or_error.photo:
+    #             print('change photo!')
+    #             user_object.photo = validated_update_user_or_error.photo
+    #         if 'password' in UpdateUserModel:
+    #             user_object.password = get_password_hash(validated_update_user_or_error.password)
 
-            db.commit()
-            if user_object.photo != None:
-                photo_url = user_object.photo['url'][1:]
-            else:
-                photo_url = None
+    #         db.commit()
+    #         if user_object.photo != None:
+    #             photo_url = user_object.photo['url'][1:]
+    #         else:
+    #             photo_url = None
 
-            updated_user_data = {
-                'username': user_object.username,
-                'email': user_object.email,
-                'photo_url': photo_url
-            }
+    #         updated_user_data = {
+    #             'username': user_object.username,
+    #             'email': user_object.email,
+    #             'photo_url': photo_url
+    #         }
 
-            result = {'status': 'updated', 'data': updated_user_data}
-    return result
+    #         result = {'status': 'updated', 'data': updated_user_data}
+    # return result
 
 
 @router.get("/users/registration/", response_class=HTMLResponse)

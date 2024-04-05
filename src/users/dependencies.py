@@ -12,7 +12,7 @@ from pydantic import ValidationError
 from src.users.schemas import UserInDB, TokenData, UpdateUserModel, NewUserModel
 from src.users import models as user_models
 from src.users.utils import OAuth2PasswordBearerWithCookie
-from db_config.database import get_db
+# from db_config.database import get_db
 
 from src.users.services.user_service import UserService
 
