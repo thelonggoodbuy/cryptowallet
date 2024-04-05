@@ -380,13 +380,21 @@
 
 
 
-      profile_wallet_socket.on('transaction_error', function(data){
+      profile_wallet_socket.on('transaction_sending_result', function(data){
         // console.log('problem with transaction')
-        console.log(data['error'])
-        // console.log('************************')
+        if (data['result'] == 'error'){
+          console.log(data['--->>>error<<<---'])  
+          console.log(data['error_text'])
+        } else {
+          console.log('All right with transaction!')
+          console.log(data)
+          console.log('===========================')
+        }
+        // console.log(data['error'])
+        // console.log('************************')``
         // toastr.warning(`${data['error']}`)
 
-        toastr.warning(data['error'])
+        // toastr.warning(data['error'])
 
       })
 

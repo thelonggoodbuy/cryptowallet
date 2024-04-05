@@ -1,11 +1,13 @@
 from fastapi import Form
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, computed_field
 from pydantic import field_validator, model_validator
 from pydantic_core.core_schema import FieldValidationInfo
 
 from password_validator import PasswordValidator
+from datetime import datetime
+
 
 
 
@@ -121,3 +123,17 @@ class MessageFromChatModel(BaseModel):
     message: str
     email: str
     photo: bytes | str | None = None
+
+
+    @model_validator(mode='before')
+    def validate_photo(cls, data):
+        if 'photo' in data:
+            dt = datetime.now()
+            ts = datetime.timestamp(dt)
+            filename = data['email'] + '__' + str(ts)
+
+            with open(f'media/external_storage/{filename}', 'wb') as f: 
+                f.write(data['photo'])
+
+            data['photo'] = filename
+        return data

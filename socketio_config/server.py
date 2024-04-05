@@ -45,38 +45,19 @@ ALGORITHM = "HS256"
 
 class MessagingNamespace(socketio.AsyncNamespace):
     async def on_connect(self, sid, environ, auth):
-        # 1. проверка в селери тут ли находиться этот пользователь
-        # 2. сохраненния данных о пользователе в REDIS
-        # 3. добавление пользователя в комнату
-
-        token = auth['token']
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-
-        # users_online = await return_all_online_user()
-
-        # await client_manager.emit('show_online_users', data=users_online, room=sid, namespace='/messaging')
-
-
+        email = await UserService.return_email_by_token(token = auth['token'])
         user_status = await add_user_to_chat_redis_hash(sid, email)
         await add_seed_email_pair(sid, email)
         await client_manager.enter_room(sid, room='chat_room', namespace='/messaging')
-        
-        # !--->>><<<---!
         users_online = await return_all_online_user()
+
         await client_manager.emit('show_online_users', data=users_online, room=sid, namespace='/messaging')
-
-
         if user_status['status'] == 'new':
-            print('----user----is----new!!!---')
             await client_manager.emit('add_new_user_to_chat', {'data': user_status['user_data']}, room='chat_room', namespace='/messaging')
 
 
 
     async def on_disconnect(self, sid):
-        # 1. удаление сведений о юзере в селери
-        # 2. возвращение сведений в чат
-
         raw_email_list = await return_email_by_seed_and_delete(sid)
         email = raw_email_list[0].decode()
         leaved_user_data = await delete_user_from_chat_redis_hash(sid, email)
@@ -87,30 +68,13 @@ class MessagingNamespace(socketio.AsyncNamespace):
 
 
     async def on_send_message(self, sid, data):
-
-        token = data['token']
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        data_obj = MessageFromChatModel(message=data['message'], email=email)
-
-        if 'photo' in data:
-            dt = datetime.now()
-            ts = datetime.timestamp(dt)
-            filename = email + '__' + str(ts)
-
-            with open(f'media/external_storage/{filename}', 'wb') as f: 
-                f.write(data['photo'])
-
-            data_obj.photo = filename
-        # 
-        print('---Data---object---')
-        print(data_obj)
-        print('-------------------')
+        data['email'] = await UserService.return_email_by_token(token = data['token'])
+        data_obj = MessageFromChatModel(**data)
         await MessageService.save_new_message(data_obj)
+
 
     async def on_return_last_messages_from_chat(self, sid):
         last_messages = await MessageService.return_last_messages()
-
         await client_manager.emit('receive_last_messages_from_chat', data=last_messages, room=sid, namespace='/messaging')
 
 
@@ -121,9 +85,7 @@ class MessagingNamespace(socketio.AsyncNamespace):
 
 
 
-# show send message
 async def return_saved_message(message):
-    # print('---socketio--return---saved---message---')
     await  client_manager.emit('show_saved_message', data={'message': message}, room='chat_room', namespace='/messaging')
 
 
@@ -132,7 +94,10 @@ async def return_saved_message(message):
 server.register_namespace(MessagingNamespace('/messaging'))
 
 
-# from src.wallets.data_adapters.db_services import return_wallets_per_user, create_wallet_for_user, import_wallet_for_user
+# =====================================================================================
+# =============================Waller namespace========================================
+# =====================================================================================
+
 from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 
 from celery_config.config import monitoring_wallets_state_task, app
@@ -140,7 +105,8 @@ from celery_config.config import monitoring_wallets_state_task, app
 from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 from src.users.services.user_service import UserService
 from src.etherium.services.transaction_eth_service import TransTransactionETHService
-# --------->>>>>wallets logic<<<<<<<<-------------------------------------------
+
+
 class WalletProfileNamespace(socketio.AsyncNamespace):
 
 
@@ -165,7 +131,6 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
         
 
 
-
     async def on_import_wallet(self, sid, data):
         import_wallet_data = {'token': data['token'],
                               'private_key': data['private_key'],
@@ -174,33 +139,12 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
 
 
     async def on_send_transaction(self, sid, data):
-
-        print('!!!')
-        if data['address'] == '':
-            error_data = {'error': 'введіть адрессу отримувача'}
-            await client_manager.emit('transaction_error', data=error_data, room=sid, namespace='/profile_wallets')
-        elif data['value'] == '':
-            error_data = {'error': 'введіть сумму для транзакції'}
-            await client_manager.emit('transaction_error', data=error_data, room=sid, namespace='/profile_wallets')
-
-        try:
-            await w3_connection.eth.get_balance(data['address'])
-            print('---sending data---')
-            # await send_eth_to_account(data)
-            await TransTransactionETHService.send_eth_to_account(data)
-
-
-        except InvalidAddress:
-            error_data = {'error': 'адресса отримувача не валідна'}
-            await client_manager.emit('transaction_error', data=error_data, room=sid, namespace='/profile_wallets')
-
-        # print('========================')
+        transaction_data = await TransTransactionETHService.send_eth_to_account(data)
+        await client_manager.emit('transaction_sending_result', data=transaction_data, room=sid, namespace='/profile_wallets')
 
 
 async def return_new_wallet(message):
-    print('===You want return this wallet in sockets===')
-    print(message)
-    print('============================================')
+
     sid = message.pop('sid')
     await  client_manager.emit('show_new_wallet', room=sid, data=message, namespace='/profile_wallets')
 
