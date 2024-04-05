@@ -1,10 +1,11 @@
 import socketio
 from jose import JWTError, jwt
-from redis_config.redis_config import add_user_to_chat_redis_hash,\
-                                    add_seed_email_pair,\
-                                    return_email_by_seed_and_delete,\
-                                    delete_user_from_chat_redis_hash,\
-                                    return_all_online_user
+# from redis_config.redis_config import add_user_to_chat_redis_hash,\
+#                                     add_seed_email_pair,\
+#                                     return_email_by_seed_and_delete,\
+#                                     delete_user_from_chat_redis_hash,\
+#                                     return_all_online_user
+from redis_config.services.redis_user_service import redis_user_service
 from propan import PropanApp, RabbitBroker
 from propan.annotations import Logger
 from propan.brokers.rabbit import RabbitExchange, RabbitQueue
@@ -44,12 +45,14 @@ ALGORITHM = "HS256"
 # --------->>>>>messaging logic<<<<<<<<-------------------------------------------
 
 class MessagingNamespace(socketio.AsyncNamespace):
+
+
     async def on_connect(self, sid, environ, auth):
         email = await UserService.return_email_by_token(token = auth['token'])
-        user_status = await add_user_to_chat_redis_hash(sid, email)
-        await add_seed_email_pair(sid, email)
+        user_status = await redis_user_service.add_user_to_chat_redis_hash(sid, email)
+        await redis_user_service.add_seed_email_pair(sid, email)
         await client_manager.enter_room(sid, room='chat_room', namespace='/messaging')
-        users_online = await return_all_online_user()
+        users_online = await redis_user_service.return_all_online_user()
 
         await client_manager.emit('show_online_users', data=users_online, room=sid, namespace='/messaging')
         if user_status['status'] == 'new':
@@ -58,9 +61,9 @@ class MessagingNamespace(socketio.AsyncNamespace):
 
 
     async def on_disconnect(self, sid):
-        raw_email_list = await return_email_by_seed_and_delete(sid)
+        raw_email_list = await redis_user_service.return_email_by_seed_and_delete(sid)
         email = raw_email_list[0].decode()
-        leaved_user_data = await delete_user_from_chat_redis_hash(sid, email)
+        leaved_user_data = await redis_user_service.delete_user_from_chat_redis_hash(sid, email)
         await client_manager.leave_room(sid, room='chat_room', namespace='/messaging')
         if leaved_user_data['status'] == 'disconnected':
             await client_manager.emit('remove_user_from_chat', {'data': leaved_user_data}, room='chat_room', namespace='/messaging')
