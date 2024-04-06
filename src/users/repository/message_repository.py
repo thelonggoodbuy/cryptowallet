@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker
-from db_config.database import get_db, get_async_session, engine
+from db_config.database import engine
 from sqlalchemy import select
 from sqlalchemy.orm import contains_eager
 from sqlalchemy.orm import selectinload

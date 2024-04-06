@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from src.wallets.repository.wallet_abstract_repository import WalletAbstractRepository
 
 from sqlalchemy.orm import Session
-from db_config.database import get_db, get_async_session, engine
+from db_config.database import engine
 from sqlalchemy import select
 from src.wallets.models import Wallet, Asset
 

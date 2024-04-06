@@ -30,6 +30,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 0.25
 
 
 def verify_password(plain_password, hashed_password):
+    print('---plain_password---')
+    print(plain_password)
+    print('---hashed_password---')
+    print(hashed_password)
+    print('+++++++++++++++++++++')
     return pwd_context.verify(plain_password, hashed_password)
 
 
@@ -52,10 +57,19 @@ async def get_user(email: str):
     
 
 async def authenticate_user(username: str, password: str):
+    print('===auth===user===')
+    print(username)
+    print(password)
+    print('=================')
     user = await get_user(username)
+    print('====user====')
+    print(user)
+    print('============')
+
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
+        print('---PASSWORD-IS-NOT-VALIDATED---')
         return False
     return user
 

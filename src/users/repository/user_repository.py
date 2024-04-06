@@ -1,11 +1,16 @@
 from sqlalchemy.orm import Session
-from db_config.database import get_db, get_async_session, engine
+from db_config.database import get_async_session, engine
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy import select
+from passlib.context import CryptContext
+
 
 from src.users.models import User
-from src.users.schemas import UpdateUserModel
-from src.users.dependencies import get_password_hash
+from src.users.schemas import UpdateUserModel, FictiveFormData
+# from src.users.dependencies import get_password_hash
+# from src.users.schemas import FictiveFormData
+
+
 
 
 
@@ -14,6 +19,11 @@ class UserRepository():
 
     def __init__(self) -> None:
         self.db: Session = get_async_session()
+
+
+    def get_password_hash(self, password):
+        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        return pwd_context.hash(password)
 
 
     async def return_user_per_email(self, email):
@@ -37,46 +47,64 @@ class UserRepository():
 
 
     async def update_user(self, update_data: UpdateUserModel):
-        user_email = updated_user_data.email
-        # user_object = db.query(models.User).filter(models.User.email == user_email).first()
 
-        # user_object = self.return_user_per_email(email=user_email)
-
-        # user_object.username = validated_update_user_or_error.username
-
+        user_email = update_data.email
         async_session = async_sessionmaker(engine, expire_on_commit=False)
 
         async with async_session() as session:
-            # user_object = self.return_user_per_email(email=user_email)
-
             query = select(User).filter(User.email==user_email)
             user_object = await session.execute(query)
-
-            user_object.username = update_data.username
+            user = user_object.scalars().first()
+            user.username = update_data.username
 
             if update_data.delete_image == True:
-                user_object.photo = None
+                user.photo = None
             elif update_data.photo:
                 print('change photo!')
-                user_object.photo = update_data.photo
-            if 'password' in UpdateUserModel:
-                user_object.password = get_password_hash(update_data.password)
+                user.photo = update_data.photo
+            if 'password' in update_data:
+                user.password = self.get_password_hash(update_data.password)
 
             await session.commit()
 
-            if user_object.photo != None:
-                photo_url = user_object.photo['url'][1:]
+            if user.photo != None:
+                photo_url = user.photo['url'][1:]
             else:
                 photo_url = None
 
             updated_user_data = {
-                'username': user_object.username,
-                'email': user_object.email,
+                'username': user.username,
+                'email': user.email,
                 'photo_url': photo_url
             }
 
         return updated_user_data
         
 
+    async def save_user_and_return_unhashed_password(self, user_after_validation):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            new_user = User(
+                email=user_after_validation.email,
+                password=self.get_password_hash(user_after_validation.password),
+                username=user_after_validation.username,
+                is_active=True
+            )
+            session.add(new_user)
+            await session.commit()
+            await session.refresh(new_user)
+
+
+        fictive_form_data = FictiveFormData(username=user_after_validation.email, 
+                                            password=user_after_validation.password, 
+                                            scopes=['remember_me:true',])
+
+        # return {'fictive_form_data': fictive_form_data}
+
+        # token = await login_for_access_token(fictive_form_data, 
+        #                     response,
+        #                     db)
+        # return token
+        return fictive_form_data
 
 user_rep_link = UserRepository()

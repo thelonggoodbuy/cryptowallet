@@ -5,7 +5,6 @@ from propan_config.router import return_new_wallet
 
 
 # for refactoring
-from db_config.database import get_db
 from sqlalchemy import select
 from src.users.models import User
 from src.wallets.models import Wallet, Asset
