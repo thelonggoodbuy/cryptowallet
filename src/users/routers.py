@@ -19,7 +19,6 @@ from jose.exceptions import ExpiredSignatureError
 
 
 from sqlalchemy.orm import Session
-# from db_config.database import get_db
 from src.users.models import User
 from src.users.schemas import Token, User, UserInDB, UpdateUserModel, NewUserModel, FictiveFormData
 

@@ -33,6 +33,7 @@ web3 = "^6.15.1"
 celery = "^5.3.6"
 asgiref = "^3.8.1"
 asyncpg = "^0.29.0"
+aioetherscan = "^0.8.12"
 
 
 [build-system]

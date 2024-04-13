@@ -9,11 +9,11 @@ from redis_config.services.redis_user_service import redis_user_service
 from propan import PropanApp, RabbitBroker
 from propan.annotations import Logger
 from propan.brokers.rabbit import RabbitExchange, RabbitQueue
-from propan_config.router import add_to_message_query, queue_1, exch, Incoming, call, rabbit_router
+from propan_config.router import add_to_message_query, queue_1, exch, Incoming, call, rabbit_router, add_to_get_all_transcations_queue
 from fastapi import Depends
 from src.users.schemas import MessageFromChatModel
 
-from src.etherium.services.transaction_eth_service import TransTransactionETHService
+# from src.etherium.services.transaction_eth_service import TransTransactionETHService
 from datetime import datetime
 from web3 import Web3
 from web3.exceptions import InvalidAddress
@@ -107,7 +107,7 @@ from celery_config.config import monitoring_wallets_state_task, app
 
 from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 from src.users.services.user_service import UserService
-from src.etherium.services.transaction_eth_service import TransTransactionETHService
+from src.etherium.services.transaction_eth_service import TransactionETHService
 
 
 class WalletProfileNamespace(socketio.AsyncNamespace):
@@ -142,8 +142,19 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
 
 
     async def on_send_transaction(self, sid, data):
-        transaction_data = await TransTransactionETHService.send_eth_to_account(data)
+        transaction_data = await TransactionETHService.send_eth_to_account(data)
+        print('===>Server Data<===')
+        print(transaction_data)
+        print('===================')
         await client_manager.emit('transaction_sending_result', data=transaction_data, room=sid, namespace='/profile_wallets')
+
+
+    async def on_get_transactions_per_wallet(self, sid, data):
+        await add_to_get_all_transcations_queue(data)
+
+
+
+
 
 
 async def return_new_wallet(message):
@@ -158,6 +169,9 @@ async def update_wallet_state(wallets_data, sid):
                                 data=wallets_data, \
                                 room=sid, \
                                 namespace='/profile_wallets')
+    
+
+
 
 
 server.register_namespace(WalletProfileNamespace('/profile_wallets'))

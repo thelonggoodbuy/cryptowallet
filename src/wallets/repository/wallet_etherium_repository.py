@@ -40,7 +40,33 @@ class WalletEtheriumRepository(WalletAbstractRepository):
             wallet = result.scalars().one()
             await session.commit()
         return wallet
+    
 
+
+    # async def return_user_per_email(self, email):
+    #     async_session = async_sessionmaker(engine, expire_on_commit=False)
+    #     async with async_session() as session:
+    #         query = select(User).filter(User.email==email)
+    #         user = await session.execute(query)
+    #         result = user.scalars().first()
+    #         await session.commit()
+    #     return result
+
+
+
+    async def return_wallet_per_address(self, wallet_address):
+        print(wallet_address)
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(Wallet).options(contains_eager(Wallet.asset)\
+                                    .contains_eager(Asset.blockchain))\
+                                    .where(Wallet.address == wallet_address)
+            wallet = await session.execute(query)
+            result = wallet.scalars().first()
+
+            await session.commit()
+
+        return result
 
     async def update_wallet_ballance(self, wallet_id, new_balance):
         async_session = async_sessionmaker(engine, expire_on_commit=False)
@@ -75,6 +101,7 @@ class WalletEtheriumRepository(WalletAbstractRepository):
             await session.commit()
         return wallet
         
+    
 
 
 wallet_eth_rep_link = WalletEtheriumRepository()

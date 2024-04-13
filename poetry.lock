@@ -16,6 +16,22 @@ aiormq = ">=6.8.0,<6.9.0"
 yarl = "*"
 
 [[package]]
+name = "aioetherscan"
+version = "0.8.12"
+description = "Etherscan API async Python wrapper"
+optional = false
+python-versions = "<4.0,>=3.9"
+files = [
+    {file = "aioetherscan-0.8.12-py3-none-any.whl", hash = "sha256:fe22d863b65a32e94a907425da383181254ff30ef19011e42b1d5048433d9779"},
+    {file = "aioetherscan-0.8.12.tar.gz", hash = "sha256:7f3f2010d86b52bd26fe582b548d898397e86c4d9622be63c0f630fd877a1e80"},
+]
+
+[package.dependencies]
+aiohttp = ">=3.4,<4.0"
+aiohttp-retry = ">=2.8.3,<3.0.0"
+asyncio_throttle = ">=1.0.1,<2.0.0"
+
+[[package]]
 name = "aiofiles"
 version = "23.2.1"
 description = "File support for asyncio."
@@ -120,6 +136,20 @@ yarl = ">=1.0,<2.0"
 
 [package.extras]
 speedups = ["Brotli", "aiodns", "brotlicffi"]
+
+[[package]]
+name = "aiohttp-retry"
+version = "2.8.3"
+description = "Simple retry client for aiohttp"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "aiohttp_retry-2.8.3-py3-none-any.whl", hash = "sha256:3aeeead8f6afe48272db93ced9440cf4eda8b6fd7ee2abb25357b7eb28525b45"},
+    {file = "aiohttp_retry-2.8.3.tar.gz", hash = "sha256:9a8e637e31682ad36e1ff9f8bcba912fcfc7d7041722bc901a4b948da4d71ea9"},
+]
+
+[package.dependencies]
+aiohttp = "*"
 
 [[package]]
 name = "aiokafka"
@@ -325,6 +355,17 @@ python-versions = ">=3.7"
 files = [
     {file = "async-timeout-4.0.3.tar.gz", hash = "sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f"},
     {file = "async_timeout-4.0.3-py3-none-any.whl", hash = "sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028"},
+]
+
+[[package]]
+name = "asyncio-throttle"
+version = "1.0.2"
+description = "Simple, easy-to-use throttler for asyncio"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "asyncio-throttle-1.0.2.tar.gz", hash = "sha256:2675282e99d9129ecc446f917e174bc205c65e36c602aa18603b4948567fcbd4"},
+    {file = "asyncio_throttle-1.0.2-py3-none-any.whl", hash = "sha256:4d4c1eb3250f735f59ce842d8d92cd2927c008bd52008797ba030b5787c41f3b"},
 ]
 
 [[package]]
@@ -3421,4 +3462,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.7"
-content-hash = "b454168a380e155c4923741dca5609c667e9a33359bc4dce76afa21093bd0664"
+content-hash = "b0551d65921e0542f6ec88178e3df43681ff575bad62f84edf77740b7a15ee37"

@@ -37,13 +37,15 @@ queue_return_new_wallet = RabbitQueue("return_new_wallet_query", auto_delete=Tru
 exchange_update_wallet_list = RabbitExchange("return_update_wallet_list", auto_delete=True)
 queue_update_wallet_list = RabbitQueue("update_wallet_list_query", auto_delete=True)
 
+exchange_get_all_transcations = RabbitExchange("get_all_transcations_exchange", auto_delete=True)
+queue_get_all_transcations = RabbitQueue("get_all_transcations_queue", auto_delete=True)
+
 
 async def add_to_message_query(message):
     await rabbit_router.broker.publish(message, queue="chat_message_query", exchange=exch)
     
 
 async def add_to_returning_saved_message_query(message):
-    print('===adding to query new message===')
     await rabbit_router.broker.publish(message, queue="return_saved_message", exchange=exchange_return_saved_messages)
 
 
@@ -52,8 +54,12 @@ async def return_new_wallet(message):
 
 
 async def add_update_wallet_list_query(message):
-    print('---publishing----update----wallet---')
     await rabbit_router.broker.publish(message, queue="update_wallet_list_query", exchange=exchange_update_wallet_list)
+
+
+async def add_to_get_all_transcations_queue(message):
+    await rabbit_router.broker.publish(message, queue="get_all_transcations_queue", exchange=exchange_get_all_transcations)
+
 
 # def add_update_wallet_list_query(message):
 #     print('---publishing----update----wallet---')

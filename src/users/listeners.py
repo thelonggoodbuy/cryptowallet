@@ -1,7 +1,6 @@
 from fastapi import Depends
 from propan.fastapi import RabbitRouter
 from sqlalchemy.orm import Session
-# from db_config.database import get_db
 from propan_config.router import queue_1, exch, call, rabbit_router
 
 from src.users.schemas import MessageFromChatModel

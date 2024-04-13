@@ -8,8 +8,11 @@
     <meta name="generator" content="Hugo 0.84.0">
     <title>Sidebars · Bootstrap v5.0</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/">
+
+    <link rel="stylesheet" href="/static/static/css/sidebars.css">
     <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
+
+    <!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/"> -->
 
     
 
@@ -321,7 +324,7 @@
                                         <p>Адресса</p>
                                     </div>
                                     <div class="col-9">
-                                        <p class="text-break text-primary">${all_users_wallets[wallet_id]['address']}</p>
+                                        <p class="text-break text-primary wallet_address">${all_users_wallets[wallet_id]['address']}</p>
                                     </div>
                                 </div>
 
@@ -399,7 +402,15 @@
       })
 
 
+      $('#wallets_container').on('click', '*[id^="transactions_list"]', function(){
+          var current_wallet_id = $(this)[0].id.replace('transactions_list_', '')
+          var current_wallet_adress = $(this).closest(`#wallet_${current_wallet_id}`).find('p[class$=wallet_address]').text()
 
+          profile_wallet_socket.emit('get_transactions_per_wallet', data={'wallet_id': current_wallet_id,
+                                                                          'current_wallet_adress': current_wallet_adress})
+          
+        }
+      )
 
         // $('*[id^="send_transaction_"]').on('click', function(){
         //     var wallet_number = $(this)
@@ -432,6 +443,8 @@
       "showMethod": "fadeIn",
       "hideMethod": "fadeOut"
   }
+
+
     </script>
 
   </body>

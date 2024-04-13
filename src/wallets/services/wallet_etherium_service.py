@@ -126,3 +126,8 @@ class WalletEtheriumService(AbstractWalletService):
                                         'text': error_text,
                                         'sid': wallet_data['sid']}
             await return_new_wallet(imported_wallet_dictionary)
+
+
+    async def return_wallet_per_address(address):
+        wallet = await wallet_eth_rep_link.return_wallet_per_address(address)
+        return wallet

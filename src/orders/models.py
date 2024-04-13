@@ -35,7 +35,7 @@ class Commodity(Base):
 
     title: Mapped[str] = mapped_column(String(70))
     # price: mapped_column(DECIMAL(10, 9))
-    price = Column(DECIMAL(10, 9))
+    price = Column(DECIMAL(22, 18))
     
     # photo: mapped_column(FileField())
     photo = Column(FileField())
