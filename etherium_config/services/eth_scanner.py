@@ -23,7 +23,7 @@ class ETHScannerService():
                 status= 'fail'
 
             transaction_dict[transaction['hash']] = {
-                'from': w3_connection.to_checksum_address(transaction['from']),
+                'send_from': w3_connection.to_checksum_address(transaction['from']),
                 'send_to': w3_connection.to_checksum_address(transaction['to']),
                 'value': transaction['value'],
                 'txn_hash': transaction['hash'],
@@ -38,7 +38,7 @@ class ETHScannerService():
 
     @staticmethod
     async def compare_current_transactions_with_saved(transaction_dict, wallet_data):
-        saved_transactions = await TransactionETHService.return_all_transactions_per_wallet(wallet_data['current_wallet_adress'], wallet_data['wallet_id'])
+        saved_transactions = await TransactionETHService.return_all_transactions_per_wallet(wallet_data['current_wallet_adress'])
         print('--->>>saved transactions<<<---')
         print(saved_transactions)
         print('------------------------------')

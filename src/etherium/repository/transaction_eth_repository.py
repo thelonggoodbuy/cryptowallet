@@ -15,7 +15,7 @@ from etherium_config.settings import w3_connection
 class TransactionETHRepository():
 
     async def save_transaction_in_db(self,
-                                     wallet,
+                                     send_from,
                                      send_to,
                                      value,
                                      txn_hash,
@@ -26,7 +26,7 @@ class TransactionETHRepository():
         async with async_session() as session:
             # print('===4===')
             transaction = Transaction(
-                wallet=wallet,
+                send_from=send_from,
                 send_to=send_to,
                 value=value,
                 txn_hash=txn_hash,
@@ -48,16 +48,14 @@ class TransactionETHRepository():
         return transaction
     
 
-    async def return_all_transactions_per_waller_address(self, wallet_number, wallet_id):
+    async def return_all_transactions_per_waller_address(self, wallet_number):
         async_session = async_sessionmaker(engine, expire_on_commit=False)
         print('***')
         print(wallet_number)
         print('***')
         async with async_session() as session:
             query = select(Transaction)\
-                    .join(Transaction.wallet)\
-                    .options(contains_eager(Transaction.wallet))\
-                    .filter((Transaction.wallet_id == int(wallet_id)) | (Transaction.send_to == wallet_number))
+                    .filter((Transaction.send_from == wallet_number) | (Transaction.send_to == wallet_number))
 
             transactions_data = await session.execute(query)
             transactions = transactions_data.scalars().unique().all()

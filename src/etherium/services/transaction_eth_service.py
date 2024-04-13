@@ -31,8 +31,11 @@ class TransactionETHService(TransactionAbstractService):
                 await w3_connection.eth.get_balance(account_data['address'])
 
                 receiver_address = account_data['address']
-                value = account_data['value']
                 current_wallet_id = account_data['current_wallet_id']
+                curent_wallet = await WalletEtheriumService.return_wallet_per_id(id=current_wallet_id)
+                sender_adress = curent_wallet.address
+                value = account_data['value']
+                
                 curent_wallet = await WalletEtheriumService.return_wallet_per_id(id=current_wallet_id)
 
                 sender_private_key = curent_wallet.private_key
@@ -77,7 +80,7 @@ class TransactionETHService(TransactionAbstractService):
 
 
                 transaction = await transaction_rep_link.save_transaction_in_db(
-                    wallet = curent_wallet,
+                    send_from = sender_adress,
                     send_to = receiver_address,
                     value = value,
                     txn_hash = tx_hash.hex(),
@@ -89,7 +92,7 @@ class TransactionETHService(TransactionAbstractService):
                           'error_text': '',
                           'type': 'sending_transaction',
                           'value': transaction.value,
-                          'from': curent_wallet.address,
+                          'from': sender_adress,
                           }
 
 
@@ -100,8 +103,8 @@ class TransactionETHService(TransactionAbstractService):
         return result
     
 
-    async def return_all_transactions_per_wallet(wallet_adress, wallet_id):
-        transactions = await transaction_rep_link.return_all_transactions_per_waller_address(wallet_adress, wallet_id)
+    async def return_all_transactions_per_wallet(wallet_adress):
+        transactions = await transaction_rep_link.return_all_transactions_per_waller_address(wallet_adress)
         return transactions
     
 
@@ -115,12 +118,12 @@ class TransactionETHService(TransactionAbstractService):
         # print('=======')
         # print(transaction_data_dict['from'])
 
-        wallet = await WalletEtheriumService.return_wallet_per_address(transaction_data_dict['from'])
+        # wallet = await WalletEtheriumService.return_wallet_per_address(transaction_data_dict['from'])
 
-        print('-----Wallet--obj-----')
-        print(wallet)
-        print(type(wallet))
-        print('---------------------')
+        # print('-----Wallet--obj-----')
+        # print(wallet)
+        # print(type(wallet))
+        # print('---------------------')
 
         # print('===2===')
         # print(wallet)
@@ -139,7 +142,7 @@ class TransactionETHService(TransactionAbstractService):
         # print('***')
         # print('...................................................................................................')
 
-        await transaction_rep_link.save_transaction_in_db(wallet=wallet,
+        await transaction_rep_link.save_transaction_in_db(send_from=transaction_data_dict['send_from'],
                                                           send_to=transaction_data_dict['send_to'],
                                                           value=w3_connection.from_wei(int(transaction_data_dict['value']), 'ether'),
                                                           txn_hash=transaction_data_dict['txn_hash'],
