@@ -6,7 +6,7 @@ authors = ["thelonggoodbuy <thelonggoodbuy1991@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.7"
+python = "3.11.9"
 mypy = "^1.8.0"
 fastapi = "^0.109.0"
 uvicorn = {extras = ["standart"], version = "^0.26.0"}
@@ -34,6 +34,7 @@ celery = "^5.3.6"
 asgiref = "^3.8.1"
 asyncpg = "^0.29.0"
 aioetherscan = "^0.8.12"
+pytz = "^2024.1"
 
 
 [build-system]

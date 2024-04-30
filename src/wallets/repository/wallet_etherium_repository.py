@@ -5,19 +5,35 @@ from sqlalchemy.orm import Session
 from db_config.database import engine
 from sqlalchemy import select
 from src.wallets.models import Wallet, Asset
+from src.users.models import User
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.orm import selectinload, contains_eager
 from sqlalchemy.orm import lazyload
-
+from sqlalchemy.orm import load_only
 
 
 
 class WalletEtheriumRepository(WalletAbstractRepository):
+    """
+    Asynchronous repository providing methods for 
+    interacting with Ethereum wallet objects in the database.
+    """
 
 
-    async def return_wallets_per_user(self, user):
+    async def return_wallets_per_user(self, user: User) -> list[Wallet]:
+        """
+        Retrieves all Ethereum wallet objects from the 
+        database owned by a specific user.
+
+        Args:
+            user(User): The user object representing the wallet owner.
+                        
+        Returns:
+            result(list[Wallet]) : A list of Ethereum wallet objects owned by the user, 
+                or an empty list if the user has no wallets.
+        """
         async_session = async_sessionmaker(engine, expire_on_commit=False)
         async with async_session() as session:
             query = select(Wallet).options(contains_eager(Wallet.asset)\
@@ -30,7 +46,16 @@ class WalletEtheriumRepository(WalletAbstractRepository):
         return result
 
 
-    async def return_wallet_per_id(self, id):
+    async def return_wallet_per_id(self, id: int) -> Wallet:
+        """
+        Retrieves Ethereum wallet by id.
+
+        Args:
+            id(int): wallet id.
+                        
+        Returns:
+            result(list[Wallet]) : Ethereum wallet.
+        """
         async_session = async_sessionmaker(engine, expire_on_commit=False)
         async with async_session() as session:
             query = select(Wallet).options(contains_eager(Wallet.asset)\
@@ -41,18 +66,6 @@ class WalletEtheriumRepository(WalletAbstractRepository):
             await session.commit()
         return wallet
     
-
-
-    # async def return_user_per_email(self, email):
-    #     async_session = async_sessionmaker(engine, expire_on_commit=False)
-    #     async with async_session() as session:
-    #         query = select(User).filter(User.email==email)
-    #         user = await session.execute(query)
-    #         result = user.scalars().first()
-    #         await session.commit()
-    #     return result
-
-
 
     async def return_wallet_per_address(self, wallet_address):
         print(wallet_address)
@@ -101,7 +114,35 @@ class WalletEtheriumRepository(WalletAbstractRepository):
             await session.commit()
         return wallet
         
-    
 
+    async def return_all_wallets_addresses(self):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(Wallet).options(load_only(Wallet.address))
+            result = await session.execute(query)
+            # print(result)
+            wallets = result.scalars()
+            # print(adresses)
+            await session.commit()
+        addresses_set = set()
+        for wallet in wallets: 
+            # print(wallet.address)
+            addresses_set.add(wallet.address)
+
+        return addresses_set
+
+
+    async def return_all_wallets_adresses_per_user_id(self, user_id):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(Wallet).options(load_only(Wallet.address)).filter(Wallet.user_id==user_id)
+            result = await session.execute(query)
+            wallets = result.scalars()
+            await session.commit()
+        addresses_set = set()
+        for wallet in wallets: 
+            # print(wallet.address)
+            addresses_set.add(wallet.address)
+        return addresses_set
 
 wallet_eth_rep_link = WalletEtheriumRepository()

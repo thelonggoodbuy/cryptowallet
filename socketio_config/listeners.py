@@ -1,8 +1,9 @@
 from propan_config.router import queue_return_saved_messages, exchange_return_saved_messages, rabbit_router,\
                                     exchange_return_new_wallet, queue_return_new_wallet,\
-                                    exchange_update_wallet_list, queue_update_wallet_list
+                                    exchange_update_wallet_list, queue_update_wallet_list,\
+                                    exchange_return_to_socketio_all_transcations, queue_return_to_socketio_all_transcations
 from propan.fastapi import RabbitRouter
-from socketio_config.server import return_saved_message, return_new_wallet, update_wallet_state
+from socketio_config.server import return_saved_message, return_new_wallet, update_wallet_state, return_all_transactions_per_wallet
 
 
 
@@ -24,4 +25,16 @@ async def receive_new_wallet(message: dict):
 async def return_updated_wallets(message: dict):
     print('---you want to update wallet!---')
     print(message)
+    print('--------------------------------')
+
+
+
+# !
+@rabbit_router.broker.handle(queue_return_to_socketio_all_transcations, exchange_return_to_socketio_all_transcations)
+async def return_to_socketio_all_transcations(message: dict):
+    print('--->>>you want to return all data about this wallet TRANSACTIONS <<<---')
+    print(message)
+    transaction_data = message['formated_transaction_list']
+    sid = message['sid']
+    await return_all_transactions_per_wallet(transaction_data, sid)
     print('--------------------------------')

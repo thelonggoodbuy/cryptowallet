@@ -2467,6 +2467,17 @@ client = ["requests (>=2.21.0)", "websocket-client (>=0.54.0)"]
 docs = ["sphinx"]
 
 [[package]]
+name = "pytz"
+version = "2024.1"
+description = "World timezone definitions, modern and historical"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pytz-2024.1-py2.py3-none-any.whl", hash = "sha256:328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319"},
+    {file = "pytz-2024.1.tar.gz", hash = "sha256:2a29735ea9c18baf14b448846bde5a48030ed267578472d8955cd0e7443a9812"},
+]
+
+[[package]]
 name = "pyunormalize"
 version = "15.1.0"
 description = "Unicode normalization forms (NFC, NFKC, NFD, NFKD). A library independent from the Python core Unicode database."
@@ -3462,4 +3473,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.7"
-content-hash = "b0551d65921e0542f6ec88178e3df43681ff575bad62f84edf77740b7a15ee37"
+content-hash = "8ba08419b1e8a88f57a5cf269f5e30c3c5cec89cba22197b71865b5fdd8c88db"

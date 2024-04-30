@@ -305,12 +305,12 @@
 
 
         profile_wallet_socket.on('return_list_of_user_wallets', (wallet_data) => {
-            console.log('-->>>This is wallet data!')
+            // console.log('-->>>This is wallet data!')
             // console.log(wallet_data)
             // console.log('-------------------------')
             console.log(wallet_data['all_users_wallets'])
             var all_users_wallets = wallet_data['all_users_wallets']
-            console.log('-------------------------')
+            // console.log('-------------------------')
             for (wallet_id in all_users_wallets){
                 $('#wallets_container').append(
                     `<div class="col-10 col-lg-5 border mx-3 my-3 py-3" id=wallet_${wallet_id}>
@@ -400,6 +400,15 @@
         // toastr.warning(data['error'])
 
       })
+
+
+      
+      profile_wallet_socket.on('return_all_transactions_per_wallet', function(data){
+        console.log('=====There are data about transactions!=====')
+        console.log(data)
+        console.log('============================================')
+      })
+
 
 
       $('#wallets_container').on('click', '*[id^="transactions_list"]', function(){

@@ -6,6 +6,7 @@ from jose import JWTError, jwt
 #                                     delete_user_from_chat_redis_hash,\
 #                                     return_all_online_user
 from redis_config.services.redis_user_service import redis_user_service
+from redis_config.services.redis_parser_service import redis_parser_service
 from propan import PropanApp, RabbitBroker
 from propan.annotations import Logger
 from propan.brokers.rabbit import RabbitExchange, RabbitQueue
@@ -103,11 +104,12 @@ server.register_namespace(MessagingNamespace('/messaging'))
 
 from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 
-from celery_config.config import monitoring_wallets_state_task, app
+# from celery_config.config import monitoring_wallets_state_task, app
 
 from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 from src.users.services.user_service import UserService
 from src.etherium.services.transaction_eth_service import TransactionETHService
+from etherium_config.services.eth_parser import eth_parser_service
 
 
 class WalletProfileNamespace(socketio.AsyncNamespace):
@@ -115,16 +117,21 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
 
     async def on_connect(self, sid, environ, auth):
         email = await UserService.return_email_by_token(token = auth['token'])
+        user = await UserService.return_user_per_email(email)
         all_users_wallets = await WalletEtheriumService.return_wallets_per_user_email(email = email)
         wallets_data = {'all_users_wallets': all_users_wallets}
         await client_manager.emit('return_list_of_user_wallets', \
                             data=wallets_data, \
                             room=sid, \
                             namespace='/profile_wallets')
+        
+        await eth_parser_service.add_user_wallets_to_parser(sid, all_users_wallets, user.id)
+
 
 
     async def on_disconnect(self, sid):
-        pass
+        await eth_parser_service.delete_user_from_parser(sid)
+
 
 
     async def on_create_wallet(self, sid, data):
@@ -143,14 +150,12 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
 
     async def on_send_transaction(self, sid, data):
         transaction_data = await TransactionETHService.send_eth_to_account(data)
-        print('===>Server Data<===')
-        print(transaction_data)
-        print('===================')
         await client_manager.emit('transaction_sending_result', data=transaction_data, room=sid, namespace='/profile_wallets')
 
 
     async def on_get_transactions_per_wallet(self, sid, data):
-        await add_to_get_all_transcations_queue(data)
+        message = {'data': data, 'sid': sid}
+        await add_to_get_all_transcations_queue(message)
 
 
 
@@ -169,6 +174,17 @@ async def update_wallet_state(wallets_data, sid):
                                 data=wallets_data, \
                                 room=sid, \
                                 namespace='/profile_wallets')
+    
+
+
+async def return_all_transactions_per_wallet(transaction_data, sid):
+    print('===!!!===')
+    print(sid)
+    print('===!!!===')
+    await client_manager.emit('return_all_transactions_per_wallet', \
+                            data=transaction_data, \
+                            room=sid,\
+                            namespace='/profile_wallets')
     
 
 

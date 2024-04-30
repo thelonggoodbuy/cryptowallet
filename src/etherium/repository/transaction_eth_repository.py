@@ -6,7 +6,7 @@ from src.etherium.models import Transaction
 from src.wallets.models import Wallet
 from sqlalchemy.orm import selectinload, contains_eager
 from etherium_config.settings import w3_connection
-
+from sqlalchemy import desc
 
 
 
@@ -55,7 +55,8 @@ class TransactionETHRepository():
         print('***')
         async with async_session() as session:
             query = select(Transaction)\
-                    .filter((Transaction.send_from == wallet_number) | (Transaction.send_to == wallet_number))
+                    .filter((Transaction.send_from == wallet_number) | (Transaction.send_to == wallet_number))\
+                    .order_by(desc(Transaction.id))
 
             transactions_data = await session.execute(query)
             transactions = transactions_data.scalars().unique().all()
@@ -80,5 +81,14 @@ class TransactionETHRepository():
             # print('===3===')
             await session.commit()
             # print('===4===')
+        return transaction_obj
 
+    async def return_transaction_per_hash(self, transaction_hash):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(Transaction).filter(Transaction.txn_hash == transaction_hash)
+            result = await session.execute(query)
+            transaction = result.scalars().first()
+        return transaction
+    
 transaction_rep_link = TransactionETHRepository()
