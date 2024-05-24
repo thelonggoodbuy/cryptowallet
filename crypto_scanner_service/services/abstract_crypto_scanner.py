@@ -1,12 +1,4 @@
 
-# from etherium_config.settings import aiotherscan_client_executor
-# from src.etherium.services.transaction_eth_service import TransactionETHService
-# from datetime import datetime
-# from etherium_config.settings import w3_connection
-# import asyncio
-# from propan_config.router import add_to_return_to_socketio_all_transcations_queue
-
-
 from abc import ABC, abstractmethod
 
 

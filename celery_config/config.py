@@ -17,12 +17,12 @@ app.conf.task_routes = {
 }
 
 
-app.conf.beat_schedule = {
-    'celery_beat_testing': {
-        'task': 'celery_config.tasks.parse_latest_block_query',
-        'schedule': timedelta(seconds=2)
-    }
-}
+# app.conf.beat_schedule = {
+#     'celery_beat_testing': {
+#         'task': 'celery_config.tasks.parse_latest_block_query',
+#         'schedule': timedelta(seconds=2)
+#     }
+# }
 
 app.autodiscover_tasks()
 

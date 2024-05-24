@@ -47,7 +47,6 @@ class WalletEtheriumService(AbstractWalletService):
                   The response structure follows a Messaging pattern.
         """
 
-        # from etherium_config.services.eth_scanner import ETHScannerService
         from crypto_scanner_service.services.eth_crypro_scanner import etherium_crypro_scanner
 
 
@@ -88,13 +87,6 @@ class WalletEtheriumService(AbstractWalletService):
         return wallet
        
 
-    # def create_account():
-    #     created_account_obj = w3_connection.eth.account.create()
-    #     print('=======create_account======')
-    #     print(created_account_obj)
-    #     print(type(created_account_obj))
-    #     print('===========================')
-    #     return created_account_obj
     
 
     async def create_wallet_for_user(new_wallet_data: dict) -> dict:
@@ -131,7 +123,8 @@ class WalletEtheriumService(AbstractWalletService):
                 'address': new_wallet.address,
                 'asset': new_wallet.asset.code, 
                 'blockchain_photo': new_wallet.asset.blockchain.photo['url'][1:],
-                'sid': new_wallet_data['sid']
+                'room': new_wallet_data['room'],
+                'balance': new_wallet.balance
         }
         return new_wallet_dictionary
     
@@ -187,7 +180,8 @@ class WalletEtheriumService(AbstractWalletService):
                 'asset': imported_wallet.asset.code, 
                 'blockchain_photo': imported_wallet.asset.blockchain.photo['url'][1:],
                 'balance': imported_wallet.balance,
-                'sid': wallet_data['sid']
+                'room': wallet_data['room'],
+                'balance': imported_wallet.balance,
         }
             await return_new_wallet(imported_wallet_dictionary)
 
@@ -196,14 +190,14 @@ class WalletEtheriumService(AbstractWalletService):
             error_text = 'Аккаунт з таким приватним ключем вже зареєстрованний в системі'
             imported_wallet_dictionary = {'status': 'error',
                                         'text': error_text,
-                                        'sid': wallet_data['sid']}
+                                        'room': wallet_data['room']}
             await return_new_wallet(imported_wallet_dictionary)
 
         except Exception as e:
             error_text = 'Помилка в приватному ключі'
             imported_wallet_dictionary = {'status': 'error',
                                         'text': error_text,
-                                        'sid': wallet_data['sid']}
+                                        'room': wallet_data['room']}
             await return_new_wallet(imported_wallet_dictionary)
 
 
@@ -223,15 +217,16 @@ class WalletEtheriumService(AbstractWalletService):
 
 
 
-    async def return_all_wallets_addresses() -> set:
+    async def return_all_wallets_addresses() -> dict:
         """
-        Retrieves a set of all Ethereum wallet addresses stored in the database.
+        Retrieves a dict of all Ethereum wallet addresses stored in the database.
         
         Returns:
-            addresses_set(set): A set containing all wallet addresses from the database
+            addresses_dict(dict): A dictionary containing all wallet addresses from the database,
+            and structured by pair key - wallet_address, and value - user_id
         """
-        addresses_set = await wallet_eth_rep_link.return_all_wallets_addresses()
-        return addresses_set
+        addresses_dict = await wallet_eth_rep_link.return_all_wallets_addresses()
+        return addresses_dict
     
 
 
@@ -250,3 +245,8 @@ class WalletEtheriumService(AbstractWalletService):
         """
         addresses_set = await wallet_eth_rep_link.return_all_wallets_adresses_per_user_id(user_id)
         return addresses_set
+    
+
+    async def return_user_id_by_wallet_id(wallet_id):
+        user_id = await wallet_eth_rep_link.return_user_id_by_wallet_id(wallet_id)
+        return user_id

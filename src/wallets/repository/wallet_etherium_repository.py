@@ -115,21 +115,19 @@ class WalletEtheriumRepository(WalletAbstractRepository):
         return wallet
         
 
-    async def return_all_wallets_addresses(self):
+    async def return_all_wallets_addresses(self) -> dict:
         async_session = async_sessionmaker(engine, expire_on_commit=False)
         async with async_session() as session:
-            query = select(Wallet).options(load_only(Wallet.address))
+            query = select(Wallet)
             result = await session.execute(query)
-            # print(result)
             wallets = result.scalars()
-            # print(adresses)
             await session.commit()
-        addresses_set = set()
+        addresses_dict = {}
         for wallet in wallets: 
             # print(wallet.address)
-            addresses_set.add(wallet.address)
+            addresses_dict[wallet.address] = wallet.user_id
 
-        return addresses_set
+        return addresses_dict
 
 
     async def return_all_wallets_adresses_per_user_id(self, user_id):
@@ -144,5 +142,23 @@ class WalletEtheriumRepository(WalletAbstractRepository):
             # print(wallet.address)
             addresses_set.add(wallet.address)
         return addresses_set
+    
+
+    async def return_user_id_by_wallet_id(self, wallet_id):
+        print('Wallet id is')
+        print(type(wallet_id))
+        print(wallet_id)
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(Wallet).where(Wallet.id == int(wallet_id))
+            wallet = await session.execute(query)
+            result = wallet.scalars().first()
+            print('result is')
+            print(result)
+            owner_id = result.user_id
+            await session.commit()
+
+        return owner_id
+
 
 wallet_eth_rep_link = WalletEtheriumRepository()

@@ -124,21 +124,92 @@ class TransactionETHService(TransactionAbstractService):
                                                           from_web3_data_dict=from_web3_data_dict)
         
 
-    async def create_or_update_transaction(transaction_hash):
-        transaction_from_db = await transaction_rep_link.return_transaction_per_hash(transaction_hash)
-        from_web3_data_dict = {'date_time_transaction': transaction['date_time_transaction'],
-                               'txn_fee': transaction['txn_fee'],
-                               'status': transaction['status']}
+    async def create_or_update_transaction(transaction_obj):
+        # print('***')
+        # print(transaction_obj)
+        # print('***')
+
+        transaction_from_db = await transaction_rep_link.return_transaction_per_hash(transaction_obj.get('hash').hex())
+
+
+        # txn_fee = w3_connection.from_wei(int(transaction_obj.ger('cumulativeGasUsed')), 'ether')
+
+        # if transaction['txreceipt_status'] == '1':
+        #     status= 'success'
+        # elif transaction['txreceipt_status'] == '0':
+        # #     status= 'fail'
+
+        # from_web3_data_dict = {'date_time_transaction': transaction['date_time_transaction'],
+        #                        'txn_fee': transaction['txn_fee'],
+        #                        'status': transaction['status']}
+        
         match transaction_from_db:
             case None:
-                transaction = transaction_rep_link.save_transaction_in_db(send_from=transaction_from_db['from'],
-                                                            send_to=transaction_from_db['to'],
-                                                            value=transaction_from_db['value'],
-                                                            txn_hash=transaction_from_db['txn_hash'],
-                                                            status=transaction_from_db['status'],
-                                                            from_web3_data_dict=from_web3_data_dict)
+                # print('==============>>>>>>>>>>>>>>>>>>>This is new transaction!')
+                transaction_full_data = await w3_connection.eth.get_transaction(transaction_obj.get('hash').hex())
+                transaction_receipt = await w3_connection.eth.get_transaction_receipt(transaction_obj.get('hash').hex())
+                value = w3_connection.from_wei(int(transaction_obj.get('value')), 'ether')
+                gas_used = transaction_full_data.get('gas')
+                gas_price = transaction_full_data.get('gasPrice')
+                txn_fee = gas_used * gas_price
+                txn_fee_in_ether = w3_connection.from_wei((txn_fee), 'ether')
+
+                if transaction_receipt.get('status') == 1:
+                    status = 'success'
+                elif transaction_receipt.get('status') == 0:
+                    status = 'fail'
+
+                total_transaction_data = {
+                    'send_from': transaction_obj.get('from'),
+                    'send_to': transaction_obj.get('to'),
+                    'value': value,
+                    'txn_hash': transaction_obj.get('hash').hex(),
+                    'status': status,
+                    'from_web3_data_dict': {
+                        'date_time_transaction': None,
+                        'txn_fee': txn_fee_in_ether
+                    }
+
+                }
+                # print('=========total_transaction_data=========')
+                # print(total_transaction_data)
+                # print('========================================')
+                transaction = await transaction_rep_link.save_transaction_in_db(**total_transaction_data)
+                # print('===========transaction===after===save===')
+                # print(transaction)
+                # print('========================================')
             case Transaction:
-                transaction = transaction_rep_link.update_transaction(transaction_from_db,
+                # print('==============>>>>>>>>>>>>>>>>>>>this transaction need to update!')
+
+
+                transaction_full_data = await w3_connection.eth.get_transaction(transaction_from_db.txn_hash)
+                transaction_receipt = await w3_connection.eth.get_transaction_receipt(transaction_from_db.txn_hash)
+
+                if transaction_receipt.get('status') == 1:
+                    status = 'success'
+                elif transaction_receipt.get('status') == 0:
+                    status = 'fail'
+
+
+                from_web3_data_dict ={}
+                gas_used = transaction_full_data.get('gas')
+                gas_price = transaction_full_data.get('gasPrice')
+                txn_fee = gas_used * gas_price
+                txn_fee_in_ether = w3_connection.from_wei((txn_fee), 'ether')
+
+                from_web3_data_dict = {
+                        'date_time_transaction': None,
+                        'txn_fee': txn_fee_in_ether,
+                        'status': status
+                    }
+
+                transaction = await transaction_rep_link.update_transaction(transaction_from_db,
                                                         from_web3_data_dict)
+                
+
+                # print('===============TRANSACTION=WAS=UPDATED=SUCCESSFULLY==================')
+                # print(transaction)
+                # print('=====================================================================')
+
                 
         return transaction

@@ -43,6 +43,7 @@ ALGORITHM = "HS256"
 
 
 
+
 # --------->>>>>messaging logic<<<<<<<<-------------------------------------------
 
 class MessagingNamespace(socketio.AsyncNamespace):
@@ -114,12 +115,22 @@ from etherium_config.services.eth_parser import eth_parser_service
 
 class WalletProfileNamespace(socketio.AsyncNamespace):
 
+    sid_room_pairs = {}
+
 
     async def on_connect(self, sid, environ, auth):
         email = await UserService.return_email_by_token(token = auth['token'])
         user = await UserService.return_user_per_email(email)
         all_users_wallets = await WalletEtheriumService.return_wallets_per_user_email(email = email)
         wallets_data = {'all_users_wallets': all_users_wallets}
+
+
+        room = f'room_{user.id}'
+        self.sid_room_pairs[sid] = room
+        
+        await client_manager.enter_room(sid, namespace='/profile_wallets', room=room)
+        print(f'-----you---room----is:*** {room}')
+
         await client_manager.emit('return_list_of_user_wallets', \
                             data=wallets_data, \
                             room=sid, \
@@ -135,25 +146,31 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
 
 
     async def on_create_wallet(self, sid, data):
-        new_wallet_data = {'token': data['token'], 'sid': sid}
+        # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
+        new_wallet_data = {'token': data['token'], 'room': self.sid_room_pairs[sid]}
         new_walet_dict = await WalletEtheriumService.create_wallet_for_user(new_wallet_data)
         await return_new_wallet(new_walet_dict)
         
 
 
     async def on_import_wallet(self, sid, data):
+        # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
+
         import_wallet_data = {'token': data['token'],
                               'private_key': data['private_key'],
-                               'sid': sid}
+                               'room': self.sid_room_pairs[sid]}
         await WalletEtheriumService.import_wallet_for_user(import_wallet_data)
 
 
     async def on_send_transaction(self, sid, data):
+        user_id = await WalletEtheriumService.return_user_id_by_wallet_id(data['current_wallet_id'])
+        room = f'room_{user_id}'
         transaction_data = await TransactionETHService.send_eth_to_account(data)
-        await client_manager.emit('transaction_sending_result', data=transaction_data, room=sid, namespace='/profile_wallets')
+        await client_manager.emit('transaction_sending_result', data=transaction_data, room=room, namespace='/profile_wallets')
 
 
     async def on_get_transactions_per_wallet(self, sid, data):
+        # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
         message = {'data': data, 'sid': sid}
         await add_to_get_all_transcations_queue(message)
 
@@ -163,13 +180,14 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
 
 
 async def return_new_wallet(message):
-
-    sid = message.pop('sid')
-    await  client_manager.emit('show_new_wallet', room=sid, data=message, namespace='/profile_wallets')
+    # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
+    room = message.pop('room')
+    await  client_manager.emit('show_new_wallet', room=room, data=message, namespace='/profile_wallets')
 
 
 
 async def update_wallet_state(wallets_data, sid):
+    # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
     await client_manager.emit('return_list_of_user_wallets', \
                                 data=wallets_data, \
                                 room=sid, \
@@ -178,9 +196,8 @@ async def update_wallet_state(wallets_data, sid):
 
 
 async def return_all_transactions_per_wallet(transaction_data, sid):
-    print('===!!!===')
-    print(sid)
-    print('===!!!===')
+    print('transaction_data is: ')
+    print(transaction_data)
     await client_manager.emit('return_all_transactions_per_wallet', \
                             data=transaction_data, \
                             room=sid,\

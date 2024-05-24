@@ -11,7 +11,7 @@ from aioetherscan import Client as AiotherscanClient
 from aiohttp_retry import ExponentialRetry
 from asyncio_throttle import Throttler
 
-
+from aioetherscan.exceptions import EtherscanClientApiError
 
 class EtheriumCryproScanner(AbstractCryproScanner):
 
@@ -51,30 +51,37 @@ class EtheriumCryproScanner(AbstractCryproScanner):
         retry_options = ExponentialRetry(attempts=2)
         aiotherscan_client = AiotherscanClient('1A17HIRIZMJXY6JMPQ15BEQQYJJT4CQFPJ', network="sepolia", throttler=throttler, retry_options=retry_options)
 
-        transactions_list = await aiotherscan_client.account.normal_txs(address=wallet_data['current_wallet_adress'])
-        transaction_dict = {}
-        for transaction in transactions_list:
+        try:
+            transactions_list = await aiotherscan_client.account.normal_txs(address=wallet_data['current_wallet_adress'])
+            transaction_dict = {}
+            for transaction in transactions_list:
 
-            if transaction['txreceipt_status'] == '1':
-                status= 'success'
-            elif transaction['txreceipt_status'] == '0':
-                status= 'fail'
+                if transaction['txreceipt_status'] == '1':
+                    status= 'success'
+                elif transaction['txreceipt_status'] == '0':
+                    status= 'fail'
 
-            transaction_dict[transaction['hash']] = {
-                'send_from': self.w3_connection.to_checksum_address(transaction['from']),
-                'send_to': self.w3_connection.to_checksum_address(transaction['to']),
-                'value': transaction['value'],
-                'txn_hash': transaction['hash'],
-                'date_time_transaction': datetime.fromtimestamp(int(transaction['timeStamp'])),
-                'txn_fee': self.w3_connection.from_wei(int(transaction['cumulativeGasUsed']), 'ether'),
-                'status': status
-            }
+                transaction_dict[transaction['hash']] = {
+                    'send_from': self.w3_connection.to_checksum_address(transaction['from']),
+                    'send_to': self.w3_connection.to_checksum_address(transaction['to']),
+                    'value': transaction['value'],
+                    'txn_hash': transaction['hash'],
+                    'date_time_transaction': datetime.fromtimestamp(int(transaction['timeStamp'])),
+                    'txn_fee': self.w3_connection.from_wei(int(transaction['cumulativeGasUsed']), 'ether'),
+                    'status': status
+                }
 
-        await self.compare_current_transactions_with_saved(transaction_dict, wallet_data)
-        saved_transactions_list = await TransactionETHService.return_all_transactions_per_wallet(wallet_data['current_wallet_adress'])
-        formated_transaction_list = await self.format_all_transactions_per_wallet(saved_transactions_list)
-        message = {'formated_transaction_list': formated_transaction_list, 'sid': sid}
-        await add_to_return_to_socketio_all_transcations_queue(message)
+            await self.compare_current_transactions_with_saved(transaction_dict, wallet_data)
+
+            saved_transactions_list = await TransactionETHService.return_all_transactions_per_wallet(wallet_data['current_wallet_adress'])
+
+            formated_transaction_list = await self.format_all_transactions_per_wallet(saved_transactions_list)
+            
+            message = {'formated_transaction_list': formated_transaction_list, 'sid': sid}
+            await add_to_return_to_socketio_all_transcations_queue(message)
+        except EtherscanClientApiError:
+            message = {'formated_transaction_list': [], 'sid': sid}
+            await add_to_return_to_socketio_all_transcations_queue(message)
         await aiotherscan_client.close()
 
 

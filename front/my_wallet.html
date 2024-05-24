@@ -10,7 +10,6 @@
 
 
     <link rel="stylesheet" href="/static/static/css/sidebars.css">
-    <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
 
     <!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/"> -->
 
@@ -19,6 +18,7 @@
     <!-- Bootstrap core CSS -->
 <!-- <link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 <link rel="stylesheet" href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" />
+
 
     <style>
       .bd-placeholder-img {
@@ -34,15 +34,160 @@
           font-size: 3.5rem;
         }
       }
+
+       .modal-dialog.modal-custom-width {
+        max-width: 90%; /* Adjust the width as needed */
+      }
     </style>
 
     
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="/static/static/css/sidebars.css" />
     <!-- <link href="static/css/headers.css" rel="stylesheet"> -->
+    <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
+
+    <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
+
+
+<!-- 
+    <th scope="col">Txn Hash</th>
+    <th scope="col">From</th>
+    <th scope="col">To</th>
+    <th scope="col">Value</th>
+    <th scope="col">Age</th>
+    <th scope="col">Txn Fee</th>
+    <th scope="col">Status</th> -->
+
+
 
   </head>
   <body>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="dataModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-custom-width">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="dataModalLabel">Data Table</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <table id="dataTable" class="display" style="width:100%">
+
+                <!-- <thead>
+                  <tr>
+                      <th>Name</th>
+                      <th>Position</th>
+                      <th>Office</th>
+                      <th>Age</th>
+                      <th>Start date</th>
+                      <th>Salary</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Jonas Alexander</td>
+                      <td>Developer</td>
+                      <td>San Francisco</td>
+                      <td>30</td>
+                      <td>2010-07-14</td>
+                      <td>$86,500</td>
+                  </tr>
+                  <tr>
+                      <td>Shad Decker</td>
+                      <td>Regional Director</td>
+                      <td>Edinburgh</td>
+                      <td>51</td>
+                      <td>2008-11-13</td>
+                      <td>$183,000</td>
+                  </tr>
+                  <tr>
+                      <td>Michael Bruce</td>
+                      <td>Javascript Developer</td>
+                      <td>Singapore</td>
+                      <td>29</td>
+                      <td>2011-06-27</td>
+                      <td>$183,000</td>
+                  </tr>
+                  <tr>
+                      <td>Donna Snider</td>
+                      <td>Customer Support</td>
+                      <td>New York</td>
+                      <td>27</td>
+                      <td>2011-01-25</td>
+                      <td>$112,000</td>
+                  </tr>
+              </tbody>
+              <tfoot>
+                  <tr>
+                      <th>Name</th>
+                      <th>Position</th>
+                      <th>Office</th>
+                      <th>Age</th>
+                      <th>Start date</th>
+                      <th>Salary</th>
+                  </tr>
+              </tfoot>
+          </table> -->
+
+              </table>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Table Popup</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <th scope="col">Txn Hash</th>
+                          <th scope="col">From</th>
+                          <th scope="col">To</th>
+                          <th scope="col">Value</th>
+                          <th scope="col">Age</th>
+                          <th scope="col">Txn Fee</th>
+                          <th scope="col">Status</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                        <td class="text-truncate" style="max-width: 20vw;">0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c</td>
+                        <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</td>
+                        <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a55а777</td>
+                        <td>0.0043 ETH</td>
+                        <td>6 second ago</td>
+                        <td>0.0000009 ETH</td>
+                        <td>PENDING</td>
+                    </tr>
+                    <tr>
+                      <td class="text-truncate" style="max-width: 20vw;">0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c</td>
+                      <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</td>
+                      <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a55а777</td>
+                      <td>0.0043 ETH</td>
+                      <td>6 second ago</td>
+                      <td>0.0000009 ETH</td>
+                      <td>PENDING</td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div> -->
+<!-- END Modal -->
 
 <main>
     
@@ -258,22 +403,52 @@
 
 
     </main>
-
+    <!-- !!! -->
     <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
+
     <script type="text/javascript" src="/static/static/plugin/toastr/build/toastr.min.js"></script>
     <script src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
 
+    <!-- <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script> -->
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
 
 
 
     <script src="/static/static/js/sidebars.js"></script>
 
     <script>
+      console.log('jQuery version:', $.fn.jquery);
+      console.log('toastr:', toastr);
+
+
+
     window.onload = function() {
         $(document).ready(function () {
 
-        toastr.warning('@@@@@')
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": true,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": true,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "10000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+      }
+
+
+        // console.log('Document is ready.');
+        // toastr.success('@@@@@')
 
         var cookie_data = document.cookie
 
@@ -339,7 +514,8 @@
 
                                 <div class="row text-center">
                                     <div class="col-12 col-xxl-4 my-1">
-                                        <button type="button" class="btn btn-primary" id="transactions_list_${wallet_id}"><h6>Подивитися транзакції</h6></button>
+                                        
+                                        <button type="button" class="btn btn-primary" id="transactions_list_${wallet_id}" data-bs-toggle="modal" data-bs-target="#exampleModal"><h6>Подивитися транзакції</h6></button>
                                     </div>
                                     <div class="col-12 col-xxl-4 my-1">
                                         <button type="button" class="btn btn-success" id="send_transaction_${wallet_id}" data-bs-toggle="modal" data-bs-target="#send_transaction_modal_window"><h6>Відправити транзакцію</h6></button>
@@ -374,6 +550,8 @@
 
             $('#address_input').val("")
             $('#value_input').val("")
+            // message_string = 'Відправлено' + value + 'ETH на адрессу' + address
+            // toastr.success(message_string)
 
           })
 
@@ -392,6 +570,8 @@
           console.log('All right with transaction!')
           console.log(data)
           console.log('===========================')
+          message_string = 'Відправлено ' + data.value + ' ETH з гаманця ' + data.from
+          toastr.success(message_string)
         }
         // console.log(data['error'])
         // console.log('************************')``
@@ -402,24 +582,107 @@
       })
 
 
+
+      // popups
       
       profile_wallet_socket.on('return_all_transactions_per_wallet', function(data){
-        console.log('=====There are data about transactions!=====')
-        console.log(data)
-        console.log('============================================')
+        // console.log('=====There are data about transactions!=====')
+        // console.log(data)
+        // console.log('============================================')
+
+          var transactions_array = []
+
+          for (transaction of data){
+            var concrete_transaction_array = []
+            concrete_transaction_array.push(transaction.txn_hash)
+            concrete_transaction_array.push(transaction.send_from)
+            concrete_transaction_array.push(transaction.send_to)
+            concrete_transaction_array.push(transaction.value)
+            concrete_transaction_array.push(transaction.age)
+            concrete_transaction_array.push(transaction.txn_fee)
+            concrete_transaction_array.push(transaction.status)
+            transactions_array.push(concrete_transaction_array)
+          }
+
+          console.log('-----transactions_array-----')
+          console.log(transactions_array)
+          console.log('----------------------------')
+
+          if ($.fn.DataTable.isDataTable('#dataTable')) {
+            $('#dataTable').DataTable().destroy();
+          } 
+          
+          $('#dataTable').DataTable({
+
+            data: transactions_array,
+            columns: [
+                { title: "Txn Hash" },
+                { title: "From" },
+                { title: "To" },
+                { title: "Value" },
+                { title: "Age" },
+                { title: "Txn Fee" },
+                { title: "Status" }
+            ],
+            columnDefs: [
+              { targets: 0, 
+                render: function (data, type, row, meta) {
+                  if (type === 'display') {
+                        var original_data = data
+                        if (type === 'display' && original_data.length > 20) { 
+                          data = original_data.substr(0, 20) + '...'
+                        }
+                        return '<a href="https://sepolia.etherscan.io/tx/' + original_data + '" class="outer_link">' + data + '</a>';
+                    }
+                    return '<a href="https://sepolia.etherscan.io/tx/' + original_data + '">' + original_data + '</a>';
+                  }
+              }
+          ]
+        });
       })
 
 
+      $('.modal-body').on('click', '.outer_link',function(event){
+        console.log('--->you click!<---')
 
+        event.preventDefault();
+
+        var address = $(this).attr('href')
+        window.open(address, '_blank');
+      })
+
+
+      // !!!!
       $('#wallets_container').on('click', '*[id^="transactions_list"]', function(){
           var current_wallet_id = $(this)[0].id.replace('transactions_list_', '')
           var current_wallet_adress = $(this).closest(`#wallet_${current_wallet_id}`).find('p[class$=wallet_address]').text()
 
           profile_wallet_socket.emit('get_transactions_per_wallet', data={'wallet_id': current_wallet_id,
                                                                           'current_wallet_adress': current_wallet_adress})
-          
+
+
+      // new DataTable('#dataTable');
+
+
         }
       )
+
+
+      profile_wallet_socket.on('receive_data_from_parser', function(data){
+        console.log('==========receive_data_from_parser!=========')
+        console.log(data)
+        toastr.success(data)
+        console.log('============================================')
+      })
+
+
+      profile_wallet_socket.on('show_new_wallet', (data) => {
+        console.log('You want to show new wallet!')
+        console.log(data)
+        console.log('--->!<---')
+      }
+    )
+
 
         // $('*[id^="send_transaction_"]').on('click', function(){
         //     var wallet_number = $(this)
@@ -435,23 +698,7 @@
         })
     }
 
-  toastr.options = {
-      "closeButton": true,
-      "debug": false,
-      "newestOnTop": true,
-      "progressBar": true,
-      "positionClass": "toast-top-right",
-      "preventDuplicates": true,
-      "onclick": null,
-      "showDuration": "300",
-      "hideDuration": "1000",
-      "timeOut": "10000",
-      "extendedTimeOut": "1000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut"
-  }
+
 
 
     </script>

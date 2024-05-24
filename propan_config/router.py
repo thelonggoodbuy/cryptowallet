@@ -43,6 +43,11 @@ queue_get_all_transcations = RabbitQueue("get_all_transcations_queue", auto_dele
 exchange_return_to_socketio_all_transcations = RabbitExchange("return_to_socketio_all_transcations_exchange", auto_delete=True)
 queue_return_to_socketio_all_transcations = RabbitQueue("return_to_socketio_all_transcations_queue", auto_delete=True)
 
+exchange_return_transaction_message_to_socket = RabbitExchange("return_transaction_message_to_socket_exchange", auto_delete=True)
+queue_return_transaction_message_to_socket = RabbitQueue("return_transaction_message_to_socket_queue", auto_delete=True)
+
+
+
 
 async def add_to_message_query(message):
     await rabbit_router.broker.publish(message, queue="chat_message_query", exchange=exch)
@@ -65,7 +70,8 @@ async def add_to_get_all_transcations_queue(message):
 
 
 async def add_to_return_to_socketio_all_transcations_queue(message):
-    print('---publishing----update----wallet---')
-    print(message)
-    print('------------------------------------')
     await rabbit_router.broker.publish(message, queue="return_to_socketio_all_transcations_queue", exchange=exchange_return_to_socketio_all_transcations)
+
+
+async def add_to_return_transaction_message_to_socket(message):
+    await rabbit_router.broker.publish(message, queue="return_transaction_message_to_socket_queue", exchange=exchange_return_transaction_message_to_socket)
