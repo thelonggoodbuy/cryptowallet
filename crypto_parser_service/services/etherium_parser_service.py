@@ -182,16 +182,24 @@ class ETHParserService:
         
         if notification_data['type'] == 'from':
             message = cls.sender_message.format(notification_data['summ'], notification_data['wallet'])
-            print('SENDER---MESSAGE--------->>>')
+            print('RECEIVER---MESSAGE-------->>>')
+            print('--->notification_data-----')
+            wallet_in_db = await WalletEtheriumService.return_wallet_per_address(notification_data['wallet'])
+            updated_balance = await WalletEtheriumService.update_and_return_ballance_state(wallet_in_db)
+            # print('----updated---ballance--')
+            # print(updated_balance)
+            # print('***')
             socket_notification_dict = {
                 'message': message,
-                'user_id': notification_data['user_id']
+                'user_id': notification_data['user_id'],
+                'wallet_id': wallet_in_db.id,
+                'new_wallet_ballance': float(updated_balance)
             }
             print(message)
             room_number = notification_data['user_id']
 
             await client_manager.emit('receive_data_from_parser', \
-                                data=message, \
+                                data=socket_notification_dict, \
                                 room=f'room_{room_number}', \
                                 namespace='/profile_wallets')
 
@@ -202,14 +210,23 @@ class ETHParserService:
         elif notification_data['type'] == 'to':
             message = cls.receiver_message.format(notification_data['summ'], notification_data['wallet'])
             print('RECEIVER---MESSAGE-------->>>')
+            print('--->notification_data-----')
+            print(notification_data)
+            wallet_in_db = await WalletEtheriumService.return_wallet_per_address(notification_data['wallet'])
+            updated_balance = await WalletEtheriumService.update_and_return_ballance_state(wallet_in_db)
+            # print('----updated---ballance--')
+            # print(updated_balance)
+            # print('***')
             socket_notification_dict = {
                 'message': message,
-                'user_id': notification_data['user_id']
+                'user_id': notification_data['user_id'],
+                'wallet_id': wallet_in_db.id,
+                'new_wallet_ballance': float(updated_balance)
             }
             print(message)
             room_number = notification_data['user_id']
             await client_manager.emit('receive_data_from_parser', \
-                                data=message, \
+                                data=socket_notification_dict, \
                                 room=f'room_{room_number}', \
                                 namespace='/profile_wallets')
         

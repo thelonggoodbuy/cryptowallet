@@ -390,7 +390,6 @@
 
             $('#send_message_area').val('');
             $('#imageInput').val('');
-            // $('#message_photo').src = ''
             $('#message_photo').removeAttr('src')
             $('#message_photo').show();
 
@@ -400,10 +399,6 @@
 
         // listen messages from backend
         chat_socket.on("show_saved_message", (data) => {
-
-          // console.log('---received---new----message---')
-          // console.log(data)
-          // console.log($('#users_online_list'))
 
           if (data['message']['message_photo'])
           {$('#list_of_message').append(

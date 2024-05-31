@@ -18,6 +18,7 @@
     <!-- Bootstrap core CSS -->
 <!-- <link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 <link rel="stylesheet" href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 
     <style>
@@ -38,6 +39,11 @@
        .modal-dialog.modal-custom-width {
         max-width: 90%; /* Adjust the width as needed */
       }
+
+      .fa-lightbulb {
+            color: green;
+        }
+
     </style>
 
     
@@ -49,16 +55,6 @@
     <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
 
 
-<!-- 
-    <th scope="col">Txn Hash</th>
-    <th scope="col">From</th>
-    <th scope="col">To</th>
-    <th scope="col">Value</th>
-    <th scope="col">Age</th>
-    <th scope="col">Txn Fee</th>
-    <th scope="col">Status</th> -->
-
-
 
   </head>
   <body>
@@ -68,126 +64,30 @@
       <div class="modal-content">
           <div class="modal-header">
               <h5 class="modal-title" id="dataModalLabel">Data Table</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close_transaction_cross"></button>
           </div>
           <div class="modal-body">
               <table id="dataTable" class="display" style="width:100%">
-
-                <!-- <thead>
+                <thead>
                   <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Age</th>
-                      <th>Start date</th>
-                      <th>Salary</th>
+                      <th>txn_hash</th>
+                      <th>from</th>
+                      <th>to</th>
+                      <th>value</th>
+                      <th>age</th>
+                      <th>txn_fee</th>
+                      <th>status</th>
                   </tr>
               </thead>
-              <tbody>
-                  <tr>
-                      <td>Jonas Alexander</td>
-                      <td>Developer</td>
-                      <td>San Francisco</td>
-                      <td>30</td>
-                      <td>2010-07-14</td>
-                      <td>$86,500</td>
-                  </tr>
-                  <tr>
-                      <td>Shad Decker</td>
-                      <td>Regional Director</td>
-                      <td>Edinburgh</td>
-                      <td>51</td>
-                      <td>2008-11-13</td>
-                      <td>$183,000</td>
-                  </tr>
-                  <tr>
-                      <td>Michael Bruce</td>
-                      <td>Javascript Developer</td>
-                      <td>Singapore</td>
-                      <td>29</td>
-                      <td>2011-06-27</td>
-                      <td>$183,000</td>
-                  </tr>
-                  <tr>
-                      <td>Donna Snider</td>
-                      <td>Customer Support</td>
-                      <td>New York</td>
-                      <td>27</td>
-                      <td>2011-01-25</td>
-                      <td>$112,000</td>
-                  </tr>
-              </tbody>
-              <tfoot>
-                  <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Age</th>
-                      <th>Start date</th>
-                      <th>Salary</th>
-                  </tr>
-              </tfoot>
-          </table> -->
-
               </table>
           </div>
           <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close_transaction_button">Close</button>
           </div>
       </div>
   </div>
 </div>
 
-
-<!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Table Popup</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <table class="table">
-                  <thead>
-                      <tr>
-                          <th scope="col">Txn Hash</th>
-                          <th scope="col">From</th>
-                          <th scope="col">To</th>
-                          <th scope="col">Value</th>
-                          <th scope="col">Age</th>
-                          <th scope="col">Txn Fee</th>
-                          <th scope="col">Status</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr>
-                        <td class="text-truncate" style="max-width: 20vw;">0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c</td>
-                        <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</td>
-                        <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a55а777</td>
-                        <td>0.0043 ETH</td>
-                        <td>6 second ago</td>
-                        <td>0.0000009 ETH</td>
-                        <td>PENDING</td>
-                    </tr>
-                    <tr>
-                      <td class="text-truncate" style="max-width: 20vw;">0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c</td>
-                      <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</td>
-                      <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a55а777</td>
-                      <td>0.0043 ETH</td>
-                      <td>6 second ago</td>
-                      <td>0.0000009 ETH</td>
-                      <td>PENDING</td>
-                  </tr>
-                  </tbody>
-              </table>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-      </div>
-  </div>
-</div> -->
-<!-- END Modal -->
 
 <main>
     
@@ -230,12 +130,8 @@
               <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                 <a href="#" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
                   <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
-                </a>
-        
+                </a>        
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"></ul>
-
-
-
                 </ul>
                 <a href="#" class="nav-link px-2 mx-3 link-dark fs-4">Username</a>
                 <img src="/static/static/image/empty_portrait.jpg" alt="mdo" width="50" height="50" class="img-fluid">
@@ -270,95 +166,6 @@
 
           <h3>Гаманці</h3>
           <div class="row" id="wallets_container">
-
-            
-        </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <h3>Контент, який буде всполивати</h3>
-        <h3>"Подивитися транзакції"</h3>
-    <!-- <h1>2</h1> -->
-        <!-- <div class="container-fluid"> -->
-            <table class="table table-bordered border-black" style="max-width: 60%;">
-                <thead>
-                    <tr>
-                    <th colspan="7" class="text-center">Список транзакції ETH для гаманця afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</th>
-                    </tr>
-                </thead>
-                <thead>
-                <tr>
-                    <th scope="col">Txn Hash</th>
-                    <th scope="col">From</th>
-                    <th scope="col">To</th>
-                    <th scope="col">Value</th>
-                    <th scope="col">Age</th>
-                    <th scope="col">Txn Fee</th>
-                    <th scope="col">Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="text-truncate" style="max-width: 20vw;">0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a55а777</td>
-                    <td>0.0043 ETH</td>
-                    <td>6 second ago</td>
-                    <td>0.0000009 ETH</td>
-                    <td>PENDING</td>
-                </tr>
-                <tr>
-                    <td class="text-truncate" style="max-width: 20vw;">0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a55а777</td>
-                    <td>0.0043 ETH</td>
-                    <td>6 second ago</td>
-                    <td>0.0000009 ETH</td>
-                    <td>PENDING</td>
-                </tr>
-                <tr>
-                    <td class="text-truncate" style="max-width: 20vw;">0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a55а777</td>
-                    <td>0.0043 ETH</td>
-                    <td>6 second ago</td>
-                    <td>0.0000009 ETH</td>
-                    <td>PENDING</td>
-                </tr>
-                <tr>
-                    <td class="text-truncate" style="max-width: 20vw;">0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a55а777</td>
-                    <td>0.0043 ETH</td>
-                    <td>6 second ago</td>
-                    <td>0.0000009 ETH</td>
-                    <td>PENDING</td>
-                </tr>
-                <tr>
-                    <td class="text-truncate" style="max-width: 20vw;">0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</td>
-                    <td class="text-truncate" style="max-width: 20vw;">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a55а777</td>
-                    <td>0.0043 ETH</td>
-                    <td>6 second ago</td>
-                    <td>0.0000009 ETH</td>
-                    <td>PENDING</td>
-                </tr>
-                
-                </tbody>
-            </table>
-        <!-- </div> -->
 
 
 </div>
@@ -423,7 +230,7 @@
       console.log('jQuery version:', $.fn.jquery);
       console.log('toastr:', toastr);
 
-
+      var transactions_table
 
     window.onload = function() {
         $(document).ready(function () {
@@ -499,7 +306,7 @@
                                         <p>Адресса</p>
                                     </div>
                                     <div class="col-9">
-                                        <p class="text-break text-primary wallet_address">${all_users_wallets[wallet_id]['address']}</p>
+                                        <p class="text-break text-primary wallet_address" style="cursor: pointer;">${all_users_wallets[wallet_id]['address']}</p>
                                     </div>
                                 </div>
 
@@ -508,7 +315,7 @@
                                         <p>Баланс</p>
                                     </div>
                                     <div class="col-9">
-                                        <p>${all_users_wallets[wallet_id]['balance']} ETH</p>
+                                        <span id="balance_${wallet_id}">${all_users_wallets[wallet_id]['balance']}</span> <span id="asset_${wallet_id}">${all_users_wallets[wallet_id]['asset']}</span>
                                     </div>
                                 </div>
 
@@ -581,65 +388,122 @@
 
       })
 
+      profile_wallet_socket.on('return_all_transactions_per_wallet', function(response_data){
+        console.log('------------------------')
+        console.log('You want to return data about transactions')
+        console.log(response_data)
+        console.log('------------------------')
+
+        if(response_data.scaning_status == true){
+
+        console.log('scaning status True!')
+
+        var sending_url = window.location.href.replace('wallets/', 'get_transactions_from_concrete_wallet/') + response_data["wallet_id"]
+
+        transactions_table = $('#dataTable').DataTable({
+                "dom": "<<t>p>",
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": sending_url,
+                    "type": "GET",
+                    data: function(d){
+                      return $.extend({}, d, {
+                                    'wallet_id': response_data["wallet_id"]
+                                });
+                    },
+                    "dataSrc": function (json) {
+                        return json.data;
+                    }
+                },
+                "columns": [
+                    // { "data": "id" },
+                    {"data": "txn_hash"},
+                    {"data": "from"},
+                    {"data": "to"},
+                    {"data": "value"},
+                    {"data": "age"},
+                    {"data": "txn_fee"},
+                    {"data": "status"}
+                ],
+                "columnDefs": [
+                {'orderable': false, targets: 0, render: function (data, type, row, meta) {
+                                                            if (type === 'display') {
+                                                               var original_data = data
+                                                               if (type === 'display' && original_data.length > 20) { 
+                                                                  data = original_data.substr(0, 20) + '...'
+                                                                }
+                                                                return '<a href="https://sepolia.etherscan.io/tx/' + original_data + '" class="outer_link">' + data + '</a>';
+                                                            }
+                                                            return '<a href="https://sepolia.etherscan.io/tx/' + original_data + '">' + original_data + '</a>';
+                                                              }
+                                                            },
+                {'orderable': false, targets: 1, render: function (data, type, row, meta) {
+                                                            if (type === 'display') {
+                                                               var original_data = data
+                                                               if (type === 'display' && original_data.length > 20) { 
+                                                                  data = original_data.substr(0, 20) + '...'
+                                                                }
+                                                                return '<a href="https://sepolia.etherscan.io/address/' + original_data + '" class="outer_link">' + data + '</a>';
+                                                            }
+                                                            return '<a href="https://sepolia.etherscan.io/address/' + original_data + '">' + original_data + '</a>';
+                                                              }},
+                {'orderable': false, targets: 2, render: function (data, type, row, meta) {
+                                                            if (type === 'display') {
+                                                               var original_data = data
+                                                               if (type === 'display' && original_data.length > 20) { 
+                                                                  data = original_data.substr(0, 20) + '...'
+                                                                }
+                                                                return '<a href="https://sepolia.etherscan.io/address/' + original_data + '" class="outer_link">' + data + '</a>';
+                                                            }
+                                                            return '<a href="https://sepolia.etherscan.io/address/' + original_data + '">' + original_data + '</a>';
+                                                              }},
+                {'orderable': false, targets: 3, render: function (data, type, row, meta) {
+                                                            return `${data} Ether`
+                                                                                          },
+                                                                                        },
+                {'orderable': true, targets: 4},
+                {'orderable': true, targets: 5},
+                {'orderable': true, targets: 6, render: function (data, type, row, meta) {
+                                                            // return data + ' <i class="fa fa-lightbulb"></i>';
+                                                            if (data === 'Success') {
+                                                                  return '<span class="text-success">' + data + '</span>'; // Green color for Success
+                                                              } else if (data === 'Pending') {
+                                                                  return '<span class="text-warning">' + data + '</span>'; // Yellow color for In Process
+                                                              } else if (data === 'Fail') {
+                                                                  return '<span class="text-danger">' + data + '</span>'; // Red color for Fail
+                                                              } else {
+                                                                  return data; // Return data as it is for other cases
+                                                              }
+                                                                  }
+                                                                },
+            ],
+                "rowId": 'id'
+            });
 
 
-      // popups
-      
-      profile_wallet_socket.on('return_all_transactions_per_wallet', function(data){
-        // console.log('=====There are data about transactions!=====')
-        // console.log(data)
-        // console.log('============================================')
 
-          var transactions_array = []
+        $('#close_transaction_cross, #close_transaction_button').on('click', function(){
+          $('#dataTable').DataTable().destroy();
+        })
 
-          for (transaction of data){
-            var concrete_transaction_array = []
-            concrete_transaction_array.push(transaction.txn_hash)
-            concrete_transaction_array.push(transaction.send_from)
-            concrete_transaction_array.push(transaction.send_to)
-            concrete_transaction_array.push(transaction.value)
-            concrete_transaction_array.push(transaction.age)
-            concrete_transaction_array.push(transaction.txn_fee)
-            concrete_transaction_array.push(transaction.status)
-            transactions_array.push(concrete_transaction_array)
+        $('#wallets_link').attr('href', window.location.href.replace('users/profile/', 'wallets/'))
+
           }
 
-          console.log('-----transactions_array-----')
-          console.log(transactions_array)
-          console.log('----------------------------')
-
-          if ($.fn.DataTable.isDataTable('#dataTable')) {
-            $('#dataTable').DataTable().destroy();
-          } 
-          
-          $('#dataTable').DataTable({
-
-            data: transactions_array,
-            columns: [
-                { title: "Txn Hash" },
-                { title: "From" },
-                { title: "To" },
-                { title: "Value" },
-                { title: "Age" },
-                { title: "Txn Fee" },
-                { title: "Status" }
-            ],
-            columnDefs: [
-              { targets: 0, 
-                render: function (data, type, row, meta) {
-                  if (type === 'display') {
-                        var original_data = data
-                        if (type === 'display' && original_data.length > 20) { 
-                          data = original_data.substr(0, 20) + '...'
-                        }
-                        return '<a href="https://sepolia.etherscan.io/tx/' + original_data + '" class="outer_link">' + data + '</a>';
-                    }
-                    return '<a href="https://sepolia.etherscan.io/tx/' + original_data + '">' + original_data + '</a>';
-                  }
-              }
-          ]
-        });
       })
+
+
+      $('#wallets_container').on('click', '[id^=transactions_list]', function(){
+          console.log('--->>>You have choosen container!<<<---')
+          var vallet_address = $(this).closest('[id^=wallet]').find('[class$=wallet_address]').text()
+          console.log(vallet_address)
+          var asset = $(this).closest('[id^=wallet]').find('[id^=asset]').text()
+          console.log(asset)
+          console.log('========================================')
+          $('h5#dataModalLabel').text(`Список транзакції ${asset} з гаманця ${vallet_address}`);
+      })
+    
 
 
       $('.modal-body').on('click', '.outer_link',function(event){
@@ -649,6 +513,25 @@
 
         var address = $(this).attr('href')
         window.open(address, '_blank');
+      })
+
+
+      $('#wallets_container').on('click', 'p[class$="wallet_address"]', function(){
+        var address = 'https://sepolia.etherscan.io/address/' + $(this).text()
+        console.log('===')
+        console.log(address)
+        console.log('===')
+        window.open(address, '_blank');
+
+      })
+
+      $('#wallets_container').on('click', '*[id^="demand_money_"]', function(){
+        var address = 'https://sepolia-faucet.pk910.de/'
+        console.log('===')
+        console.log(address)
+        console.log('===')
+        window.open(address, '_blank');
+
       })
 
 
@@ -671,8 +554,28 @@
       profile_wallet_socket.on('receive_data_from_parser', function(data){
         console.log('==========receive_data_from_parser!=========')
         console.log(data)
-        toastr.success(data)
+        toastr.success(data['message'])
+        // console.log('--------CHOOSEN BLOCK----------')
+        // console.log(data['wallet_id'])
+        var new_wallet_ballance = data['new_wallet_ballance']
+        // console.log($(`#balance_${data['wallet_id']}`))
+
+        var target_ballance = $(`#balance_${data['wallet_id']}`)
+        // $(`#balance_${data['wallet_id']}`).text(data.new_wallet_ballance)
+
+        if (target_ballance.length) {
+          target_ballance.text(data.new_wallet_ballance);
+                console.log('Balance updated.');
+            } else {
+                console.error('Element not found:');
+              }
+
+        if(transactions_table){
+          transactions_table.ajax.reload(null, false);}
         console.log('============================================')
+
+        // profile_wallet_socket.emit('update_concrete_wallet_per_id', data={'wallet_id': data['wallet_id']})
+
       })
 
 

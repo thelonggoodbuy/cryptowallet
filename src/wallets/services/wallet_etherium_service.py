@@ -250,3 +250,25 @@ class WalletEtheriumService(AbstractWalletService):
     async def return_user_id_by_wallet_id(wallet_id):
         user_id = await wallet_eth_rep_link.return_user_id_by_wallet_id(wallet_id)
         return user_id
+    
+
+    async def update_and_return_ballance_state(wallet):
+        # for wallet in wallets:
+        
+        balance = await w3_connection.eth.get_balance(wallet.address)
+        print('----new---ballance----')
+        print(balance)
+        print('======================')
+        print('----old---ballance----')
+        print(wallet.balance)
+        print('======================')
+        balance_in_ether = w3_connection.from_wei(balance, 'ether')
+        if balance_in_ether != wallet.balance: 
+            # here we syncronize wallet transactions in db and in web3 (!!!)     
+            updated_wallet = await wallet_eth_rep_link.update_wallet_ballance(wallet.id, balance_in_ether)
+
+        print('----balance-after-changeinc----')
+        print(updated_wallet.balance)
+        print('======================')
+
+        return updated_wallet.balance

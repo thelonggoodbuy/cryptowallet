@@ -13,7 +13,7 @@ from web3.exceptions import InvalidAddress
 
 from src.etherium.repository.transaction_eth_repository import transaction_rep_link
 from src.etherium.models import Transaction
-
+from datetime import datetime
 
 
 
@@ -125,24 +125,8 @@ class TransactionETHService(TransactionAbstractService):
         
 
     async def create_or_update_transaction(transaction_obj):
-        # print('***')
-        # print(transaction_obj)
-        # print('***')
-
         transaction_from_db = await transaction_rep_link.return_transaction_per_hash(transaction_obj.get('hash').hex())
-
-
-        # txn_fee = w3_connection.from_wei(int(transaction_obj.ger('cumulativeGasUsed')), 'ether')
-
-        # if transaction['txreceipt_status'] == '1':
-        #     status= 'success'
-        # elif transaction['txreceipt_status'] == '0':
-        # #     status= 'fail'
-
-        # from_web3_data_dict = {'date_time_transaction': transaction['date_time_transaction'],
-        #                        'txn_fee': transaction['txn_fee'],
-        #                        'status': transaction['status']}
-        
+       
         match transaction_from_db:
             case None:
                 # print('==============>>>>>>>>>>>>>>>>>>>This is new transaction!')
@@ -166,7 +150,9 @@ class TransactionETHService(TransactionAbstractService):
                     'txn_hash': transaction_obj.get('hash').hex(),
                     'status': status,
                     'from_web3_data_dict': {
-                        'date_time_transaction': None,
+                        # TODO datatime here
+
+                        'date_time_transaction': datetime.now(),
                         'txn_fee': txn_fee_in_ether
                     }
 
@@ -198,7 +184,7 @@ class TransactionETHService(TransactionAbstractService):
                 txn_fee_in_ether = w3_connection.from_wei((txn_fee), 'ether')
 
                 from_web3_data_dict = {
-                        'date_time_transaction': None,
+                        'date_time_transaction': datetime.now(),
                         'txn_fee': txn_fee_in_ether,
                         'status': status
                     }
@@ -213,3 +199,15 @@ class TransactionETHService(TransactionAbstractService):
 
                 
         return transaction
+    
+
+
+# TODO add schema in typing
+    async def return_all_transactions_in_ssp_datatable(data_table_obj):
+        transactions_result = await transaction_rep_link.return_all_transactions_in_ssp_datatable(data_table_obj)
+        return transactions_result
+    
+
+
+
+    

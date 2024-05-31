@@ -33,9 +33,9 @@ async def return_updated_wallets(message: dict):
 async def return_to_socketio_all_transcations(message: dict):
     # print('--->>>you want to return all data about this wallet TRANSACTIONS <<<---')
     # print(message)
-    transaction_data = message['formated_transaction_list']
+    transaction_data_dict = {'scaning_status': message['scaning_status'], 'wallet_id': message['wallet_id']}
     sid = message['sid']
-    await return_all_transactions_per_wallet(transaction_data, sid)
+    await return_all_transactions_per_wallet(transaction_data_dict, sid)
     # print('--------------------------------')
 
 

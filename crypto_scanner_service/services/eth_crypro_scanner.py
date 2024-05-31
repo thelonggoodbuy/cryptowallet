@@ -75,12 +75,14 @@ class EtheriumCryproScanner(AbstractCryproScanner):
 
             saved_transactions_list = await TransactionETHService.return_all_transactions_per_wallet(wallet_data['current_wallet_adress'])
 
-            formated_transaction_list = await self.format_all_transactions_per_wallet(saved_transactions_list)
+            # formated_transaction_list = await self.format_all_transactions_per_wallet(saved_transactions_list)
             
-            message = {'formated_transaction_list': formated_transaction_list, 'sid': sid}
+            # message = {'formated_transaction_list': formated_transaction_list, 'sid': sid}
+            message = {'scaning_status': True, 'wallet_id': wallet_data['wallet_id'], 'sid': sid}
             await add_to_return_to_socketio_all_transcations_queue(message)
         except EtherscanClientApiError:
-            message = {'formated_transaction_list': [], 'sid': sid}
+            # message = {'formated_transaction_list': [], 'sid': sid}
+            message = {'scaning_status': False, 'wallet_id': wallet_data['wallet_id'], 'sid': sid}
             await add_to_return_to_socketio_all_transcations_queue(message)
         await aiotherscan_client.close()
 

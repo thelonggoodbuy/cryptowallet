@@ -174,6 +174,9 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
         message = {'data': data, 'sid': sid}
         await add_to_get_all_transcations_queue(message)
 
+        
+    # async def on_update_concrete_wallet_per_id(self, sid, data):
+
 
 
 

@@ -1,15 +1,17 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from db_config.database import engine
 from sqlalchemy import select
-
+import copy
 from src.etherium.models import Transaction
 from src.wallets.models import Wallet
 from sqlalchemy.orm import selectinload, contains_eager
 from etherium_config.settings import w3_connection
-from sqlalchemy import desc
+from sqlalchemy import desc, asc
 
-
-
+from src.wallets.services.wallet_etherium_service import WalletEtheriumService
+import time
+from sqlalchemy import func
+from datetime import datetime
 
 
 class TransactionETHRepository():
@@ -90,5 +92,116 @@ class TransactionETHRepository():
             result = await session.execute(query)
             transaction = result.scalars().first()
         return transaction
+    
+
+    # TODO add schema in typing
+    async def return_all_transactions_in_ssp_datatable(self, data_table_obj):
+        columns_dictionary = {"4": "date_time_transaction",
+                              "5": "txn_fee",
+                              "6": "status"}
+        print('----->repository<-----')
+        print(data_table_obj)
+        wallet_address = (await WalletEtheriumService.return_wallet_per_id(data_table_obj.wallet_id)).address
+        if data_table_obj.order_column:
+            order_column_name = columns_dictionary.get(str(data_table_obj.order_column))
+        else:
+            order_column_name = 'id'
+
+        
+
+
+        if order_column_name == 'id':
+            order_direction = desc
+        else:
+            order_direction = desc if data_table_obj.order_dir == 'desc' else asc
+
+
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+            
+        async with async_session() as session:
+            print(order_direction)
+            print(order_column_name)
+            query = (
+                    select(Transaction)
+                    .filter((Transaction.send_from == wallet_address) | (Transaction.send_to == wallet_address))
+                    .order_by(order_direction(getattr(Transaction, order_column_name)))
+                    .slice(data_table_obj.start, data_table_obj.start + data_table_obj.length)
+                )
+
+            transactions_data = await session.execute(query)
+            transactions = transactions_data.scalars()\
+                                            .unique()\
+                                            .all()
+
+
+            total_transactions_counter = await session.execute(select(func.count(Transaction.id))\
+                                            .filter((Transaction.send_from == wallet_address) | (Transaction.send_to == wallet_address))
+                                        )
+            total_transactions = total_transactions_counter.scalar()
+
+
+        print('--->transactions<---')
+        print(transactions)
+        for transaction in transactions:
+            print(transaction.txn_hash)
+        print('--------------------')
+        result_list = []
+        transaction_dict = {}
+        for transaction in transactions:
+            new_transaction_list = copy.deepcopy(transaction_dict)
+            new_transaction_list['txn_hash'] = transaction.txn_hash
+            new_transaction_list['from'] = transaction.send_from
+            new_transaction_list['to'] = transaction.send_to
+            # float_value = float(transaction.value)
+            # new_transaction_list['value'] = f"{float(transaction.value):.18f}"
+            new_transaction_list['value'] = float(transaction.value)
+            if transaction.date_time_transaction:
+                # new_transaction_list['age'] = transaction.date_time_transaction.isoformat()
+                new_transaction_list['age'] = await self.format_time_difference(transaction.date_time_transaction)
+            else:
+                new_transaction_list['age'] = None
+            if transaction.txn_fee:
+                # new_transaction_list['txn_fee'] = float(transaction.txn_fee)
+                txn_fee_format_value = f"{float(transaction.txn_fee):.18f}".rstrip('0').rstrip('.')
+                new_transaction_list['txn_fee'] = txn_fee_format_value
+            else:
+                new_transaction_list['txn_fee'] = 'Block not completed'
+            new_transaction_list['status'] = transaction.status.value
+            result_list.append(new_transaction_list)
+
+        db_result_dict = {}
+        db_result_dict['total_transactions_counter'] = total_transactions
+        db_result_dict['result_list'] = result_list
+
+        return db_result_dict
+        
+
+    async def format_time_difference(self, transaction_time: datetime) -> str:
+        now = datetime.now()
+        time_difference = now - transaction_time
+
+        seconds = time_difference.total_seconds()
+        if seconds < 60:
+            return f"{int(seconds)} seconds ago"
+        
+        minutes = seconds / 60
+        if minutes < 60:
+            return f"{int(minutes)} minutes ago"
+        
+        hours = minutes / 60
+        if hours < 24:
+            return f"{int(hours)} hours ago"
+        
+        days = hours / 24
+        if days < 30:
+            return f"{int(days)} days ago"
+        
+        months = days / 30
+        if months < 12:
+            return f"{int(months)} months ago"
+        
+        years = months / 12
+        return f"{int(years)} years ago"
+
     
 transaction_rep_link = TransactionETHRepository()
