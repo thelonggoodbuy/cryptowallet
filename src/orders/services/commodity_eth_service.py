@@ -1,20 +1,43 @@
 from src.orders.services.commodity_abstract_services import CommodityAbstractService
 from src.orders.repository.commodity_eth_repository import commodity_eth_rep_link
+from src.orders.schemas import CommoditySchema, ErrorResponse, ErrorSchema
+from pydantic import ValidationError
+
+
+
+
+
 
 class CommodityEthService(CommodityAbstractService):
-    
-
+   
+   
    async def save_commodity(commodity_data):
-      new_commodity = await commodity_eth_rep_link.save_commodity_in_db(commodity_data)
-      commodity_dict = {}
-      commodity_dict['title'] = new_commodity.title
+      try:
+         validated_data = CommoditySchema(**commodity_data)
+         print('--->>>>>commodity data<<<<<-------')
+         print(validated_data.model_dump())
+         validated_dict = validated_data.model_dump()
+         print('==================================')
 
-      commodity_dict['address'] = new_commodity.wallet.address
-      commodity_dict['currency'] = new_commodity.wallet.asset.code
+         new_commodity = await commodity_eth_rep_link.save_commodity_in_db(validated_dict)
+         commodity_dict = {}
+         commodity_dict['title'] = new_commodity.title
 
-      commodity_dict['price'] = new_commodity.price
-      commodity_dict['photo'] = new_commodity.photo['url'][1:]
-      return commodity_dict
+         commodity_dict['address'] = new_commodity.wallet.address
+         commodity_dict['currency'] = new_commodity.wallet.asset.code
+
+         commodity_dict['price'] = new_commodity.price
+         commodity_dict['photo'] = new_commodity.photo['url'][1:]
+         return commodity_dict
+      
+      except ValidationError as e:
+            print(e)
+            print(e.errors())
+            
+            error_response = ErrorResponse(
+                errors=[ErrorSchema(msg=err['msg']) for err in e.errors()]
+            )
+            return error_response.model_dump()
 
 
    async def return_all_commodities_for_list():

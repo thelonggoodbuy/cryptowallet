@@ -15,12 +15,14 @@ from sqlalchemy.orm import selectinload
 class CommodityEthRepository(CommodityAbstractService):
 
     async def save_commodity_in_db(self, commodity_data):
+        print('===commodity_data===')
+        print(commodity_data)
         async_session = async_sessionmaker(engine, expire_on_commit=False)
         async with async_session() as session:
             commodity = Commodity(
                 wallet_id=int(commodity_data['wallet']),
                 title=commodity_data['title'],
-                price=int(commodity_data['price']),
+                price=float(commodity_data['price']),
                 photo=commodity_data['photo']
             )
             session.add(commodity)

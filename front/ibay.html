@@ -37,6 +37,7 @@
     
     <!-- Custom styles for this template -->
     <link href="/static/static/css/sidebars.css" rel="stylesheet">
+    <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     
     <!-- <link href="static/css/headers.css" rel="stylesheet"> -->
@@ -495,9 +496,11 @@
 
     </main>
 
+
+    <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/static/plugin/toastr/build/toastr.min.js"></script>
     <script src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/static/js/sidebars.js"></script>
-    <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
 
@@ -508,6 +511,24 @@
         $(document).ready(function () {
 
         var cookie_data = document.cookie
+
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": true,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": true,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "10000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+      }
 
         function add_accomodation(address, currency, photo, price, title){
             $('#accomodation_container').prepend(
@@ -678,6 +699,18 @@
                         title=data.title)
 
         console.log('---------------------')
+        toastr.success('Новий товар створено!')
+
+    })
+
+    ibay_socket.on('validation_error', (data) => {
+        console.log('==========ERROR=IN=VALIDATION===========')
+        console.log(data.errors)
+        console.log('========================================')
+        for (error of data.errors){
+            
+            toastr.warning(error.msg)
+        }
     })
 
 
