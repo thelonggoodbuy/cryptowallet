@@ -98,26 +98,28 @@
         </a>    
         <hr>
         <ul class="nav nav-pills flex-column lg-auto">
-        <li class="nav-item">
-            <a href="#" class="nav-link text-white fs-4">
-            Профіль
+        
+          <li class="nav-item">
+            <a href="javascript:void(0)" id="profile_link" class="nav-link text-white fs-4" >
+              Профіль
             </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link active fs-4" aria-current="page">
-            Гаманець
+          </li>
+          <li>
+            <a href="javascript:void(0)" id="wallet_link" class="nav-link active fs-4" aria-current="page">
+              Гаманець
             </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white fs-4">
-            iBay
+          </li>
+          <li>
+            <a href="javascript:void(0)" id="ibay_link" class="nav-link text-white fs-4">
+              iBay
             </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white fs-4">
-            Чат
+          </li>
+          <li>
+            <a href="javascript:void(0)" id="chat_link" class="nav-link text-white fs-4">
+              Чат
             </a>
-        </li>
+          </li>
+    
         </ul>
     </div>
     <div class="b-example-divider d-none d-lg-flex"></div>
@@ -264,6 +266,10 @@
         if (cookie.startsWith('access_token=')){
           var access_token = cookie.replace('access_token=', '')}}
 
+        $('#profile_link').attr('href', window.location.href.replace('wallets/', 'users/profile/'))
+        $('#ibay_link').attr('href', window.location.href.replace('wallets/', 'ibay/'))
+        // $('#wallets_link').attr('href', window.location.href.replace('users/profile/', 'wallets/'))
+        $('#chat_link').attr('href', window.location.href.replace('wallets/', 'users/chat/'))
 
         // connection to socket logic
         var profile_wallet_socket = io("ws://localhost:8000/profile_wallets", {

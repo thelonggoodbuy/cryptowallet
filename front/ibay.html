@@ -13,7 +13,7 @@
     
 
     <!-- Bootstrap core CSS -->
-<link href="static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -29,11 +29,16 @@
           font-size: 3.5rem;
         }
       }
+
     </style>
+        
+          
 
     
     <!-- Custom styles for this template -->
-    <link href="static/css/sidebars.css" rel="stylesheet">
+    <link href="/static/static/css/sidebars.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    
     <!-- <link href="static/css/headers.css" rel="stylesheet"> -->
 
   </head>
@@ -88,7 +93,7 @@
 
                 </ul>
                 <a href="#" class="nav-link px-2 mx-3 link-dark fs-4">Username</a>
-                <img src="static/image/portrait.jpg" alt="mdo" width="50" height="50" class="img-fluid">
+                <img src="/static/static/image/portrait.jpg" alt="mdo" width="50" height="50" class="img-fluid">
               </div>
             <!-- </div> -->
           </header>
@@ -118,15 +123,99 @@
           <!-- *************** -->
 
 
-          <h3>Товари</h3>
+        <!-- ************************************************ -->
+          <!-- MODAL WINDOW FOR CREATING ANNOUNCEMENT -->
+        <!-- ************************************************ -->
+
+          <div class="modal" id="create_announcement_modal_window">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+          
+                <div class="modal-header">
+                  <h4 class="modal-title">Створити товар</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="commodity-form" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="title_input" class="form-label">назва</label>
+                            <input class="form-control" id="title_input">
+                        </div>
+                    </div>
+            
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="price_input" class="form-label">ціна</label>
+                            <input class="form-control" id="price_input">
+                        </div>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">гаманець</label>
+                            <!-- <input class="form-control" id="wallet_input"> -->
+                            <select id="wallet_select2" style="width: 100%;" required>
+                            </select><br><br>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-body">
+
+                    <!-- <div class="mb-3">
+                        <input class="form-control custom-file-input d-none" type="file" id="announcement_photo_input" name="photo" accept="image/png, image/jpg"/>
+                        <label class="btn btn-secondary custom-file-label" for="announcement_photo_input">фото товару</label>
+                        <div id="image-preview" class="ms-3"></div>
+                    </div> -->
+
+                        <div class="flex-grow-1 me-3">
+                            <div class="mb-3">
+                                <input class="form-control custom-file-input d-none" type="file" id="announcement_photo_input" name="photo" accept="image/png, image/jpg"/>
+                                <label class="btn btn-secondary custom-file-label" for="announcement_photo_input">фото товару</label>
+                            </div>
+                            <!-- Add other input fields here if needed -->
+                    </div>
+                    <div class="image-preview">
+                        <img id="preview" src="" alt="Image Preview" class="img-fluid d-none"/>
+                    </div>
+
+                </div>
+          
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="send_new_announcement_button">Створити оголошення</button>
+                </div>
+            
+                </form>
+
+              </div>
+            </div>
+          </div>
+
+
+        <!-- ************************************************ -->
+          <!-- END MODAL WINDOW FOR CREATING ANNOUNCEMENT -->
+        <!-- ************************************************ -->
+
+
+
+
+
           <div class="row">
+            <div class="col-10 mx-3 my-3 py-3 d-flex justify-content-end">
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#create_announcement_modal_window">створити товар</button>
+            </div>
+          </div>
+
+
+          <h3>Товари</h3>
+          <div class="row" id="accomodation_container">
             <!-- ************************************************************************************ -->
 
 
             <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
                 <div class="row">
                     <div class="col-3 d-none d-xxl-block text-center my-auto">
-                        <img src="static/image/dog.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
+                        <img src="/static/static/image/dog.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
                     </div>
                     <div class="col-12 col-xxl-8">
                         <div class="row">
@@ -166,225 +255,228 @@
                 </div>
             </div>
 <!-- ************************************************************************************ -->
-<div class="col-10 col-lg-5 border mx-3 my-3 py-3">
-  <div class="row">
-      <div class="col-3 d-none d-xxl-block text-center my-auto">
-          <img src="static/image/bear.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
-      </div>
-      <div class="col-12 col-xxl-8">
-          <div class="row">
-              <div class="col-2 me-3">
-                  <p>Назва</p>
-              </div>
-              <div class="col-9">
-                  <p>іграшка ведмідь</p>
-              </div>
-          </div>
+            <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
+            <div class="row">
+                <div class="col-3 d-none d-xxl-block text-center my-auto">
+                    <img src="/static/static/image/bear.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
+                </div>
+                <div class="col-12 col-xxl-8">
+                    <div class="row">
+                        <div class="col-2 me-3">
+                            <p>Назва</p>
+                        </div>
+                        <div class="col-9">
+                            <p>іграшка ведмідь</p>
+                        </div>
+                    </div>
 
-          <div class="row">
-              <div class="col-2 me-3">
-                  <p>Адресса</p>
-              </div>
-              <div class="col-9">
-                  <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-              </div>
-          </div>
+                    <div class="row">
+                        <div class="col-2 me-3">
+                            <p>Адресса</p>
+                        </div>
+                        <div class="col-9">
+                            <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                        </div>
+                    </div>
 
-          <div class="row">
-              <div class="col-2 me-3">
-                  <p>Ціна</p>
-              </div>
-              <div class="col-9">
-                  <p>3 ETH</p>
-              </div>
-          </div>
+                    <div class="row">
+                        <div class="col-2 me-3">
+                            <p>Ціна</p>
+                        </div>
+                        <div class="col-9">
+                            <p>3 ETH</p>
+                        </div>
+                    </div>
 
-          <div class="row text-center">
-              <div class="col-12 col-xxl-4 my-1">
-                  <button type="button" class="btn btn-primary"><h6>Купити</h6></button>
-              </div>
+                    <div class="row text-center">
+                        <div class="col-12 col-xxl-4 my-1">
+                            <button type="button" class="btn btn-primary"><h6>Купити</h6></button>
+                        </div>
 
-          </div>
-      </div>
-  </div>
-</div>
+                    </div>
+                </div>
+            </div>
+            </div>
 <!-- ************************************************************************************ -->
 
-<div class="col-10 col-lg-5 border mx-3 my-3 py-3">
-  <div class="row">
-      <div class="col-3 d-none d-xxl-block text-center my-auto">
-          <img src="static/image/donkey.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
-      </div>
-      <div class="col-12 col-xxl-8">
-          <div class="row">
-              <div class="col-2 me-3">
-                  <p>Назва</p>
-              </div>
-              <div class="col-9">
-                  <p>іграшка вислюк</p>
-              </div>
-          </div>
+            <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
+            <div class="row">
+                <div class="col-3 d-none d-xxl-block text-center my-auto">
+                    <img src="/static/static/image/donkey.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
+                </div>
+                <div class="col-12 col-xxl-8">
+                    <div class="row">
+                        <div class="col-2 me-3">
+                            <p>Назва</p>
+                        </div>
+                        <div class="col-9">
+                            <p>іграшка вислюк</p>
+                        </div>
+                    </div>
 
-          <div class="row">
-              <div class="col-2 me-3">
-                  <p>Адресса</p>
-              </div>
-              <div class="col-9">
-                  <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-              </div>
-          </div>
+                    <div class="row">
+                        <div class="col-2 me-3">
+                            <p>Адресса</p>
+                        </div>
+                        <div class="col-9">
+                            <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                        </div>
+                    </div>
 
-          <div class="row">
-              <div class="col-2 me-3">
-                  <p>Ціна</p>
-              </div>
-              <div class="col-9">
-                  <p>1 ETH</p>
-              </div>
-          </div>
+                    <div class="row">
+                        <div class="col-2 me-3">
+                            <p>Ціна</p>
+                        </div>
+                        <div class="col-9">
+                            <p>1 ETH</p>
+                        </div>
+                    </div>
 
-          <div class="row text-center">
-              <div class="col-12 col-xxl-4 my-1">
-                  <button type="button" class="btn btn-primary"><h6>Купити</h6></button>
-              </div>
+                    <div class="row text-center">
+                        <div class="col-12 col-xxl-4 my-1">
+                            <button type="button" class="btn btn-primary"><h6>Купити</h6></button>
+                        </div>
 
-          </div>
-      </div>
-  </div>
-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <!-- ************************************************************************************ -->
 
 <h3>Замовлення</h3>
 
+<div class="row" id="delivery_container">
 
-<div class="col-10 col-lg-5 border mx-3 my-3 py-3">
-  <div class="row">
-      <div class="col-3 d-none d-xxl-block text-center my-auto">
-          <img src="static/image/рыбка.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
-      </div>
-      <div class="col-12 col-xxl-8">
-          <div class="row">
-              <div class="col-3 me-3">
-                  <p>Назва</p>
-              </div>
-              <div class="col-8">
-                  <p>іграшка рибка</p>
-              </div>
-          </div>
+    <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
+    <div class="row">
+        <div class="col-3 d-none d-xxl-block text-center my-auto">
+            <img src="/static/static/image/рыбка.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
+        </div>
+        <div class="col-12 col-xxl-8">
+            <div class="row">
+                <div class="col-3 me-3">
+                    <p>Назва</p>
+                </div>
+                <div class="col-8">
+                    <p>іграшка рибка</p>
+                </div>
+            </div>
 
-          <div class="row">
-              <div class="col-3 me-3">
-                  <p>Тразакція</p>
-              </div>
-              <div class="col-8">
-                  <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-              </div>
-          </div>
+            <div class="row">
+                <div class="col-3 me-3">
+                    <p>Тразакція</p>
+                </div>
+                <div class="col-8">
+                    <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                </div>
+            </div>
 
-          <div class="row">
-              <div class="col-3 me-3">
-                  <p>Ціна</p>
-              </div>
-              <div class="col-8">
-                  <p>1 ETH</p>
-              </div>
-          </div>
+            <div class="row">
+                <div class="col-3 me-3">
+                    <p>Ціна</p>
+                </div>
+                <div class="col-8">
+                    <p>1 ETH</p>
+                </div>
+            </div>
 
-          <div class="row">
+            <div class="row">
+                <div class="col-3 me-3">
+                <p>Час замовлення</p>
+                </div>
+                <div class="col-8">
+                    <p>15.08.2022</p>
+                </div>
+            </div>
+
+            <div class="row">
             <div class="col-3 me-3">
-              <p>Час замовлення</p>
+                <p>Статус</p>
             </div>
             <div class="col-8">
-                <p>15.08.2022</p>
+                <p>Новий</p>
             </div>
-          </div>
+            </div>
 
-        <div class="row">
-          <div class="col-3 me-3">
-            <p>Статус</p>
-          </div>
-          <div class="col-8">
-              <p>Новий</p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-3 me-3">
-            <p>Повернення</p>
-          </div>
-          <div class="col-8">
-              <p class="text-break text-primary">C4Fwdsygb6uL6iZ2dd6dHCdnw5FB2oZNCdpQ1F5kQ7Q9</p>
-          </div>
-        </div>
-
-      </div>
-  </div>
-</div>
-<!-- ************************************************************************************ -->
-
-
-<div class="col-10 col-lg-5 border mx-3 my-3 py-3">
-  <div class="row">
-      <div class="col-3 d-none d-xxl-block text-center my-auto">
-          <img src="static/image/fishing_rood.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
-      </div>
-      <div class="col-12 col-xxl-8">
-          <div class="row">
-              <div class="col-3 me-3">
-                  <p>Назва</p>
-              </div>
-              <div class="col-8">
-                  <p>вудилище</p>
-              </div>
-          </div>
-
-          <div class="row">
-              <div class="col-3 me-3">
-                  <p>Тразакція</p>
-              </div>
-              <div class="col-8">
-                  <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-              </div>
-          </div>
-
-          <div class="row">
-              <div class="col-3 me-3">
-                  <p>Ціна</p>
-              </div>
-              <div class="col-8">
-                  <p>7 ETH</p>
-              </div>
-          </div>
-
-          <div class="row">
+            <div class="row">
             <div class="col-3 me-3">
-              <p>Час замовлення</p>
+                <p>Повернення</p>
             </div>
             <div class="col-8">
-                <p>15.08.2022</p>
+                <p class="text-break text-primary">C4Fwdsygb6uL6iZ2dd6dHCdnw5FB2oZNCdpQ1F5kQ7Q9</p>
             </div>
-          </div>
+            </div>
 
-        <div class="row">
-          <div class="col-3 me-3">
-            <p>Статус</p>
-          </div>
-          <div class="col-8">
-              <p>Новий</p>
-          </div>
         </div>
+    </div>
+    </div>
+    <!-- ************************************************************************************ -->
 
-        <div class="row">
-          <div class="col-3 me-3">
-            <p>Повернення</p>
-          </div>
-          <div class="col-8">
-              <p class="text-break text-primary">C4Fwdsygb6uL6iZ2dd6dHCdnw5FB2oZNCdpQ1F5kQ7Q9</p>
-          </div>
+
+    <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
+    <div class="row">
+        <div class="col-3 d-none d-xxl-block text-center my-auto">
+            <img src="/static/static/image/fishing_rood.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
         </div>
+        <div class="col-12 col-xxl-8">
+            <div class="row">
+                <div class="col-3 me-3">
+                    <p>Назва</p>
+                </div>
+                <div class="col-8">
+                    <p>вудилище</p>
+                </div>
+            </div>
 
-      </div>
-  </div>
+            <div class="row">
+                <div class="col-3 me-3">
+                    <p>Тразакція</p>
+                </div>
+                <div class="col-8">
+                    <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-3 me-3">
+                    <p>Ціна</p>
+                </div>
+                <div class="col-8">
+                    <p>7 ETH</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-3 me-3">
+                <p>Час замовлення</p>
+                </div>
+                <div class="col-8">
+                    <p>15.08.2022</p>
+                </div>
+            </div>
+
+            <div class="row">
+            <div class="col-3 me-3">
+                <p>Статус</p>
+            </div>
+            <div class="col-8">
+                <p>Новий</p>
+            </div>
+            </div>
+
+            <div class="row">
+            <div class="col-3 me-3">
+                <p>Повернення</p>
+            </div>
+            <div class="col-8">
+                <p class="text-break text-primary">C4Fwdsygb6uL6iZ2dd6dHCdnw5FB2oZNCdpQ1F5kQ7Q9</p>
+            </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
 </div>
 <!-- ************************************************************************************ -->
 
@@ -403,7 +495,198 @@
 
     </main>
 
-    <script src="static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="static/js/sidebars.js"></script>
+    <script src="/static/static/plugin/bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/static/js/sidebars.js"></script>
+    <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
+
+
+
+    <script>
+        window.onload = function() {
+        $(document).ready(function () {
+
+        var cookie_data = document.cookie
+
+        function add_accomodation(address, currency, photo, price, title){
+            $('#accomodation_container').prepend(
+                        `<div class="col-10 col-lg-5 border mx-3 my-3 py-3">
+                            <div class="row">
+                                <div class="col-3 d-none d-xxl-block text-center my-auto">
+                                    <img src="${photo}" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
+                                </div>
+                                <div class="col-12 col-xxl-8">
+                                    <div class="row">
+                                        <div class="col-2 me-3">
+                                            <p>Назва</p>
+                                        </div>
+                                        <div class="col-9">
+                                            <p>${title}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-2 me-3">
+                                            <p>Адресса</p>
+                                        </div>
+                                        <div class="col-9">
+                                            <p class="text-break text-primary">${address}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-2 me-3">
+                                            <p>Ціна</p>
+                                        </div>
+                                        <div class="col-9">
+                                            <p>${price} ${currency}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row text-center">
+                                        <div class="col-12 col-xxl-4 my-1">
+                                            <button type="button" class="btn btn-primary"><h6>Купити</h6></button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            </div>`
+                    )
+        }
+
+
+        $.ajax({
+            url: window.location.href.replace('ibay/', 'return_all_commodities/'),
+            type: "POST",
+            data: JSON.stringify({'access_token': access_token}), 
+            processData: false,
+            contentType: false,
+            
+            success: function(result){ 
+                console.log('========')
+                console.log(result)
+                console.log('========')
+                for (accomodation of result){
+                    add_accomodation(accomodation.address, 
+                                    accomodation.currency, 
+                                    accomodation.photo, 
+                                    accomodation.price, 
+                                    accomodation.title)
+                }
+            }
+          });
+
+
+
+        // add new accomodation
+        $('#announcement_photo_input').on('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#preview').attr('src', e.target.result).removeClass('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+
+        for (var cookie of cookie_data.split('; ')){
+        if (cookie.startsWith('access_token=')){
+          var access_token = cookie.replace('access_token=', '')}}
+
+
+        // connection to socket logic
+        var ibay_socket = io("ws://localhost:8000/ibay", {
+          path: "/socket/ws/socket.io",
+          auth: {
+            token: access_token
+          }
+        })
+
+
+        // connect logic
+        ibay_socket.on('connect', () => {
+            console.log('connected to wallets');          
+            })
+        
+
+        // disconnect logic
+        ibay_socket.on('disconnect', () => {
+            console.log('disconnected from wallets');
+            })
+
+
+        $('#wallet_select2').select2({
+            dropdownParent: $('#create_announcement_modal_window'),
+            placeholder: 'Select a wallet address',
+            ajax: {
+                url: window.location.href.replace('ibay/', 'wallets-select2/'),
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                            var results = data.wallets.map(function(wallet) {
+                                return {
+                                    id: wallet.id,
+                                    text: wallet.address
+                                };
+                            });
+                            return {
+                                results: results
+                            };
+                        },
+                        cache: true
+                    }
+                });
+
+
+        $('#send_new_announcement_button').on('click', function (){
+            var commodity_form = $('#commodity-form')[0]
+            var commodity_form_data = new FormData()
+            var title = $('#title_input').val();
+            var price = $('#price_input').val()
+            var wallet = $('#wallet_select2').find(':selected').val();
+            const photoInput = document.getElementById('announcement_photo_input');
+            var photo = photoInput.files[0];
+            commodity_form_data.append('title', title);
+            commodity_form_data.append('price', price);
+            commodity_form_data.append('wallet', wallet);
+            commodity_form_data.append('photo', photo);
+
+            var sending_data = {};
+
+            for (var [key, value] of commodity_form_data.entries()) {
+                sending_data[key] = value;
+            }
+              ibay_socket.emit("create_announcement", data={"sending_data": sending_data})
+        }
+    )
+
+
+    
+    // receive new commodity
+    ibay_socket.on('add_new_commodity', (data) => {
+        console.log('--->new_commodity<---')
+        console.log(data)
+
+        add_accomodation(address=data.address, 
+                        currency=data.currency, 
+                        photo=data.photo, 
+                        price=data.price, 
+                        title=data.title)
+
+        console.log('---------------------')
+    })
+
+
+
+        })
+    }
+
+
+
+    </script>
   </body>
 </html>

@@ -13,6 +13,7 @@ from propan.brokers.rabbit import RabbitExchange, RabbitQueue
 from propan_config.router import add_to_message_query, queue_1, exch, Incoming, call, rabbit_router, add_to_get_all_transcations_queue
 from fastapi import Depends
 from src.users.schemas import MessageFromChatModel
+from src.orders.services.commodity_eth_service import CommodityEthService
 
 # from src.etherium.services.transaction_eth_service import TransTransactionETHService
 from datetime import datetime
@@ -211,3 +212,56 @@ async def return_all_transactions_per_wallet(transaction_data, sid):
 
 
 server.register_namespace(WalletProfileNamespace('/profile_wallets'))
+
+
+
+
+
+
+class IBayNamespace(socketio.AsyncNamespace):
+
+    sid_room_pairs = {}
+
+
+    async def on_connect(self, sid, environ, auth):
+        email = await UserService.return_email_by_token(token = auth['token'])
+        user = await UserService.return_user_per_email(email)
+
+        room = f'room_{user.id}'
+        self.sid_room_pairs[sid] = room
+        
+        await client_manager.enter_room(sid, namespace='/ibay', room=room)
+        print(f'-----you---room----is:*** {room}')
+
+
+    async def on_disconnect(self, sid):
+        # await eth_parser_service.delete_user_from_parser(sid)
+        pass
+
+
+
+    async def on_create_announcement(self, sid, data):
+        print('=====You want to create announcement=======')
+        # print(sid)
+        # print(data)
+
+        commodity = await CommodityEthService.save_commodity(data['sending_data'])
+        
+        print(commodity)
+        await client_manager.emit('add_new_commodity', \
+                            data=commodity, \
+                            namespace='/ibay')
+    
+
+        print('===========================================')
+        
+
+
+        # new_wallet_data = {'token': data['token'], 'room': self.sid_room_pairs[sid]}
+        # new_walet_dict = await WalletEtheriumService.create_wallet_for_user(new_wallet_data)
+        # await return_new_wallet(new_walet_dict)
+        
+
+
+
+server.register_namespace(IBayNamespace('/ibay'))

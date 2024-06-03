@@ -26,7 +26,6 @@ class TransactionETHRepository():
         # print('===!!!===')
         async_session = async_sessionmaker(engine, expire_on_commit=False)
         async with async_session() as session:
-            # print('===4===')
             transaction = Transaction(
                 send_from=send_from,
                 send_to=send_to,

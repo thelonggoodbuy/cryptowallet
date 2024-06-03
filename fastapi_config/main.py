@@ -2,6 +2,7 @@ from fastapi import Depends, FastAPI
 
 from src.users import routers as users_routers
 from src.wallets import routers as wallet_routers
+from src.orders import routers as orders_routers
 from db_config.database import engine, Base
 from db_config import database
 
@@ -43,6 +44,9 @@ app.mount("/socket", app=socket_app)
 
 app.include_router(users_routers.router)
 app.include_router(wallet_routers.router)
+app.include_router(orders_routers.router)
+
+
 # new!
 app.include_router(rabbit_router)
 app.include_router(rabbit_users_listener_router)
