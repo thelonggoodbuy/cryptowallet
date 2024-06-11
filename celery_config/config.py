@@ -13,7 +13,8 @@ app.conf.result_backend = redis_url
 app.conf.task_routes = {
     "celery_config.tasks.test_beat": "test-queue",
     "celery_config.tasks.parse_latest_block_query": "parse_latest_block_query",
-    "celery_config.tasks.handle_block":"handle_block_query"
+    "celery_config.tasks.handle_block":"handle_block_query",
+    "celery_config.tasks.send_requests_and_test_delivery_start":"handle_requests_to_test_delivery_query",
 }
 
 

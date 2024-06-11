@@ -20,6 +20,15 @@ from datetime import datetime
 class TransactionETHService(TransactionAbstractService):
 
     async def send_eth_to_account(account_data):
+        """
+        {'address': '0xD870C92E01777ee585dbaA78aA8Ff1B2EFaBA65d', 
+        'value': '0.25', 
+        'current_wallet_id': '52'}
+
+        address is address of receiver
+        """
+        print('Your account data is:')
+        print(account_data)
 
         if account_data['address'] == '':
             result = {'result': 'error', 'error_text': 'введіть адрессу отримувача'}
@@ -50,7 +59,7 @@ class TransactionETHService(TransactionAbstractService):
                     "chainId": chain_id, 
                     "nonce": nonce,
                     "gas": 21000,
-                    "gasPrice": gas_price,
+                    "gasPrice": gas_price*4,
                     "value": w3_connection.to_wei(value, 'ether'),
                     "to": receiver_address
                 }
@@ -96,6 +105,8 @@ class TransactionETHService(TransactionAbstractService):
                           'type': 'sending_transaction',
                           'value': transaction.value,
                           'from': sender_adress,
+                          'id': transaction.id,
+                          'txn_hash': transaction.txn_hash
                           }
 
 
@@ -210,4 +221,6 @@ class TransactionETHService(TransactionAbstractService):
 
 
 
-    
+    async def return_transaction_by_id(id):
+        transaction = await transaction_rep_link.return_transaction_by_id(id)
+        return transaction

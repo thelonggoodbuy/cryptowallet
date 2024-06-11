@@ -214,7 +214,7 @@ async def return_all_transactions_per_wallet(transaction_data, sid):
 server.register_namespace(WalletProfileNamespace('/profile_wallets'))
 
 
-
+from delivery_config.services.delivery_eth_service import DeliveryEthService
 
 
 
@@ -242,6 +242,9 @@ class IBayNamespace(socketio.AsyncNamespace):
 
     async def on_create_announcement(self, sid, data):
         response = await CommodityEthService.save_commodity(data['sending_data'])
+        # print('--->response<---')
+        # print(response)
+        # print('----------------')
 
         if 'errors' in response:
             room = self.sid_room_pairs[sid]
@@ -255,6 +258,12 @@ class IBayNamespace(socketio.AsyncNamespace):
                                 namespace='/ibay')
         
 
+
+    async def on_buy_commodity(self, sid, data):
+        # print('==================================')
+        # print(data)
+        # print('==================================')
+        await DeliveryEthService.create_new_order(data)
 
 
 server.register_namespace(IBayNamespace('/ibay'))

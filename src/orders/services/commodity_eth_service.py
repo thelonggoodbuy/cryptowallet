@@ -27,7 +27,12 @@ class CommodityEthService(CommodityAbstractService):
          commodity_dict['currency'] = new_commodity.wallet.asset.code
 
          commodity_dict['price'] = new_commodity.price
+         commodity_dict['id'] = new_commodity.id
          commodity_dict['photo'] = new_commodity.photo['url'][1:]
+
+         print('commodity_dict: ')
+         print(commodity_dict)
+
          return commodity_dict
       
       except ValidationError as e:
@@ -49,6 +54,7 @@ class CommodityEthService(CommodityAbstractService):
       for commodity in all_commodities:
          print(commodity)
          commodity_dict = {}
+         commodity_dict['id'] = commodity.id
          commodity_dict['title'] = commodity.title
          commodity_dict['address'] = commodity.wallet.address
          commodity_dict['currency'] = commodity.wallet.asset.code
@@ -59,5 +65,10 @@ class CommodityEthService(CommodityAbstractService):
 
       return all_commodities_list
    
+
+   async def return_commodity_by_id(commodity_id):
+      commodity = await commodity_eth_rep_link.return_commodity_by_id(commodity_id)
+      return commodity
+       
 
    # async def return_commodity_to_sockets():

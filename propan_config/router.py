@@ -46,6 +46,9 @@ queue_return_to_socketio_all_transcations = RabbitQueue("return_to_socketio_all_
 exchange_return_transaction_message_to_socket = RabbitExchange("return_transaction_message_to_socket_exchange", auto_delete=True)
 queue_return_transaction_message_to_socket = RabbitQueue("return_transaction_message_to_socket_queue", auto_delete=True)
 
+exchange_return_data_about_order_to_order_servive = RabbitExchange("return_data_about_order_to_order_servive_exchange", auto_delete=True)
+queue_return_data_about_order_to_order_servive = RabbitQueue("return_data_about_order_to_order_servive_queue", auto_delete=True)
+
 
 
 
@@ -75,3 +78,7 @@ async def add_to_return_to_socketio_all_transcations_queue(message):
 
 async def add_to_return_transaction_message_to_socket(message):
     await rabbit_router.broker.publish(message, queue="return_transaction_message_to_socket_queue", exchange=exchange_return_transaction_message_to_socket)
+
+
+async def add_to_queue_return_data_about_order_to_order_servive(message):
+    await rabbit_router.broker.publish(message, queue="return_data_about_order_to_order_servive_queue", exchange=exchange_return_data_about_order_to_order_servive)

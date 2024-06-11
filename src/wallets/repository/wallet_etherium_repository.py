@@ -73,6 +73,7 @@ class WalletEtheriumRepository(WalletAbstractRepository):
         async with async_session() as session:
             query = select(Wallet).options(contains_eager(Wallet.asset)\
                                     .contains_eager(Asset.blockchain))\
+                                    .options(contains_eager(Wallet.user))\
                                     .where(Wallet.address == wallet_address)
             wallet = await session.execute(query)
             result = wallet.scalars().first()

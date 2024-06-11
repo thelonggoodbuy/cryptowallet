@@ -41,3 +41,29 @@ class ErrorSchema(BaseModel):
 
 class ErrorResponse(BaseModel):
     errors: list[ErrorSchema]
+
+
+
+
+class UpdateOrderSchema(BaseModel):
+    """
+        schema for updating order data.
+        it content user_id for response to
+        FrontEnd throw python SocketIO server
+        to SocketIO client on FrontEnd
+
+        parameters:
+        order_id: int
+        status: str
+        user_id: int
+    """
+    order_id: int
+    status: str
+    user_id: int
+    return_transaction_id: Optional[str] = None
+
+
+
+
+class OrderEvent(BaseModel):
+    order_dict: dict

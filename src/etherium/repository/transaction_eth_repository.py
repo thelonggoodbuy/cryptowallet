@@ -203,4 +203,13 @@ class TransactionETHRepository():
         return f"{int(years)} years ago"
 
     
+    async def return_transaction_by_id(self, id):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(Transaction).filter(Transaction.id == id)
+            result = await session.execute(query)
+            transaction = result.scalars().first()
+        return transaction
+
+
 transaction_rep_link = TransactionETHRepository()

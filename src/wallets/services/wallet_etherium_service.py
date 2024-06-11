@@ -73,6 +73,48 @@ class WalletEtheriumService(AbstractWalletService):
         return wallets_dict
     
 
+    async def return_wallets_per_user_email_without_sync(email: str) -> dict:
+        # TODO chage description
+        """
+        Returns all wallets linked to a user.
+
+        Args:
+            email (str): The user's email (unique field in database).
+
+        Returns:
+            wallets_dict (dict): A dictionary containing information about the user's wallets,
+                  including address, asset code, balance, and blockchain photo URL.
+                  The response structure follows a Messaging pattern.
+        """
+
+        # from crypto_scanner_service.services.eth_crypro_scanner import etherium_crypro_scanner
+
+
+        user = await UserService.return_user_per_email(email)
+        wallets = await wallet_eth_rep_link.return_wallets_per_user(user)
+        wallets_dict = {}
+        for wallet in wallets:
+            # balance = await w3_connection.eth.get_balance(wallet.address)
+            # balance_in_ether = w3_connection.from_wei(balance, 'ether')
+            # if balance_in_ether != wallet.balance: 
+            #     # here we syncronize wallet transactions in db and in web3 (!!!)
+            #     wallet_data = {'current_wallet_adress': wallet.address}
+
+            #     await etherium_crypro_scanner.synchronize_transaction_state_for_wallet(wallet_data)
+
+            #     wallet = await wallet_eth_rep_link.update_wallet_ballance(wallet.id, balance_in_ether)
+
+            wallets_dict[wallet.id] = {
+                'address': wallet.address,
+                'asset': wallet.asset.code,
+                'balance':float(wallet.balance)
+            }
+            wallets_dict[wallet.id]['blockchain_photo'] = wallet.asset.blockchain.photo['url'][1:]
+        return wallets_dict
+
+
+
+
     async def return_wallet_per_id(id: int) -> Optional[Wallet]:
         """
         Retreive wallet per id.

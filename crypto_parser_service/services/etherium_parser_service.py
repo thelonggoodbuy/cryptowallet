@@ -10,6 +10,9 @@ from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 from propan_config.router import add_to_return_transaction_message_to_socket
 
 from socketio_config.server import client_manager
+from src.orders.services.order_eth_service import OrderEthService
+from src.orders.schemas import OrderEvent
+from propan_config.router import add_to_queue_return_data_about_order_to_order_servive
 
 
 class ETHParserService:
@@ -114,6 +117,9 @@ class ETHParserService:
 
         wallets_addresses_dict = await WalletEtheriumService.return_all_wallets_addresses()
 
+        # check if there are orders with status transaction pending
+        order_dict = await OrderEthService.return_orders_tied_with_pending_transactions()
+
         for transaction in block_data.transactions:
  
             if transaction.get('from') in wallets_addresses_dict:
@@ -150,6 +156,30 @@ class ETHParserService:
                                      'user_id': transaction_notification_to[saved_transaction.txn_hash]['user_id'],
                                      'wallet': transaction_notification_to[saved_transaction.txn_hash]['wallet']}
                 await cls.send_notification(notification_dict)
+
+            # check if transaction is exist in order_dictionaty
+            if saved_transaction.txn_hash in order_dict:
+                print('<-----You want to change transaction for some order.you data is:----->')
+                print(order_dict[saved_transaction.txn_hash])
+                order_dict['user_id'] = transaction_notification_from[saved_transaction.txn_hash]['user_id']
+                
+                # TODO убрать колхоз и переписать на messaging
+                from delivery_config.services.delivery_eth_service import DeliveryEthService
+                # order_event = OrderEvent(order_dict=order_dict)
+                # DeliveryEthService.register_event_handler(DeliveryEthService.handle_event)
+                # DeliveryEthService.trigger_event(order_event)
+                await DeliveryEthService.try_to_start_delivery(order_dict)
+
+
+                # DeliveryEthService
+                # from delivery_config.listeners import rabbit_etherium_delivery_router
+                # await add_to_queue_return_data_about_order_to_order_servive(order_dict[saved_transaction.txn_hash])
+
+                print('======================================================================')
+
+
+
+
 
         print('--------->your transactions set is:<---------')
         # pprint.pprint(transactions_set)

@@ -196,7 +196,44 @@
         <!-- ************************************************ -->
           <!-- END MODAL WINDOW FOR CREATING ANNOUNCEMENT -->
         <!-- ************************************************ -->
+        <!-- ************************************************ -->
+          <!-- MODAL WINDOW FOR BUYING COMMODITIES-->
+        <!-- ************************************************ -->
 
+        <div class="modal" id="buy_commodity_modal_window">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+          
+                <div class="modal-header">
+                  <h4 class="modal-title" id="buy_commodity_header">оплата товару</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" id="dismiss_order"></button>
+                </div>
+                
+                <form id="commodity-form" enctype="multipart/form-data">
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">гаманець</label>
+                        <!-- <input class="form-control" id="wallet_input"> -->
+                        <select id="wallet_select2_for_commodity" style="width: 100%;" required>
+                        </select><br><br>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="send_order">Замовити товар</button>
+                </div>
+            
+                </form>
+
+              </div>
+            </div>
+          </div>
+
+
+        <!-- ************************************************ -->
+          <!-- END MODAL WINDOW FOR BUYING COMMODITIES -->
+        <!-- ************************************************ -->
 
 
 
@@ -213,135 +250,6 @@
             <!-- ************************************************************************************ -->
 
 
-            <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
-                <div class="row">
-                    <div class="col-3 d-none d-xxl-block text-center my-auto">
-                        <img src="/static/static/image/dog.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
-                    </div>
-                    <div class="col-12 col-xxl-8">
-                        <div class="row">
-                            <div class="col-2 me-3">
-                                <p>Назва</p>
-                            </div>
-                            <div class="col-9">
-                                <p>іграшка песик</p>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-2 me-3">
-                                <p>Адресса</p>
-                            </div>
-                            <div class="col-9">
-                                <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-2 me-3">
-                                <p>Ціна</p>
-                            </div>
-                            <div class="col-9">
-                                <p>2 ETH</p>
-                            </div>
-                        </div>
-
-                        <div class="row text-center">
-                            <div class="col-12 col-xxl-4 my-1">
-                                <button type="button" class="btn btn-primary"><h6>Купити</h6></button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-<!-- ************************************************************************************ -->
-            <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
-            <div class="row">
-                <div class="col-3 d-none d-xxl-block text-center my-auto">
-                    <img src="/static/static/image/bear.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
-                </div>
-                <div class="col-12 col-xxl-8">
-                    <div class="row">
-                        <div class="col-2 me-3">
-                            <p>Назва</p>
-                        </div>
-                        <div class="col-9">
-                            <p>іграшка ведмідь</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-2 me-3">
-                            <p>Адресса</p>
-                        </div>
-                        <div class="col-9">
-                            <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-2 me-3">
-                            <p>Ціна</p>
-                        </div>
-                        <div class="col-9">
-                            <p>3 ETH</p>
-                        </div>
-                    </div>
-
-                    <div class="row text-center">
-                        <div class="col-12 col-xxl-4 my-1">
-                            <button type="button" class="btn btn-primary"><h6>Купити</h6></button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            </div>
-<!-- ************************************************************************************ -->
-
-            <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
-            <div class="row">
-                <div class="col-3 d-none d-xxl-block text-center my-auto">
-                    <img src="/static/static/image/donkey.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
-                </div>
-                <div class="col-12 col-xxl-8">
-                    <div class="row">
-                        <div class="col-2 me-3">
-                            <p>Назва</p>
-                        </div>
-                        <div class="col-9">
-                            <p>іграшка вислюк</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-2 me-3">
-                            <p>Адресса</p>
-                        </div>
-                        <div class="col-9">
-                            <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-2 me-3">
-                            <p>Ціна</p>
-                        </div>
-                        <div class="col-9">
-                            <p>1 ETH</p>
-                        </div>
-                    </div>
-
-                    <div class="row text-center">
-                        <div class="col-12 col-xxl-4 my-1">
-                            <button type="button" class="btn btn-primary"><h6>Купити</h6></button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 <!-- ************************************************************************************ -->
 
@@ -530,9 +438,9 @@
           "hideMethod": "fadeOut"
       }
 
-        function add_accomodation(address, currency, photo, price, title){
+        function add_accomodation(id, address, currency, photo, price, title){
             $('#accomodation_container').prepend(
-                        `<div class="col-10 col-lg-5 border mx-3 my-3 py-3">
+                        `<div class="col-10 col-lg-5 border mx-3 my-3 py-3 concret_accomodation_container" id='accomodation_${id}'>
                             <div class="row">
                                 <div class="col-3 d-none d-xxl-block text-center my-auto">
                                     <img src="${photo}" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
@@ -543,7 +451,7 @@
                                             <p>Назва</p>
                                         </div>
                                         <div class="col-9">
-                                            <p>${title}</p>
+                                            <p class='accomodation_title'>${title}</p>
                                         </div>
                                     </div>
 
@@ -567,7 +475,7 @@
 
                                     <div class="row text-center">
                                         <div class="col-12 col-xxl-4 my-1">
-                                            <button type="button" class="btn btn-primary"><h6>Купити</h6></button>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#buy_commodity_modal_window" id="buy_commodity_button"><h6>Купити</h6></button>
                                         </div>
 
                                     </div>
@@ -590,7 +498,8 @@
                 console.log(result)
                 console.log('========')
                 for (accomodation of result){
-                    add_accomodation(accomodation.address, 
+                    add_accomodation(accomodation.id, 
+                                    accomodation.address, 
                                     accomodation.currency, 
                                     accomodation.photo, 
                                     accomodation.price, 
@@ -663,6 +572,68 @@
                 });
 
 
+        $('#wallet_select2_for_commodity').select2({
+            dropdownParent: $('#buy_commodity_modal_window'),
+            placeholder: 'Select a wallet address',
+            ajax: {
+                url: window.location.href.replace('ibay/', 'wallets-select2/'),
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                            var results = data.wallets.map(function(wallet) {
+                                return {
+                                    id: wallet.id,
+                                    text: wallet.address
+                                };
+                            });
+                            return {
+                                results: results
+                            };
+                        },
+                        cache: true
+                    }
+                });
+
+
+        
+        $('#accomodation_container').on('click', '#buy_commodity_button', function(){
+            console.log($(this))
+            var accomodation_title = $(this).closest('[class$=concret_accomodation_container]').find('[class=accomodation_title]').text()
+            $('#buy_commodity_header').text("Купити товар " + accomodation_title)
+
+            var accomodation_id = $(this).closest('[class$=concret_accomodation_container]').prop('id').replace('accomodation_', '')
+            console.log('-->accomodation_id<---')
+            console.log(accomodation_id)
+            console.log('----------------------')
+            $('#buy_commodity_header').attr("commodity_id", accomodation_id)
+        })
+
+
+        $('#buy_commodity_modal_window').on('click', '#send_order', function(){
+            var accomodation_number = $('#buy_commodity_header').attr('commodity_id')
+
+            console.log('--->accomodation_number<---')
+            console.log(accomodation_number)
+
+            var sending_data = {
+                'accomodation_id':accomodation_number,
+                'wallet_id': $('#wallet_select2_for_commodity').find(':selected').val()
+            }
+            ibay_socket.emit("buy_commodity", data={"sending_data": sending_data})
+
+            $('#wallet_select2_for_commodity').val('').trigger('change');
+        })
+
+        // $('#mySelect2').val(null).trigger('change');
+        // $('#dismiss_order')
+        $('#buy_commodity_modal_window').on('click', '#dismiss_order', function(){
+
+            $('#wallet_select2_for_commodity').val('').trigger('change');
+
+            }
+        )
+
+
         $('#send_new_announcement_button').on('click', function (){
             var commodity_form = $('#commodity-form')[0]
             var commodity_form_data = new FormData()
@@ -692,14 +663,15 @@
         console.log('--->new_commodity<---')
         console.log(data)
 
-        add_accomodation(address=data.address, 
+        add_accomodation(id=data.id,
+                        address=data.address, 
                         currency=data.currency, 
                         photo=data.photo, 
                         price=data.price, 
                         title=data.title)
 
         console.log('---------------------')
-        toastr.success('Новий товар створено!')
+        // toastr.success('Новий товар створено!')
 
     })
 
@@ -711,6 +683,12 @@
             
             toastr.warning(error.msg)
         }
+    })
+
+    ibay_socket.on('receive_announcement_data', (data) => {
+        console.log('===ANNOUNCEMENT===DATA===')
+        console.log(data)
+        console.log('=========================')
     })
 
 

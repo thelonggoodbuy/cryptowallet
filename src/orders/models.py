@@ -44,9 +44,11 @@ class Commodity(Base):
 class Order(Base):
     __tablename__ = "order"
     ORDER_STATUS = (
+        ("transaction_pending", "Transaction_pendting"),
         ("new", "New"),
         ("delivery", "Delivery"),
         ("complete", "Complete"),
+        ("returning", "Returning"),
         ("fail", "Fail")
     )
 
@@ -54,9 +56,20 @@ class Order(Base):
     # one to one Commodity
     commodity_id: Mapped[int] = mapped_column(ForeignKey("commodity.id"))
     commodity: Mapped["Commodity"] = relationship(backref="orders")
-    # one to one Transaction
+
     transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"))
-    transaction: Mapped["Transaction"] = relationship(backref="orders")
+    transaction: Mapped["Transaction"] = relationship("Transaction", foreign_keys=[transaction_id], backref="orders")
+
+    return_transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"), nullable=True)
+    return_transaction: Mapped["Transaction"] = relationship("Transaction", foreign_keys=[return_transaction_id], backref="return_orders")
+
+    
+    # # one to one Transaction
+    # transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"))
+    # transaction: Mapped["Transaction"] = relationship(backref="orders")
+
+    # return_transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"), nullable=True)
+    # return_transaction: Mapped["Transaction"] = relationship("Transaction", backref="return_orders", foreign_keys=[return_transaction_id])
 
     # date_time_transaction: mapped_column(DATETIME())
     # date_time_transaction = Column(DATETIME())

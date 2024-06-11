@@ -35,8 +35,8 @@ async def render_ibay_html(current_user_or_redirect: Annotated[User, Depends(get
 
 @router.get("/wallets-select2/", response_model=dict)
 async def get_wallets(current_user_or_redirect: Annotated[User, Depends(get_current_user)]):
-    all_wallets = await WalletEtheriumService.return_wallets_per_user_email(current_user_or_redirect.email)
-    addresses_dict = [{'id': k, 'address': v['address']} for k, v in all_wallets.items()]
+    all_wallets = await WalletEtheriumService.return_wallets_per_user_email_without_sync(current_user_or_redirect.email)
+    addresses_dict = [{'id': k, 'address': '(' + str(v['balance']) + ' ETH' ')' + ' ' + v['address']} for k, v in all_wallets.items()]
     return JSONResponse(content={"wallets": addresses_dict})
 
 
