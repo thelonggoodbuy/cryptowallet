@@ -34,18 +34,9 @@ from time import time, sleep
 def handle_requests_to_test_delivery(updated_order):
     print('receive data from other task!')
 
-    # async def fetch(client, url, number):
-    #     try:
-    #         response = await client.get(url, follow_redirects=True)
-    #         return response.text
-    #     except httpx.RequestError as exc:
-    #         print(f"An error occurred while requesting {exc.request.url!r}.")
-
     async def fetch(client, url, number):
         try:
             response = await client.get(url, follow_redirects=True)
-            # print(f"Request #{number} - Status code: {response.status_code} for URL: {url}")
-            # response.status_code
             if response.status_code != 200:
                 raise httpx.HTTPStatusError(
                     message=f"Non-200 status code: {response.status_code} for URL: {url}",
@@ -70,8 +61,6 @@ def handle_requests_to_test_delivery(updated_order):
     async def run_fetch(order_data):
         await asyncio.sleep(1)
         num_requests = 10000
-        # num_requests = 100
-        # concurrency = 10
         concurrency = 50
 
         # url = "https://www.google.com"
@@ -91,12 +80,9 @@ def handle_requests_to_test_delivery(updated_order):
                 
 
             except Exception as e:
-                # print("========================Stopping execution due to an error.========================")
-                # raise e  # Propagate the exception to stop the loop
-                # print('Wait!')
-                # await asyncio.sleep(1)
-                await DeliveryEthService.send_delivery(order_data)  
-                # await  DeliveryEthService.make_transaction_fail(order_data)
+
+                # await DeliveryEthService.send_delivery(order_data)  
+                await  DeliveryEthService.make_transaction_fail(order_data)
                 
             end_time = time()
             execution_time = end_time - start_time
@@ -109,8 +95,11 @@ def handle_requests_to_test_delivery(updated_order):
 
 
 
-# @app.task
-# def handle_requests_to_test_delivery(updated_order):
+@app.task
+def handle_oldest_delivery():
+    
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(DeliveryEthService.handle_oldest_delivery())
 #     print('receive data from other task!')
 
 #     async def fetch(client, url, number):

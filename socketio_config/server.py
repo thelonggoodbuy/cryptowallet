@@ -221,6 +221,7 @@ from delivery_config.services.delivery_eth_service import DeliveryEthService
 class IBayNamespace(socketio.AsyncNamespace):
 
     sid_room_pairs = {}
+    sid_user_id_pairs = {}
 
 
     async def on_connect(self, sid, environ, auth):
@@ -228,6 +229,9 @@ class IBayNamespace(socketio.AsyncNamespace):
         user = await UserService.return_user_per_email(email)
 
         room = f'room_ibay_{user.id}'
+
+        self.sid_user_id_pairs[sid] = user.id
+
         self.sid_room_pairs[sid] = room
         
         await client_manager.enter_room(sid, namespace='/ibay', room=room)
@@ -241,21 +245,83 @@ class IBayNamespace(socketio.AsyncNamespace):
 
 
     async def on_create_announcement(self, sid, data):
-        response = await CommodityEthService.save_commodity(data['sending_data'])
-        # print('--->response<---')
-        # print(response)
-        # print('----------------')
+        all_wallets_addresses = await WalletEtheriumService.return_all_wallets_adresses_per_user_id(self.sid_user_id_pairs[sid])
+        print('--->all wallets addresses<----')
+        print(all_wallets_addresses)
+        data['sending_data']['users_wallet_owning'] = all_wallets_addresses
+        print('=====some===troubles====wit===data')
+        print(data)
 
+        print('==================================')
+
+        response = await CommodityEthService.save_commodity(data['sending_data'])
+        print('--->response<---')
+        print(response)
+        print('----------------')
+
+        room = self.sid_room_pairs[sid]
         if 'errors' in response:
-            room = self.sid_room_pairs[sid]
+            
             await client_manager.emit('validation_error', \
                             room=room,\
                             data=response, \
                             namespace='/ibay')
+            
         else:
-            await client_manager.emit('add_new_commodity', \
-                                data=response, \
+            # await client_manager.emit('add_new_commodity', \
+            #                     data=response,\
+            #                     namespace='/ibay')
+            participants =[]
+            get_participants = client_manager.get_participants('/ibay', room)
+
+            for sid_pair in get_participants:
+                participants.append(sid_pair[0])
+
+            print('--->participants<---')
+            print(participants)
+            print('====================')
+
+            for sid in self.sid_room_pairs.keys():
+
+                if sid not in participants:
+
+                    # updated_data = data
+                    # response['is_owning_by_current_user'] = False
+                    send_data = {'response': response, 'is_owning_by_current_user': False}
+                    print('sid')
+                    print(sid)
+                    print('***')
+
+                    await client_manager.emit('add_new_commodity', \
+                                data=send_data, \
+                                room=sid,\
                                 namespace='/ibay')
+                    
+                else:
+                    # response['is_owning_by_current_user'] = True
+                    send_data = {'response': response, 'is_owning_by_current_user': True}
+                    await client_manager.emit('add_new_commodity', \
+                                data=send_data, \
+                                room=sid,\
+                                namespace='/ibay')
+
+            # print('in current room seeds')
+            # print(participants)
+            # print('----------')
+
+            # await client_manager.emit('add_new_commodity', \
+            #                     data=response, \
+            #                     namespace='/ibay')
+            
+            # total_sids = []
+
+            # for sid in await client_manager.all_rooms('/ibay'):
+            #     total_sids.extend(await client_manager.get_participants('/ibay', sid))
+
+            # print('Total seeds in namespace')
+            # print(total_sids)
+            # print('------------------')
+            # return sids
         
 
 

@@ -19,12 +19,15 @@ run-dev-celery-block-handler-query:
 	celery -A celery_config.tasks worker -l info -Q handle_block_query -n worker_2 --concurrency=1 --loglevel=info
 
 # 3!
-run-handle_requests_to_test_delivery_query:
+run-handle_oldest_delivery_query:
 	clear
-	# celery -A celery_config.tasks worker -l info -Q handle_requests_to_test_delivery_query -n worker_3 --concurrency=1 --loglevel=info
-	celery -A celery_config.tasks worker --loglevel=info
-# run-dev-celery-schedule:
-# 	clear
-# 	celery -A celery_config.config beat -l info
+	celery -A celery_config.tasks worker -l info -Q handle_oldest_delivery_query -n worker_3 --concurrency=2 --loglevel=info
+	# celery -A celery_config.tasks worker --loglevel=info
+
+
+
+run-dev-celery-schedule:
+	clear
+	celery -A celery_config.config beat -l info
 # =============================================
 

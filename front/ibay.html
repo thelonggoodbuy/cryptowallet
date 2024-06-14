@@ -134,7 +134,7 @@
           
                 <div class="modal-header">
                   <h4 class="modal-title">Створити товар</h4>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" id="close_commodity_window"></button>
                 </div>
                 <form id="commodity-form" enctype="multipart/form-data">
                     <div class="modal-body">
@@ -160,21 +160,14 @@
                         </div>
                     </div>
 
-
                     <div class="modal-body">
 
-                    <!-- <div class="mb-3">
-                        <input class="form-control custom-file-input d-none" type="file" id="announcement_photo_input" name="photo" accept="image/png, image/jpg"/>
-                        <label class="btn btn-secondary custom-file-label" for="announcement_photo_input">фото товару</label>
-                        <div id="image-preview" class="ms-3"></div>
-                    </div> -->
-
-                        <div class="flex-grow-1 me-3">
-                            <div class="mb-3">
-                                <input class="form-control custom-file-input d-none" type="file" id="announcement_photo_input" name="photo" accept="image/png, image/jpg"/>
-                                <label class="btn btn-secondary custom-file-label" for="announcement_photo_input">фото товару</label>
-                            </div>
-                            <!-- Add other input fields here if needed -->
+                    <div class="flex-grow-1 me-3">
+                        <div class="mb-3">
+                            <!-- <input class="form-control custom-file-input d-none" type="file" id="announcement_photo_input" name="photo" accept="image/png, image/jpg"/> -->
+                            <input class="form-control custom-file-input d-none" type="file" id="announcement_photo_input" name="photo" accept="image/png, image/jpeg, image/jpg"/>
+                            <label class="btn btn-secondary custom-file-label" for="announcement_photo_input">фото товару</label>
+                        </div>
                     </div>
                     <div class="image-preview">
                         <img id="preview" src="" alt="Image Preview" class="img-fluid d-none"/>
@@ -257,7 +250,7 @@
 
 <div class="row" id="delivery_container">
 
-    <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
+    <div class="col-10 col-lg-5 border mx-3 my-3 py-3" id="delivery_77">
     <div class="row">
         <div class="col-3 d-none d-xxl-block text-center my-auto">
             <img src="/static/static/image/рыбка.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
@@ -323,7 +316,7 @@
     <!-- ************************************************************************************ -->
 
 
-    <div class="col-10 col-lg-5 border mx-3 my-3 py-3">
+    <div class="col-10 col-lg-5 border mx-3 my-3 py-3" id="delivery_89">
     <div class="row">
         <div class="col-3 d-none d-xxl-block text-center my-auto">
             <img src="/static/static/image/fishing_rood.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
@@ -438,51 +431,101 @@
           "hideMethod": "fadeOut"
       }
 
-        function add_accomodation(id, address, currency, photo, price, title){
-            $('#accomodation_container').prepend(
-                        `<div class="col-10 col-lg-5 border mx-3 my-3 py-3 concret_accomodation_container" id='accomodation_${id}'>
-                            <div class="row">
-                                <div class="col-3 d-none d-xxl-block text-center my-auto">
-                                    <img src="${photo}" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
+        function add_accomodation(id, address, currency, photo, price, title, is_owning_by_current_user){
+            console.log('======================================')
+            console.log(is_owning_by_current_user)
+            console.log(typeof is_owning_by_current_user)
+            console.log('======================================')
+            if (is_owning_by_current_user == false)
+                {$('#accomodation_container').prepend(
+                            `<div class="col-10 col-lg-5 border mx-3 my-3 py-3 concret_accomodation_container" id='accomodation_${id}'>
+                                <div class="row">
+                                    <div class="col-3 d-none d-xxl-block text-center my-auto">
+                                        <img src="${photo}" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
+                                    </div>
+                                    <div class="col-12 col-xxl-8">
+                                        <div class="row">
+                                            <div class="col-2 me-3">
+                                                <p>Назва</p>
+                                            </div>
+                                            <div class="col-9">
+                                                <p class='accomodation_title'>${title}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-2 me-3">
+                                                <p>Адресса</p>
+                                            </div>
+                                            <div class="col-9">
+                                                <p class="text-break text-primary">${address}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-2 me-3">
+                                                <p>Ціна</p>
+                                            </div>
+                                            <div class="col-9">
+                                                <p>${price} ${currency}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row text-center">
+                                            <div class="col-12 col-xxl-4 my-1">
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#buy_commodity_modal_window" id="buy_commodity_button"><h6>Купити</h6></button>
+                                            </div>
+
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-12 col-xxl-8">
-                                    <div class="row">
-                                        <div class="col-2 me-3">
-                                            <p>Назва</p>
-                                        </div>
-                                        <div class="col-9">
-                                            <p class='accomodation_title'>${title}</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-2 me-3">
-                                            <p>Адресса</p>
-                                        </div>
-                                        <div class="col-9">
-                                            <p class="text-break text-primary">${address}</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-2 me-3">
-                                            <p>Ціна</p>
-                                        </div>
-                                        <div class="col-9">
-                                            <p>${price} ${currency}</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="row text-center">
-                                        <div class="col-12 col-xxl-4 my-1">
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#buy_commodity_modal_window" id="buy_commodity_button"><h6>Купити</h6></button>
-                                        </div>
-
-                                    </div>
+                                </div>`
+                    )} else {
+                $('#accomodation_container').prepend(
+                `<div class="col-10 col-lg-5 border mx-3 my-3 py-3 concret_accomodation_container" id='accomodation_${id}'>
+                    <div class="row">
+                        <div class="col-3 d-none d-xxl-block text-center my-auto">
+                            <img src="${photo}" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
+                        </div>
+                        <div class="col-12 col-xxl-8">
+                            <div class="row">
+                                <div class="col-2 me-3">
+                                    <p>Назва</p>
+                                </div>
+                                <div class="col-9">
+                                    <p class='accomodation_title'>${title}</p>
                                 </div>
                             </div>
-                            </div>`
-                    )
+
+                            <div class="row">
+                                <div class="col-2 me-3">
+                                    <p>Адресса</p>
+                                </div>
+                                <div class="col-9">
+                                    <p class="text-break text-primary">${address}</p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-2 me-3">
+                                    <p>Ціна</p>
+                                </div>
+                                <div class="col-9">
+                                    <p>${price} ${currency}</p>
+                                </div>
+                            </div>
+
+                            <div class="row text-center">
+                                <div class="col-12 col-xxl-4 my-1">
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#buy_commodity_modal_window" id="buy_commodity_button" disabled><h6>Купити</h6></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    </div>`
+                        )
+                        }
         }
 
 
@@ -503,7 +546,8 @@
                                     accomodation.currency, 
                                     accomodation.photo, 
                                     accomodation.price, 
-                                    accomodation.title)
+                                    accomodation.title,
+                                    accomodation.is_owning_by_current_user)
                 }
             }
           });
@@ -634,6 +678,24 @@
         )
 
 
+        // function clean_commodity_form(){
+        //     $('#title_input')
+        //     $('#price_input')
+        //     $('#wallet_select2')
+        //     $('#announcement_photo_input').val('');
+
+        // }
+
+
+        function clearCommodiyForm() {
+            $('#title_input').val('');
+            $('#price_input').val('');
+            $('#wallet_select2').val(null).trigger('change'); // Assuming you're using Select2 for the wallet select
+            $('#announcement_photo_input').val('');
+            $('#preview').attr('src', '').addClass('d-none');
+        }
+
+
         $('#send_new_announcement_button').on('click', function (){
             var commodity_form = $('#commodity-form')[0]
             var commodity_form_data = new FormData()
@@ -652,23 +714,38 @@
             for (var [key, value] of commodity_form_data.entries()) {
                 sending_data[key] = value;
             }
-              ibay_socket.emit("create_announcement", data={"sending_data": sending_data})
+            ibay_socket.emit("create_announcement", data={"sending_data": sending_data})
+            clearCommodiyForm()
+
         }
     )
+
+        
+        $('#close_commodity_window').on('click', function(){
+
+            clearCommodiyForm()
+
+        })
+
+
+
 
 
     
     // receive new commodity
     ibay_socket.on('add_new_commodity', (data) => {
         console.log('--->new_commodity<---')
+
+        // if data.title 
         console.log(data)
 
-        add_accomodation(id=data.id,
-                        address=data.address, 
-                        currency=data.currency, 
-                        photo=data.photo, 
-                        price=data.price, 
-                        title=data.title)
+        add_accomodation(id=data.response.id,
+                        address=data.response.address, 
+                        currency=data.response.currency, 
+                        photo=data.response.photo, 
+                        price=data.response.price, 
+                        title=data.response.title,
+                        is_owning_by_current_user=data.is_owning_by_current_user)
 
         console.log('---------------------')
         // toastr.success('Новий товар створено!')
@@ -688,7 +765,10 @@
     ibay_socket.on('receive_announcement_data', (data) => {
         console.log('===ANNOUNCEMENT===DATA===')
         console.log(data)
+        // id="delivery_89"
+        
         console.log('=========================')
+
     })
 
 

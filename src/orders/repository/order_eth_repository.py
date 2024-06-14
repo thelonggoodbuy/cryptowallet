@@ -11,7 +11,7 @@ from sqlalchemy.orm import contains_eager
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import selectinload
 from src.orders.schemas import UpdateOrderSchema
-
+from sqlalchemy import asc
 
 
 class OrderEthRepository(OrderAbstractRepository):
@@ -99,5 +99,22 @@ class OrderEthRepository(OrderAbstractRepository):
 
         return order
 
+
+
+    async def get_oldest_delivery(self):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(Order).options(
+                    joinedload(Order.transaction), 
+                    joinedload(Order.commodity)
+                ).filter(Order.order_status == "delivery")\
+                    .order_by(asc(Order.date_time_transaction))
+            
+            result = await session.execute(query)
+            order = result.scalars().first()
+        return order
+    
+
+    
 
 order_eth_rep_link = OrderEthRepository()

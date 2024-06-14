@@ -84,6 +84,10 @@ class OrderEthService(OrderAbstractService):
             updated_order = await cls.make_fail_or_return(update_order_dеtail)
          case 'delivery':
             updated_order = await order_eth_rep_link.update_status_order(update_order_dеtail)
+         case 'complete':
+            updated_order = await order_eth_rep_link.update_status_order(update_order_dеtail)
+         case 'returning':
+            updated_order = await cls.make_fail_or_return(update_order_dеtail)
 
       return updated_order
    
@@ -123,6 +127,15 @@ class OrderEthService(OrderAbstractService):
                 "revert_transaction": revert_transaction['txn_hash']}
 
       return order_data
+   
+
+   @classmethod
+   async def get_oldest_delidery(cls):
+      oldest_delivery = await order_eth_rep_link.get_oldest_delivery()
+
+      
+
+      return oldest_delivery
 
 
       # updated_order = await order_eth_rep_link.update_status_order(update_order_datail)

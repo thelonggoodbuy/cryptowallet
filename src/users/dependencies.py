@@ -51,7 +51,7 @@ async def get_user(email: str):
     # user = get_user_by_email(db, email)
     user = await UserService.return_user_per_email(email)
     if user:
-        user_dict = {"hashed_password": user.password, "email": user.email}
+        user_dict = {"hashed_password": user.password, "email": user.email, "id": user.id}
         return UserInDB(**user_dict)
     
 

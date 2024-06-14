@@ -26,6 +26,7 @@ class User(BaseModel):
     username: str | None = None
     email: str | None = None
     disabled: bool | None = None
+    id: int | None = None
 
 
 class UserInDB(User):

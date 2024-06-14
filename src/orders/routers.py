@@ -42,6 +42,10 @@ async def get_wallets(current_user_or_redirect: Annotated[User, Depends(get_curr
 
 
 @router.post("/return_all_commodities/")
-async def return_all_commodities():
-    all_accomodations = await CommodityEthService.return_all_commodities_for_list()
+async def return_all_commodities(current_user_or_redirect: Annotated[User, Depends(get_current_user)]):
+
+    print('--->current_user_or_redirect<---')
+    print(current_user_or_redirect)
+    print('--------------------------------')
+    all_accomodations = await CommodityEthService.return_all_commodities_for_list(current_user_or_redirect.id)
     return all_accomodations

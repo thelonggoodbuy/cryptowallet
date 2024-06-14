@@ -6,7 +6,8 @@ from src.orders.services.order_eth_service import OrderEthService
 from src.orders.schemas import UpdateOrderSchema, OrderEvent
 from socketio_config.server import client_manager
 import httpx
-
+import random
+from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 
 
 
@@ -137,8 +138,88 @@ class DeliveryEthService(DeliveryAbstractService):
                                 )
 
 
-    # @classmethod
-    # async def send_delivery(order_dict):
+    @classmethod
+    async def handle_oldest_delivery(cls):
+        print('***')
+        print('=====>>>DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY <<<=====')
+        print('***')
+        delivery_order = await OrderEthService.get_oldest_delidery()
+        # delivery_change = random.choice([True, False])
+        delivery_change = random.choice([False, True])
+
+        if delivery_order and delivery_change == True:
+
+            sender_wallet_address = delivery_order.transaction.send_from
+            sender_wallet = await WalletEtheriumService.return_wallet_per_address(sender_wallet_address)
+            update_order_data = UpdateOrderSchema(
+                order_id=delivery_order.id,
+                status='complete',
+                user_id=sender_wallet.user_id
+            )
+
+            order_result = await OrderEthService.update_order(update_order_data)
+
+            data = {"status": "complete",
+                    "title": order_result.commodity.title,
+                    "trn_hash": order_result.transaction.txn_hash,
+                    "cost": float(order_result.commodity.price),
+                    "orders_time": (order_result.date_time_transaction).isoformat(),
+                    "status": order_result.order_status,
+                    "order_id": order_result.id,
+                    "user_id": sender_wallet.user_id
+                    }
+            user_id = sender_wallet.user_id
+            await client_manager.emit('receive_announcement_data',
+                                    data=data,
+                                    room=f'room_ibay_{user_id}',
+                                    namespace='/ibay',
+                                )
+
+        
+        elif delivery_order and delivery_change == False:
+            # print('***')
+            # print('=====>>>DELIBERY IS FALLSE!!!<<<=====')
+            # print('***')
+            # TODO returning!!!!
+            sender_wallet_address = delivery_order.transaction.send_from
+            sender_wallet = await WalletEtheriumService.return_wallet_per_address(sender_wallet_address)
+            update_order_data = UpdateOrderSchema(
+                order_id=delivery_order.id,
+                status='returning',
+                user_id=sender_wallet.user_id
+        )
+            order_result = await OrderEthService.update_order(update_order_data)
+
+            print('<<<=====================>>>')
+            print(order_result)
+            print('<<<=====================>>>')
+
+            data = {"title": order_result['title'],
+                    "trn_hash": order_result['trn_hash'],
+                    "cost": float(order_result['cost']),
+                    "orders_time": order_result['orders_time'],
+                    "status": order_result['status'],
+                    "order_id": order_result['order_id'],
+                    "user_id": sender_wallet.user_id
+                    }
+            
+            user_id = sender_wallet.user_id
+            await client_manager.emit('receive_announcement_data',
+                                    data=data,
+                                    room=f'room_ibay_{user_id}',
+                                    namespace='/ibay',
+                                )
+
+
+
+        else:
+            print('***')
+            print('=====>>>There arent any requests to delivery<<<=====')
+            print('***')
+
+
+            # print('There are any new deliveys!')
+
     #      update_order_data = UpdateOrderSchema(
     #         order_id=order_dict['order_id'],
     #         status='delivery',
