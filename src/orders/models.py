@@ -1,9 +1,7 @@
 from sqlalchemy import String, ForeignKey, DECIMAL, DateTime, Column
 
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy_utils.types.choice import ChoiceType
 
 
@@ -11,12 +9,10 @@ from sqlalchemy_file import FileField
 
 from src.wallets.models import Wallet
 from src.etherium.models import Transaction
+
 # from db_config.models import Base
 from db_config.database import Base
 from datetime import datetime
-
-
-
 
 
 # class Base(DeclarativeBase):
@@ -27,7 +23,6 @@ from datetime import datetime
 class Commodity(Base):
     __tablename__ = "commodity"
 
-
     id: Mapped[int] = mapped_column(primary_key=True)
     # wallet FK
     wallet_id: Mapped[int] = mapped_column(ForeignKey("wallet.id"))
@@ -36,7 +31,7 @@ class Commodity(Base):
     title: Mapped[str] = mapped_column(String(70))
     # price: mapped_column(DECIMAL(10, 9))
     price = Column(DECIMAL(22, 18))
-    
+
     # photo: mapped_column(FileField())
     photo = Column(FileField())
 
@@ -49,7 +44,7 @@ class Order(Base):
         ("delivery", "Delivery"),
         ("complete", "Complete"),
         ("returning", "Returning"),
-        ("fail", "Fail")
+        ("fail", "Fail"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -58,12 +53,17 @@ class Order(Base):
     commodity: Mapped["Commodity"] = relationship(backref="orders")
 
     transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"))
-    transaction: Mapped["Transaction"] = relationship("Transaction", foreign_keys=[transaction_id], backref="orders")
+    transaction: Mapped["Transaction"] = relationship(
+        "Transaction", foreign_keys=[transaction_id], backref="orders"
+    )
 
-    return_transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"), nullable=True)
-    return_transaction: Mapped["Transaction"] = relationship("Transaction", foreign_keys=[return_transaction_id], backref="return_orders")
+    return_transaction_id: Mapped[int] = mapped_column(
+        ForeignKey("transaction.id"), nullable=True
+    )
+    return_transaction: Mapped["Transaction"] = relationship(
+        "Transaction", foreign_keys=[return_transaction_id], backref="return_orders"
+    )
 
-    
     # # one to one Transaction
     # transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"))
     # transaction: Mapped["Transaction"] = relationship(backref="orders")
@@ -77,6 +77,3 @@ class Order(Base):
     # order_status: Mapped[str] = mapped_column(ENUM("new", "delivery", "complete", "fail"))
     # order_status: Mapped[str] = mapped_column(ENUM("new", "delivery", "complete", "fail"))
     order_status = Column(ChoiceType(ORDER_STATUS))
-
-
-

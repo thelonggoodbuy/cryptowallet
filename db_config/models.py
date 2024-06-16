@@ -1,18 +1,3 @@
-from sqlalchemy import String, Boolean, TEXT, ForeignKey, DECIMAL, Integer, DATETIME
-from sqlalchemy import UniqueConstraint, Column
-
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy.orm import relationship
-
-from sqlalchemy.dialects.postgresql import ENUM
-
-from sqlalchemy_file import FileField
-
-from .database import Base
-
-
-
-
 # class User(Base):
 #     __tablename__ = "user"
 #     __table_args__ = (
@@ -37,10 +22,6 @@ from .database import Base
 #     # user FK
 #     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
 #     user: Mapped["User"] = relationship(back_populates="messages")
-
-
-
-
 
 
 # class Wallet(Base):
@@ -85,7 +66,6 @@ from .database import Base
 #     photo = Column(FileField)
 
 
-
 # class Transaction(Base):
 #     __tablename__ = "transaction"
 
@@ -100,14 +80,11 @@ from .database import Base
 #     value = Column(DECIMAL(10, 9))
 
 
-
 #     txn_hash: Mapped[str] = mapped_column(String(200))
 #     # date_time_transaction: mapped_column(DATETIME())
 #     date_time_transaction = DATETIME()
 #     txn_hash: Mapped[str] = mapped_column(String(200))
 #     status: Mapped[str] = mapped_column(ENUM("success", "fail", "pending"))
-
-
 
 
 # class Commodity(Base):
@@ -122,7 +99,7 @@ from .database import Base
 #     title: Mapped[str] = mapped_column(String(70))
 #     # price: mapped_column(DECIMAL(10, 9))
 #     price = Column(DECIMAL(10, 9))
-    
+
 #     # photo: mapped_column(FileField())
 #     photo = Column(FileField())
 
@@ -141,5 +118,3 @@ from .database import Base
 #     # date_time_transaction: mapped_column(DATETIME())
 #     date_time_transaction = Column(DATETIME())
 #     status: Mapped[str] = mapped_column(ENUM("new", "delivery", "complete", "fail"))
-
-

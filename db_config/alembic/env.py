@@ -3,7 +3,9 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-import os, sys 
+import os
+import sys
+
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), ".."))
 sys.path.append(parent_dir)
 
@@ -12,10 +14,6 @@ from db_config import database
 
 from alembic import context
 
-from src.users.models import User, Message
-from src.wallets.models import Wallet, Asset, Blockchain
-from src.etherium.models import Transaction
-from src.orders.models import Commodity, Order
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -40,7 +38,6 @@ target_metadata = database.Base.metadata
 # print('-------------------------------------------')
 # print(database.Base)
 # print('-------------------------------------------')
-
 
 
 def run_migrations_offline() -> None:
@@ -81,9 +78,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

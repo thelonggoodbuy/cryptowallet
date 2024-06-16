@@ -28,7 +28,7 @@
   * Add Accessibility section to Readme (#2149)
 
 ## Localization
-  * Add "pattern" translation for French (#2363) 
+  * Add "pattern" translation for French (#2363)
   * add phone validate translate for Turkish translation (#2343)
 
 1.19.2 / 2020-05-23
@@ -160,7 +160,7 @@ The hashes for the 1.19.0 release can be found in the file [`jquery-validation-s
 ## Tests
   * Pass on the value of the used submit button for scripted submits (#2019)
   * Use assert#pushResult instead of assert#push (#2018)
-  
+
 ## All
   * Fix links after move to organization
   * Use https

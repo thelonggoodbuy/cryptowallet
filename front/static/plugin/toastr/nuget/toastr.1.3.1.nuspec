@@ -12,8 +12,8 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>3 Easy Steps:
 
-(1) Link to toastr.css  
-(2) Link to toastr.js 
+(1) Link to toastr.css
+(2) Link to toastr.js
 (3) Use toastr to display a toast for info, success, warning or error
 
 // Display an info toast with no title
@@ -36,7 +36,7 @@ Fixed bug with stacking toasts when clear all toasts occurs first.
 
 v1.2.2
 
-Added onFadeIn and onFadeOut callbacks. 
+Added onFadeIn and onFadeOut callbacks.
   toastr.options.onFadeIn = function() { console.log('hello'); }
 Added option &lt;code&gt;newestOnTop&lt;/code&gt; to show toasts in oldest or newest first order.
   toastr.options.newestOnTop = false;

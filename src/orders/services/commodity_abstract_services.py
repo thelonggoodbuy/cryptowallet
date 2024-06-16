@@ -1,5 +1,4 @@
-from abc import ABC, abstractmethod
-
+from abc import ABC
 
 
 class CommodityAbstractService(ABC):
@@ -7,8 +6,3 @@ class CommodityAbstractService(ABC):
     # @abstractmethod
     # async def return_wallets_per_user(email: str) -> dict:
     #     raise NotImplementedError
-
-
-
-    
-

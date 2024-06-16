@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<title>My Page</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
-	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-	<script src="https://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
-	<script src="../dist/jquery.validate.js"></script>
-	<style>
+    <head>
+        <meta charset="utf-8">
+        <title>My Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet"
+              href="https://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+        <script src="../dist/jquery.validate.js"></script>
+        <style>
 	label.error {
 		color: red;
 		font-size: 16px;
@@ -35,28 +36,29 @@
 		font-weight: bold;
 		padding-right: .25em;
 	}
-	</style>
-</head>
-<body>
-<div id="page1" data-role="page">
-	<div data-role="header">
-		<h1>Welcome</h1>
-	</div>
-	<div data-role="content">
-		<form method="GET">
-			<div data-role="fieldcontain">
-				<label for="email">Email:</label>
-				<input type="email" name="email" id="email">
-			</div>
-			<div data-role="fieldcontain">
-				<label for="password">Password:</label>
-				<input type="password" name="password" id="password">
-			</div>
-			<input data-role="submit" type="submit" value="Login">
-		</form>
-	</div>
-</div>
-<script>
+	
+        </style>
+    </head>
+    <body>
+        <div id="page1" data-role="page">
+            <div data-role="header">
+                <h1>Welcome</h1>
+            </div>
+            <div data-role="content">
+                <form method="GET">
+                    <div data-role="fieldcontain">
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" id="email">
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password">
+                    </div>
+                    <input data-role="submit" type="submit" value="Login">
+                </form>
+            </div>
+        </div>
+        <script>
 $( "#page1" ).on( "pageinit", function() {
 	$( "form" ).validate({
 		rules: {
@@ -72,6 +74,6 @@ $( "#page1" ).on( "pageinit", function() {
 		}
 	});
 });
-</script>
-</body>
+        </script>
+    </body>
 </html>

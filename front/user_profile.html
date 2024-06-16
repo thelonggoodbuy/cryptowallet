@@ -36,12 +36,12 @@
   <body>
 
 <main>
-    
+
     <!-- sidebar -->
     <div class="d-none d-md-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px; background-color: rgb(73, 73, 73);">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <span class="fs-4">CRYPTO WALLET</span>
-        </a>    
+        </a>
         <hr>
         <ul class="nav nav-pills flex-column lg-auto">
         <li class="nav-item">
@@ -77,7 +77,7 @@
                 <a href="#" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
                   <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
                 </a>
-        
+
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"></ul>
 
 
@@ -142,9 +142,9 @@
                     </div>
                   </div>
                 </div>
-              </div>            
+              </div>
             </div>
-            
+
             <!-- end user card -->
             <!-- change user data form -->
             <div class="col-12">
@@ -156,7 +156,7 @@
                     <div class="col-sm-10">
                       <input class="form-control" id="inputUsername" placeholder="Username" name="username">
                     </div>
-                  </div>  
+                  </div>
                 </div>
 
                 <div class="col-12 col-lg-6">
@@ -224,7 +224,7 @@
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
           </div>
           <div class="col-12 col-lg-6">
             <div class="card border-0 mb-3" style="max-height: 100px;">
@@ -238,22 +238,7 @@
                   </div>
                 </div>
               </div>
-            </div> 
-          </div>
-
-          <div class="col-12 col-lg-6">
-            <div class="card border-0 mb-3" style="max-height: 100px;">
-              <div class="row g-0">
-                <div class="col-2">
-                  <img src="/static/static/image/ethereum-icon.png" class="ethereum_icon img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
-                </div>
-                <div class="col-10">
-                  <div class="card-body">
-                    <p class="card-text border">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-                  </div>
-                </div>
-              </div>
-            </div> 
+            </div>
           </div>
 
           <div class="col-12 col-lg-6">
@@ -268,7 +253,22 @@
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="card border-0 mb-3" style="max-height: 100px;">
+              <div class="row g-0">
+                <div class="col-2">
+                  <img src="/static/static/image/ethereum-icon.png" class="ethereum_icon img-fluid rounded-start" style="max-height: 100px;" alt="Лого крипти">
+                </div>
+                <div class="col-10">
+                  <div class="card-body">
+                    <p class="card-text border">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div> -->
 
           <!-- <div class="col-12 col-lg-6">
@@ -283,7 +283,7 @@
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
           </div> -->
 
 
@@ -333,7 +333,7 @@
 
 <script>
 
-  
+
 
 
 
@@ -371,10 +371,10 @@
           $.ajax({
             url: window.location.href.replace('profile/', 'validate_access_token/'),
             type: "POST",
-            data: JSON.stringify({'access_token': access_token}), 
+            data: JSON.stringify({'access_token': access_token}),
             processData: false,
             contentType: false,
-            success: function(result){ 
+            success: function(result){
               if(result['result'] == false)
               window.location.href = window.location.href.replace('profile/', 'login/')
             }
@@ -384,10 +384,10 @@
           $.ajax({
             url: window.location.href.replace('profile/', 'get_current_user_data/'),
             type: "POST",
-            data: JSON.stringify({'access_token': access_token}), 
+            data: JSON.stringify({'access_token': access_token}),
             processData: false,
             contentType: false,
-            success: function(result){ 
+            success: function(result){
 
               var username_data = result['username']
               var email_data = result['email']
@@ -396,13 +396,13 @@
               for(element of $("[class^='username']")){
                     $(element).text(username_data)
               }
-              
+
               $('#inputEmail').val(email_data).attr("readonly", true)
 
 
 
               $("[class^='portrait_jpg']").each(function(image_obj){
-  
+
                 if(result['photo_url'] == null){
                   // console.log(result['photo_url'])
                   // console.log('opt 1')
@@ -453,7 +453,7 @@
 
 
 
-    
+
 
 
       // -----delete checkbox logic
@@ -467,7 +467,7 @@
 
 
       $('#save_button').on('click', function(){
-        
+
 
         var username_input = $('#inputUsername').val()
         var password_input = $('#inputPassword').val()
@@ -512,14 +512,14 @@
                   for(element of $("[class^='username']")){
                     $(element).text(result['data']['username'])
                   }
-               
+
                 }
 
                 if (result['data']['photo_url'] != null){
                   $("[class^='portrait_jpg']").each(function(image_obj){
                     $(this)[0].src=result['data']['photo_url']
                   })
-                
+
                 $('#inputPassword').val('')
                 $('#inputRepeatPassword').val('')
                 }
@@ -567,16 +567,16 @@
 
       // connect logic
       profile_wallet_socket.on('connect', () => {
-          console.log('connected to wallets');          
+          console.log('connected to wallets');
         })
-      
+
       // disconnect logic
       profile_wallet_socket.on('disconnect', () => {
           console.log('disconnected from wallets');
           $('div[id^="wallet_"]').remove();
           // console.log()
         })
-        
+
 
 
       profile_wallet_socket.on('return_list_of_user_wallets', (wallet_data) => {
@@ -599,7 +599,7 @@
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
           </div>`
 
             )
@@ -625,7 +625,7 @@
           console.log('***')
           private_key_obj.val("")
           profile_wallet_socket.emit("import_wallet", data={"token": access_token, 'private_key': private_key})
-          
+
         } else {
           // console.log('Private key is EMPTY!!!')
           toastr.warning('Для того, щоб імпортувати гаманець, введіть приватний ключ гаманця.')
@@ -651,8 +651,8 @@
                   </div>
                 </div>
               </div>
-            </div> 
-          </div> 
+            </div>
+          </div>
         `).insertBefore($('#adding_buttons'))} else {
 
           toastr.warning(data['text'])
@@ -663,7 +663,7 @@
 
   })
   }
-  
+
 
   toastr.options = {
         "closeButton": true,

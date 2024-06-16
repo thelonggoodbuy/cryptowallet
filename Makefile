@@ -12,7 +12,7 @@ run-dev:
 run-dev-celery-block-parser-query:
 	clear
 	celery -A celery_config.tasks worker -l info -Q parse_latest_block_query -n worker_1 --concurrency=1 --loglevel=info
-	
+
 # 2!
 run-dev-celery-block-handler-query:
 	clear
@@ -30,4 +30,3 @@ run-dev-celery-schedule:
 	clear
 	celery -A celery_config.config beat -l info
 # =============================================
-

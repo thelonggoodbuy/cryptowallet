@@ -10,7 +10,7 @@
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/">
 
-    
+
 
     <!-- Bootstrap core CSS -->
 <link href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -31,27 +31,27 @@
       }
 
     </style>
-        
-          
 
-    
+
+
+
     <!-- Custom styles for this template -->
     <link href="/static/static/css/sidebars.css" rel="stylesheet">
     <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    
+
     <!-- <link href="static/css/headers.css" rel="stylesheet"> -->
 
   </head>
   <body>
 
 <main>
-    
+
     <!-- sidebar -->
     <div class="d-none d-md-flex flex-column flex-shrink-0 p-3 text-white" style="width: 280px; background-color: rgb(73, 73, 73);">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <span class="fs-4">CRYPTO WALLET</span>
-        </a>    
+        </a>
         <hr>
         <ul class="nav nav-pills flex-column lg-auto">
         <li class="nav-item">
@@ -87,7 +87,7 @@
                 <a href="#" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
                   <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
                 </a>
-        
+
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"></ul>
 
 
@@ -131,7 +131,7 @@
           <div class="modal" id="create_announcement_modal_window">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
-          
+
                 <div class="modal-header">
                   <h4 class="modal-title">Створити товар</h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" id="close_commodity_window"></button>
@@ -143,7 +143,7 @@
                             <input class="form-control" id="title_input">
                         </div>
                     </div>
-            
+
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="price_input" class="form-label">ціна</label>
@@ -174,11 +174,11 @@
                     </div>
 
                 </div>
-          
+
                 <div class="modal-footer">
                   <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="send_new_announcement_button">Створити оголошення</button>
                 </div>
-            
+
                 </form>
 
               </div>
@@ -196,12 +196,12 @@
         <div class="modal" id="buy_commodity_modal_window">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
-          
+
                 <div class="modal-header">
                   <h4 class="modal-title" id="buy_commodity_header">оплата товару</h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" id="dismiss_order"></button>
                 </div>
-                
+
                 <form id="commodity-form" enctype="multipart/form-data">
 
                 <div class="modal-body">
@@ -216,7 +216,7 @@
                 <div class="modal-footer">
                   <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="send_order">Замовити товар</button>
                 </div>
-            
+
                 </form>
 
               </div>
@@ -250,7 +250,7 @@
 
 <div class="row" id="delivery_container">
 
-    <div class="col-10 col-lg-5 border mx-3 my-3 py-3" id="delivery_77">
+    <!-- <div class="col-10 col-lg-5 border mx-3 my-3 py-3" id="delivery_77">
     <div class="row">
         <div class="col-3 d-none d-xxl-block text-center my-auto">
             <img src="/static/static/image/рыбка.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
@@ -312,11 +312,11 @@
 
         </div>
     </div>
-    </div>
+    </div> -->
     <!-- ************************************************************************************ -->
 
 
-    <div class="col-10 col-lg-5 border mx-3 my-3 py-3" id="delivery_89">
+    <!-- <div class="col-10 col-lg-5 border mx-3 my-3 py-3" id="delivery_89">
     <div class="row">
         <div class="col-3 d-none d-xxl-block text-center my-auto">
             <img src="/static/static/image/fishing_rood.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
@@ -378,7 +378,7 @@
 
         </div>
     </div>
-    </div>
+    </div> -->
 </div>
 <!-- ************************************************************************************ -->
 
@@ -389,7 +389,7 @@
 </div>
 <!-- <h1>3</h1> -->
 
- 
+
 
 
     <!-- header -->
@@ -430,6 +430,9 @@
           "showMethod": "fadeIn",
           "hideMethod": "fadeOut"
       }
+
+
+
 
         function add_accomodation(id, address, currency, photo, price, title, is_owning_by_current_user){
             console.log('======================================')
@@ -529,29 +532,161 @@
         }
 
 
+
+        function add_order(order_id,
+                            title,
+                            trn_hash,
+                            cost,
+                            order_time,
+                            status,
+                            photo='',
+                            return_transaction_hash=''){
+
+            var colored_status
+            if (status === 'new'){
+                colored_status = '<p class="pink">Новий</p>'
+            } else if (status === 'delivery'){
+                colored_status = '<p class="yellow">Доставка</p>'
+            } else if (status === 'complete'){
+                colored_status = '<p class="green">Виконаний</p>'
+            } else if (status === 'returning'){
+                colored_status = '<p class="red">Повернення</p>'
+            } else if (status === 'fail'){
+                colored_status = '<p class="red">Провал</p>'
+            }
+
+            var order_obj = `<div class="col-10 col-lg-5 border mx-3 my-3 py-3" id="delivery_${order_id}">
+                            <div class="row">
+                                <div class="col-3 d-none d-xxl-block text-center my-auto">
+                                    <img src="${photo}" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
+                                </div>
+                                <div class="col-12 col-xxl-8">
+                                    <div class="row">
+                                        <div class="col-3 me-3">
+                                            <p>Назва</p>
+                                        </div>
+                                        <div class="col-8">
+                                            <p>${title}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-3 me-3">
+                                            <p>Тразакція</p>
+                                        </div>
+                                        <div class="col-8">
+                                            <p class="text-break text-primary">${trn_hash}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-3 me-3">
+                                            <p>Ціна</p>
+                                        </div>
+                                        <div class="col-8">
+                                            <p>${cost} ETH</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-3 me-3">
+                                        <p>Час замовлення</p>
+                                        </div>
+                                        <div class="col-8">
+                                            <p>${order_time}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                    <div class="col-3 me-3">
+                                        <p>Статус</p>
+                                    </div>
+                                    <div class="col-8">
+                                        ${colored_status}
+                                    </div>
+                                    </div>
+
+                                    <div class="row">
+                                    <div class="col-3 me-3">
+                                        <p>Повернення</p>
+                                    </div>
+                                    <div class="col-8">
+                                        <p class="text-break text-primary">${return_transaction_hash}</p>
+                                    </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            </div>`
+
+
+        console.log('=============delivery===object====is============')
+        console.log($(`delivery_${order_id}`))
+        console.log('================================================')
+
+        if ($(`#delivery_${order_id}`).length){
+            // opt 1
+            $(`#delivery_${order_id}`).replaceWith(order_obj)
+        } else {
+            // opt 2
+            $('#delivery_container').prepend(order_obj)
+        }
+
+
+
+
+        }
+
+
+
         $.ajax({
             url: window.location.href.replace('ibay/', 'return_all_commodities/'),
             type: "POST",
-            data: JSON.stringify({'access_token': access_token}), 
+            data: JSON.stringify({'access_token': access_token}),
             processData: false,
             contentType: false,
-            
-            success: function(result){ 
+
+            success: function(result){
                 console.log('========')
                 console.log(result)
                 console.log('========')
                 for (accomodation of result){
-                    add_accomodation(accomodation.id, 
-                                    accomodation.address, 
-                                    accomodation.currency, 
-                                    accomodation.photo, 
-                                    accomodation.price, 
+                    add_accomodation(accomodation.id,
+                                    accomodation.address,
+                                    accomodation.currency,
+                                    accomodation.photo,
+                                    accomodation.price,
                                     accomodation.title,
                                     accomodation.is_owning_by_current_user)
                 }
             }
           });
 
+
+          $.ajax({
+            url: window.location.href.replace('ibay/', 'return_all_orders/'),
+            type: "POST",
+            data: JSON.stringify({'access_token': access_token}),
+            processData: false,
+            contentType: false,
+
+            success: function(result){
+                console.log('***all orders***')
+                console.log(result)
+                console.log('****************')
+
+                for (order of result['list_users_orders']){
+                    add_order(order.order_id,
+                    order.title,
+                    order.trn_hash,
+                    order.cost,
+                    order.orders_time,
+                    order.status['code'],
+                    order.photo,
+                    order.return_transaction_hash)
+                }
+            }
+          });
 
 
         // add new accomodation
@@ -583,9 +718,9 @@
 
         // connect logic
         ibay_socket.on('connect', () => {
-            console.log('connected to wallets');          
+            console.log('connected to wallets');
             })
-        
+
 
         // disconnect logic
         ibay_socket.on('disconnect', () => {
@@ -639,7 +774,7 @@
                 });
 
 
-        
+
         $('#accomodation_container').on('click', '#buy_commodity_button', function(){
             console.log($(this))
             var accomodation_title = $(this).closest('[class$=concret_accomodation_container]').find('[class=accomodation_title]').text()
@@ -664,6 +799,9 @@
                 'wallet_id': $('#wallet_select2_for_commodity').find(':selected').val()
             }
             ibay_socket.emit("buy_commodity", data={"sending_data": sending_data})
+
+
+            // $(`#accomodation_${accomodation_number}`).find('#buy_commodity_button')
 
             $('#wallet_select2_for_commodity').val('').trigger('change');
         })
@@ -720,7 +858,7 @@
         }
     )
 
-        
+
         $('#close_commodity_window').on('click', function(){
 
             clearCommodiyForm()
@@ -728,22 +866,34 @@
         })
 
 
+    ibay_socket.on('order_creation_result', (data) => {
+        console.log('===Data creation result is===')
+        console.log(data)
+        console.log('=============================')
+
+        var accomodation_id = data['accomodation_id']
+
+        console.log('=====accomodation_id=====')
+        console.log(accomodation_id)
+        console.log('=========================')
+
+        $(`#accomodation_${accomodation_id}`).remove()
+    })
 
 
 
-    
     // receive new commodity
     ibay_socket.on('add_new_commodity', (data) => {
         console.log('--->new_commodity<---')
 
-        // if data.title 
+        // if data.title
         console.log(data)
 
         add_accomodation(id=data.response.id,
-                        address=data.response.address, 
-                        currency=data.response.currency, 
-                        photo=data.response.photo, 
-                        price=data.response.price, 
+                        address=data.response.address,
+                        currency=data.response.currency,
+                        photo=data.response.photo,
+                        price=data.response.price,
                         title=data.response.title,
                         is_owning_by_current_user=data.is_owning_by_current_user)
 
@@ -757,17 +907,36 @@
         console.log(data.errors)
         console.log('========================================')
         for (error of data.errors){
-            
-            toastr.warning(error.msg)
+            toastr.warning(error.field + ': ' + error.msg)
         }
     })
 
     ibay_socket.on('receive_announcement_data', (data) => {
         console.log('===ANNOUNCEMENT===DATA===')
         console.log(data)
+        add_order(data.order_id,
+                    data.title,
+                    data.trn_hash,
+                    data.cost,
+                    data.orders_time,
+                    data.status,
+                    data.photo,
+                    )
+
+
+        // add_order(order.order_id,
+        //             order.title,
+        //             order.trn_hash,
+        //             order.cost,
+        //             order.orders_time,
+        //             order.status,
+        //             order.photo,
+        //             order.return_transaction_hash)
+
+
         // id="delivery_89"
-        
-        console.log('=========================')
+        // $(`accomodation_20`)
+         console.log('=========================')
 
     })
 

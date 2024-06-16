@@ -1,25 +1,22 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.84.0">
-    <title>Signin Template · Bootstrap v5.0</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
-    
-    
-
-    <!-- Bootstrap core CSS -->
-<!-- <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-
-    <link href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
-
-    <style>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author"
+              content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+        <meta name="generator" content="Hugo 0.84.0">
+        <title>Signin Template · Bootstrap v5.0</title>
+        <link rel="canonical"
+              href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
+        <!-- Bootstrap core CSS -->
+        <!-- <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+        <link href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css"
+              rel="stylesheet">
+        <link href="/static/static/plugin/toastr/build/toastr.min.css"
+              rel="stylesheet">
+        <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -33,52 +30,53 @@
           font-size: 3.5rem;
         }
       }
-    </style>
-
-    
-    <!-- Custom styles for this template -->
-    <link href="/static/static/css/signin.css" rel="stylesheet">
-  </head>
-  <body class="text-center">
-    
-<main class="form-signin border border-dark">
-  <form id="registration_form">
-    
-    <h1 class="h3 mb-3 fw-normal">Реєстрація</h1>
-
-    <div class="form-floating mt-1 mb-1">
-      <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com">
-      <label for="floatingEmail">Email</label>
-    </div>
-
-    <div class="form-floating mt-1 mb-1">
-        <input type="email" class="form-control" id="floatingUsername" placeholder="name@example.com">
-        <label for="floatingUsername">Username</label>
-    </div>
-
-    <div class="form-floating mt-1 mb-1">
-      <input type="password" class="form-control" id="floatingPassword" placeholder="Пароль">
-      <label for="floatingPassword">Пароль</label>
-    </div>
-
-    <div class="form-floating mt-1 mb-1">
-        <input type="password" class="form-control" id="floatingRepeatPassword" placeholder="Повторіть пароль">
-        <label for="floatingRepeatPassword">Повторіть</label>
-    </div>
-
-    <!-- <button class="btn btn-success" type="submit">Реєстрація</button> -->
-    <a href="javascript:void(0);" id="register_button" class="btn btn-success">Реєстрація</a>
-
-
-  </form>
-</main>
-
-<script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="/static/static/plugin/toastr/build/toastr.min.js"></script>
-
-
-
-<script>
+        </style>
+        <!-- Custom styles for this template -->
+        <link href="/static/static/css/signin.css" rel="stylesheet">
+    </head>
+    <body class="text-center">
+        <main class="form-signin border border-dark">
+            <form id="registration_form">
+                <h1 class="h3 mb-3 fw-normal">Реєстрація</h1>
+                <div class="form-floating mt-1 mb-1">
+                    <input type="email"
+                           class="form-control"
+                           id="floatingEmail"
+                           placeholder="name@example.com">
+                    <label for="floatingEmail">Email</label>
+                </div>
+                <div class="form-floating mt-1 mb-1">
+                    <input type="email"
+                           class="form-control"
+                           id="floatingUsername"
+                           placeholder="name@example.com">
+                    <label for="floatingUsername">Username</label>
+                </div>
+                <div class="form-floating mt-1 mb-1">
+                    <input type="password"
+                           class="form-control"
+                           id="floatingPassword"
+                           placeholder="Пароль">
+                    <label for="floatingPassword">Пароль</label>
+                </div>
+                <div class="form-floating mt-1 mb-1">
+                    <input type="password"
+                           class="form-control"
+                           id="floatingRepeatPassword"
+                           placeholder="Повторіть пароль">
+                    <label for="floatingRepeatPassword">Повторіть</label>
+                </div>
+                <!-- <button class="btn btn-success" type="submit">Реєстрація</button> -->
+                <a href="javascript:void(0);"
+                   id="register_button"
+                   class="btn btn-success">Реєстрація</a>
+            </form>
+        </main>
+        <script type="text/javascript"
+                src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript"
+                src="/static/static/plugin/toastr/build/toastr.min.js"></script>
+        <script>
   window.onload = function() {
     console.log('JQuery work!')
 
@@ -92,17 +90,17 @@
         $.ajax({
           url: window.location.href.replace('registration/', 'validate_access_token/'),
           type: "POST",
-          data: JSON.stringify({'access_token': access_token}), 
+          data: JSON.stringify({'access_token': access_token}),
           processData: false,
           contentType: false,
-          success: function(result){ 
+          success: function(result){
             console.log(result['result'])
             console.log(typeof result['result'])
             if(result['result'] == true){
               console.log(result)
               window.location.href = window.location.href.replace('registration/', 'profile/')
             }
-            // 
+            //
           }
         });
       }
@@ -114,7 +112,7 @@
 
       var email_input = document.getElementById("floatingEmail").value
       var username_input = document.getElementById("floatingUsername").value
-      
+
       var password_input = document.getElementById("floatingPassword").value;
       var repeat_password_input = document.getElementById("floatingRepeatPassword").value;
 
@@ -128,13 +126,13 @@
       $.ajax({
             url: window.location.href.replace('registration/', '') + 'registration_data/',
             type: "POST",
-            data: registration_form_data, 
+            data: registration_form_data,
             processData: false,
             contentType: false,
             success: function(result){
               if (result.status == "error"){
                   // toastr.warning("ERROR!")
-                  result.errors.forEach((error) => 
+                  result.errors.forEach((error) =>
                     {
                       var error_string = Object.keys(error)[0] + ": " + Object.values(error)[0]
                       toastr.warning(error_string)
@@ -149,7 +147,7 @@
                 console.log(x)
                 window.location.href = window.location.href.replace('registration/', 'profile/')
               }
-                
+
             },
             error: function(){
               console.log("error!");
@@ -179,6 +177,6 @@
         "hideMethod": "fadeOut"
     }
 
-</script>
-  </body>
+        </script>
+    </body>
 </html>

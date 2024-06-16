@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>jQuery validation plug-in - dynamic forms demo</title>
-	<link rel="stylesheet" media="screen" href="css/screen.css">
-	<script src="../lib/jquery.js"></script>
-	<script src="../dist/jquery.validate.js"></script>
-	<script>
+    <head>
+        <meta charset="utf-8">
+        <title>jQuery validation plug-in - dynamic forms demo</title>
+        <link rel="stylesheet" media="screen" href="css/screen.css">
+        <script src="../lib/jquery.js"></script>
+        <script src="../dist/jquery.validate.js"></script>
+        <script>
 	// only for demo purposes
 	$.validator.setDefaults({
 		submitHandler: function() {
@@ -51,8 +51,9 @@
 		});
 
 	});
-	</script>
-	<style>
+	
+        </script>
+        <style>
 	form.cmxform {
 		width: 50em;
 	}
@@ -80,12 +81,15 @@
 	select.error {
 		border: 1px dotted red;
 	}
-	</style>
-</head>
-<body>
-<h1 id="banner"><a href="https://jqueryvalidation.org/">jQuery Validation Plugin</a> Demo</h1>
-<div id="main">
-	<textarea style="display:none" id="template">
+	
+        </style>
+    </head>
+    <body>
+        <h1 id="banner">
+            <a href="https://jqueryvalidation.org/">jQuery Validation Plugin</a> Demo
+        </h1>
+        <div id="main">
+            <textarea style="display:none" id="template">
 		<tr>
 			<td>
 				<label>{0}. Item</label>
@@ -105,38 +109,44 @@
 			</td>
 			<td class='quantity-error'></td>
 		</tr>
-	</textarea>
-	<form id="orderform" class="cmxform" method="get" action="foo.html">
-		<h2 id="summary"></h2>
-		<fieldset>
-			<legend>Example with custom methods and heavily customized error display</legend>
-			<table id="orderitems">
-				<tbody>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="2">
-							<label>Totals (max 25)</label>
-						</td>
-						<td class="totals">
-							<input id="totals" name="totals" value="0" max="25" readonly="readonly" size='4'>
-						</td>
-						<td class="totals-error"></td>
-					</tr>
-					<tr>
-						<td colspan="2">&nbsp;</td>
-						<td>
-							<input class="submit" type="submit" value="Submit">
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</fieldset>
-	</form>
-	<button id="add">Add another input to the form</button>
-	<h1 id="warning">Your form contains tons of errors! Please try again.</h1>
-	<p><a href="index.html">Back to main page</a>
-	</p>
-</div>
-</body>
+</textarea>
+            <form id="orderform" class="cmxform" method="get" action="foo.html">
+                <h2 id="summary"></h2>
+                <fieldset>
+                    <legend>Example with custom methods and heavily customized error display</legend>
+                    <table id="orderitems">
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">
+                                    <label>Totals (max 25)</label>
+                                </td>
+                                <td class="totals">
+                                    <input id="totals"
+                                           name="totals"
+                                           value="0"
+                                           max="25"
+                                           readonly="readonly"
+                                           size='4'>
+                                </td>
+                                <td class="totals-error"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">&nbsp;</td>
+                                <td>
+                                    <input class="submit" type="submit" value="Submit">
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </fieldset>
+            </form>
+            <button id="add">Add another input to the form</button>
+            <h1 id="warning">Your form contains tons of errors! Please try again.</h1>
+            <p>
+                <a href="index.html">Back to main page</a>
+            </p>
+        </div>
+    </body>
 </html>

@@ -6,15 +6,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy_file import FileField
 from sqlalchemy_utils.types.choice import ChoiceType
 from src.users.models import User
-from db_config.models import Base
-
+from db_config.database import Base
 
 
 class Wallet(Base):
     __tablename__ = "wallet"
-    __table_args__ = (
-        UniqueConstraint("private_key"),
-    )
+    __table_args__ = (UniqueConstraint("private_key"),)
     id: Mapped[int] = mapped_column(primary_key=True)
     private_key: Mapped[str] = mapped_column(String(300))
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
@@ -27,10 +24,7 @@ class Wallet(Base):
 
 class Asset(Base):
     __tablename__ = "asset"
-    TYPES = (
-        ('currency', 'Currency'),
-        ('token', 'Token')
-    )
+    TYPES = (("currency", "Currency"), ("token", "Token"))
 
     id: Mapped[int] = mapped_column(primary_key=True)
     type = Column(ChoiceType(TYPES))
@@ -48,7 +42,7 @@ class Blockchain(Base):
     BLOCKCHAINTYPE = (
         ("eth_like", "Etherium_like"),
         ("bitcoin_like", "Bitcoin_like"),
-        ("unique", "Unique")
+        ("unique", "Unique"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)

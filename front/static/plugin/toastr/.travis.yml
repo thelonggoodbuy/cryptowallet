@@ -17,7 +17,7 @@ cache:
 branches:
   only:
     - develop
-    - master 
+    - master
 
 before_install:
   # Upgrade PhantomJS to v2.1.1.

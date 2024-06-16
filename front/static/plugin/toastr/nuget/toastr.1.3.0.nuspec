@@ -12,8 +12,8 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>3 Easy Steps:
 
-(1) Link to toastr.css  
-(2) Link to toastr.js 
+(1) Link to toastr.css
+(2) Link to toastr.js
 (3) Use toastr to display a toast for info, success, warning or error
 
 // Display an info toast with no title
@@ -21,7 +21,7 @@ toastr.info('Are you the 6 fingered man?')
 
 *** For other API calls, see the demo</description>
         <summary>toastr is a Javascript library for Gnome / Growl type non-blocking notifications. jQuery is required. The goal is to create a simple core library that can be customized and extended.</summary>
-        <releaseNotes>Added onFadeIn and onFadeOut callbacks. 
+        <releaseNotes>Added onFadeIn and onFadeOut callbacks.
   toastr.options.onFadeIn = function() { console.log('hello'); }
 Added option &lt;code&gt;newestOnTop&lt;/code&gt; to show toasts in oldest or newest first order.
   toastr.options.newestOnTop = false;

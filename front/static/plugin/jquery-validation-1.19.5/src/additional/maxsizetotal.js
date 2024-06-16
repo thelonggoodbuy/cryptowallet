@@ -19,4 +19,3 @@ $.validator.addMethod( "maxsizetotal", function( value, element, param ) {
 
 	return true;
 }, $.validator.format( "Total size of all files must not exceed {0} bytes." ) );
-

@@ -14,8 +14,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>3 Easy Steps:
 
-1) Link to toastr.css  and toastr-responsive.css 
-2) Link to toastr.js 
+1) Link to toastr.css  and toastr-responsive.css
+2) Link to toastr.js
 3) Use toastr to display a toast for info, success, warning or error
 
 // Display an info toast with no title

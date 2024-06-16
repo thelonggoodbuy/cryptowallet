@@ -1,7 +1,7 @@
 # 6454acf14 (2017-12-08)
 _No official release because there are only CI changes._
 
-- Resolving CI issues by manually merging in JLHwung's fork. (https://github.com/easyops-cn/toastr) 
+- Resolving CI issues by manually merging in JLHwung's fork. (https://github.com/easyops-cn/toastr)
 
 # 2.1.4 (2017-12-07)
 - Same as 2.1.3, except 2.1.4 is on NPM
@@ -49,9 +49,9 @@ _No official release because there are only CI changes._
 # 2.1.0  (2014-10-15)
 
 ## New Features
-- Prevent duplicate sequential toasts [SBero](https://github.com/sbero) | [aa083d8](https://github.com/CodeSeven/toastr/commit/ccb377b6015d557dbb987df74750b97b3aa083d8) 
+- Prevent duplicate sequential toasts [SBero](https://github.com/sbero) | [aa083d8](https://github.com/CodeSeven/toastr/commit/ccb377b6015d557dbb987df74750b97b3aa083d8)
 - Add support for top-center and bottom-center toasts [showwin](https://github.com/showwin) | [86a4798](https://github.com/CodeSeven/toastr/commit/86a4798e76c7d8516521780b7bd085d6bb4c371b)
-- Add feature allowing progress bars to be shown for toasts [TravisTX](https://github.com/TravisTX) | [PR 189](https://github.com/CodeSeven/toastr/pull/189) 
+- Add feature allowing progress bars to be shown for toasts [TravisTX](https://github.com/TravisTX) | [PR 189](https://github.com/CodeSeven/toastr/pull/189)
 
 `toastr.options.preventDuplicates = true;`
 
@@ -72,7 +72,7 @@ _No official release because there are only CI changes._
 
 ## New Features
  - None
- 
+
 ## Bug Fixes
 - positionClass changes were not being honored due to 2.0.2 release changes. Refactored getContainer to only get the container, unless a 2nd boolean parameter is passed in in which case it will also create it if the container did not exist [871c2a6](https://github.com/CodeSeven/toastr/commit/871c2a6e438bb6b996cfb80286720604a4cf00fd)
 
@@ -104,7 +104,7 @@ Optionally enable a close button
 
     toastr.options.closeButton = true;
 
-Optionally override the close button's HTML. 
+Optionally override the close button's HTML.
 
     toastr.options.closeHtml = '<button><i class="icon-off"></i></button>';
 
@@ -132,9 +132,9 @@ Using the jQuery Easing plugin (http://www.gsgd.co.uk/sandbox/jquery/easing/)
 ####Animation Method
 Use the jQuery show/hide method of your choice. These default to fadeIn/fadeOut. The methods fadeIn/fadeOut, slideDown/slideUp, and show/hide are built into jQuery.
 
-	toastr.options.showMethod = 'slideDown'; 
-	toastr.options.hideMethod = 'slideUp'; 
-	
+	toastr.options.showMethod = 'slideDown';
+	toastr.options.hideMethod = 'slideUp';
+
 
 ###Timeouts
 Control how toastr interacts with users by setting timeouts appropriately.
@@ -146,7 +146,7 @@ Control how toastr interacts with users by setting timeouts appropriately.
 
 ###Animation Changes
 The following animations options have been deprecated and should be replaced:
- 
+
  - Replace `options.fadeIn` with `options.showDuration`
  - Replace `options.onFadeIn` with `options.onShown`
  - Replace `options.fadeOut` with `options.hideDuration`
