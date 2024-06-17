@@ -26,11 +26,11 @@ class MessageService:
             messages_dict[message.id]["date_time"] = message.time_created.strftime(
                 "%d %b %H:%M"
             )
-            if message.user.photo != None:
+            if message.user.photo:
                 messages_dict[message.id]["user_photo"] = message.user.photo["url"][1:]
             else:
                 messages_dict[message.id]["user_photo"] = None
-            if message.photo != None:
+            if message.photo:
                 messages_dict[message.id]["message_photo"] = message.photo["url"][1:]
             else:
                 messages_dict[message.id]["message_photo"] = None

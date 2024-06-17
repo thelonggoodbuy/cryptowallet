@@ -4,7 +4,10 @@ from src.etherium.services.transaction_eth_service import TransactionETHService
 
 class ETHParserService:
     async def add_user_wallets_to_parser(self, sid, all_users_wallets, user_id):
-        parser_status = await redis_parser_service.add_user_to_wallets_online(
+        # parser_status = await redis_parser_service.add_user_to_wallets_online(
+        #     sid, all_users_wallets, user_id
+        # )
+        await redis_parser_service.add_user_to_wallets_online(
             sid, all_users_wallets, user_id
         )
 

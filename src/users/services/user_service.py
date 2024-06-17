@@ -21,7 +21,7 @@ class UserService:
     async def return_user_data_by_id(user_id):
         user = await user_rep_link.return_user_data_by_id(user_id)
         user_dict = {"username": user.username, "email": user.email}
-        if user.photo != None:
+        if user.photo:
             user_dict["user_photo"] = user.photo["url"][1:]
         else:
             user_dict["user_photo"] = None
@@ -35,7 +35,7 @@ class UserService:
                     "errors": validated_update_user_or_error,
                 }
 
-            case UpdateUserModel:
+            case UpdateUserModel:  # noqa: F841
                 updated_user_data = await user_rep_link.update_user(
                     validated_update_user_or_error
                 )

@@ -3,25 +3,20 @@ from crypto_parser_service.services.etherium_parser_service import ETHParserServ
 import asyncio
 import httpx
 from delivery_config.services.delivery_eth_service import DeliveryEthService
+from time import time
 
 
 @app.task
 def parse_latest_block_query():
     parser = ETHParserService()
     loop = asyncio.get_event_loop()
-    block_number = loop.run_until_complete(parser.parse_block())
+    loop.run_until_complete(parser.parse_block())
 
 
 @app.task
 def handle_block(block_number):
     loop = asyncio.get_event_loop()
     loop.run_until_complete(ETHParserService().handle_block(block_number))
-
-
-from time import time
-# import logging
-# logging.basicConfig(level=logging.INFO)
-# logger = logging.getLogger(__name__)
 
 
 @app.task

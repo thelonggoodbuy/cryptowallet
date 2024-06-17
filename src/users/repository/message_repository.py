@@ -29,7 +29,7 @@ class MessageRepository:
         async with async_session() as session:
             message = Message(text=message_from_socket.message)
             message.user = user
-            if message_from_socket.photo != None:
+            if message_from_socket.photo:
                 with open(
                     f"media/external_storage/{message_from_socket.photo}", "rb"
                 ) as photo:

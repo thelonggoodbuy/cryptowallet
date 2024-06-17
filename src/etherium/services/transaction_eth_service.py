@@ -191,7 +191,7 @@ class TransactionETHService(TransactionAbstractService):
                 # print('===========transaction===after===save===')
                 # print(transaction)
                 # print('========================================')
-            case Transaction:
+            case Transaction:  # noqa: F841
                 # print('==============>>>>>>>>>>>>>>>>>>>this transaction need to update!')
 
                 transaction_full_data = await w3_connection.eth.get_transaction(

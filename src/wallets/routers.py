@@ -246,7 +246,7 @@ async def get_transaction_from_concrete_wallet(request: Request):
         data_table_obj
     )
     total_records = dt_response["total_transactions_counter"]
-    records_filtered = len(dt_response["result_list"])
+    # records_filtered = len(dt_response["result_list"])
 
     response = {
         "draw": draw,

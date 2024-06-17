@@ -2,7 +2,8 @@ from delivery_config.services.delivery_abstract_service import DeliveryAbstractS
 from delivery_config.schemas import OrderRequestSchema, OrderRequestAsyncValidator
 from src.orders.services.order_eth_service import OrderEthService
 from src.orders.schemas import UpdateOrderSchema, OrderEvent
-from socketio_config.server import client_manager
+
+# from socketio_config.server import client_manager
 import random
 from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 from src.orders.schemas import ErrorResponse, ErrorSchema
@@ -54,6 +55,8 @@ class DeliveryEthService(DeliveryAbstractService):
 
     @classmethod
     async def try_to_start_delivery(cls, order_dict):
+        from socketio_config.server import client_manager
+
         print("--->Now this is a delivery service<---")
         print(order_dict)
         print("--------------------------------------")
@@ -78,7 +81,6 @@ class DeliveryEthService(DeliveryAbstractService):
             "trn_hash": updated_order.transaction.txn_hash,
             "cost": float(updated_order.commodity.price),
             "orders_time": (updated_order.date_time_transaction).isoformat(),
-            "status": updated_order.order_status,
             "order_id": updated_order.id,
             "user_id": user_id,
             "commodity_id": updated_order.commodity.id,
@@ -100,6 +102,8 @@ class DeliveryEthService(DeliveryAbstractService):
 
     @classmethod
     async def make_transaction_fail(cls, order_dict):
+        from socketio_config.server import client_manager
+
         update_order_data = UpdateOrderSchema(
             order_id=order_dict["order_id"],
             status="fail",
@@ -116,6 +120,8 @@ class DeliveryEthService(DeliveryAbstractService):
 
     @classmethod
     async def send_delivery(cls, order_dict):
+        from socketio_config.server import client_manager
+
         update_order_data = UpdateOrderSchema(
             order_id=order_dict["order_id"],
             status="delivery",
@@ -131,7 +137,6 @@ class DeliveryEthService(DeliveryAbstractService):
             "trn_hash": delivery_order_dict.transaction.txn_hash,
             "cost": float(delivery_order_dict.commodity.price),
             "orders_time": (delivery_order_dict.date_time_transaction).isoformat(),
-            "status": delivery_order_dict.order_status,
             "order_id": delivery_order_dict.id,
             "user_id": user_id,
             "commodity_id": delivery_order_dict.commodity.id,
@@ -151,11 +156,14 @@ class DeliveryEthService(DeliveryAbstractService):
             "=====>>>DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY DELIVERY <<<====="
         )
         print("***")
+        from socketio_config.server import client_manager
+
         delivery_order = await OrderEthService.get_oldest_delidery()
         # delivery_change = random.choice([True, False])
         delivery_change = random.choice([False, True])
 
-        if delivery_order and delivery_change == True:
+        # if delivery_order and delivery_change == True:
+        if delivery_order and delivery_change:
             sender_wallet_address = delivery_order.transaction.send_from
             sender_wallet = await WalletEtheriumService.return_wallet_per_address(
                 sender_wallet_address
@@ -169,7 +177,7 @@ class DeliveryEthService(DeliveryAbstractService):
             order_result = await OrderEthService.update_order(update_order_data)
 
             data = {
-                "status": "complete",
+                # "status": "complete",
                 "title": order_result.commodity.title,
                 "trn_hash": order_result.transaction.txn_hash,
                 "cost": float(order_result.commodity.price),
@@ -191,7 +199,10 @@ class DeliveryEthService(DeliveryAbstractService):
                 namespace="/ibay",
             )
 
-        elif delivery_order and delivery_change == False:
+        # elif delivery_order and delivery_change == False:
+        elif delivery_order and not delivery_change:
+            from socketio_config.server import client_manager
+
             # print('***')
             # print('=====>>>DELIBERY IS FALLSE!!!<<<=====')
             # print('***')

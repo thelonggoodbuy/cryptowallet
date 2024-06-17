@@ -25,7 +25,10 @@ class OrderEthService(OrderAbstractService):
         # print('Commodity in ordering!')
         # print(commodity)
         # print('=======================')
-        order = await order_eth_rep_link.create_new_order_for_pending_transaction(
+        # order = await order_eth_rep_link.create_new_order_for_pending_transaction(
+        #     transaction, commodity
+        # )
+        await order_eth_rep_link.create_new_order_for_pending_transaction(
             transaction, commodity
         )
         # print('New order exist!!!')
@@ -142,7 +145,7 @@ class OrderEthService(OrderAbstractService):
             "trn_hash": updated_order.transaction.txn_hash,
             "cost": float(updated_order.commodity.price),
             "orders_time": (updated_order.date_time_transaction).isoformat(),
-            "status": updated_order.order_status,
+            # "status": updated_order.order_status,
             "order_id": updated_order.id,
             "user_id": update_order_dеtail.user_id,
             "revert_transaction": revert_transaction["txn_hash"],

@@ -1,5 +1,6 @@
 from fastapi import Depends, APIRouter, status, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse
+from src.users.services.user_service import UserService
 
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -17,7 +18,7 @@ from jose import jwt
 from jose.exceptions import ExpiredSignatureError
 
 
-from src.users.models import User
+# from src.users.models import User
 from src.users.schemas import Token, User, UserInDB, UpdateUserModel, NewUserModel
 
 
@@ -48,7 +49,7 @@ async def validate_access_token(request: Request):
 
     if token_from_backend == token:
         try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             result = {"result": True}
         except ExpiredSignatureError:
             result = {"result": False, "cause": "token_expiced"}
@@ -110,9 +111,6 @@ async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_
 
         case RedirectResponse():
             return current_user_or_redirect
-
-
-from src.users.services.user_service import UserService
 
 
 @router.post("/users/get_current_user_data/")

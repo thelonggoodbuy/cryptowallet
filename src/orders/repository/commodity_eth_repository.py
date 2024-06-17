@@ -42,7 +42,8 @@ class CommodityEthRepository(CommodityAbstractRepository):
                 select(Commodity)
                 .outerjoin(Order, Commodity.id == Order.commodity_id)
                 .options(joinedload(Commodity.wallet).joinedload(Wallet.asset))
-                .filter(Order.id == None)
+                # .filter(Order.id == None)
+                .filter(Order.id.is_(None))
             )
 
             result = await session.execute(query)

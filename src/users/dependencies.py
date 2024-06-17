@@ -165,27 +165,27 @@ async def validate_new_user(
             )
     except EmailNotValidError:
         new_user_model.cause.append({"email": "Емейл було введено з помилкою!"})
-    if new_user_model.username == None:
+    if not new_user_model.username:
         new_user_model.cause.append({"username": "Необхідно заповнити юзернейм"})
 
     pasword_schema = PasswordValidator()
-    if pasword_schema.min(8).validate(new_user_model.password) == False:
+    if not pasword_schema.min(8).validate(new_user_model.password):
         new_user_model.cause.append(
             {"password": "Пароль не може бути меньшим, ніж 8 символів"}
         )
-    if pasword_schema.has().symbols().validate(new_user_model.password) == False:
+    if not pasword_schema.has().symbols().validate(new_user_model.password):
         new_user_model.cause.append(
             {"password": "Пароль повинен містити хочаб один знак"}
         )
-    if pasword_schema.has().lowercase().validate(new_user_model.password) == False:
+    if not pasword_schema.has().lowercase().validate(new_user_model.password):
         new_user_model.cause.append(
             {"password": "Пароль повинен містити хочаб одну маленьку літеру"}
         )
-    if pasword_schema.has().uppercase().validate(new_user_model.password) == False:
+    if not pasword_schema.has().uppercase().validate(new_user_model.password):
         new_user_model.cause.append(
             {"password": "Пароль повинен містити хочаб одну велику літеру"}
         )
-    if pasword_schema.has().digits().validate(new_user_model.password) == False:
+    if not pasword_schema.has().digits().validate(new_user_model.password):
         new_user_model.cause.append(
             {"password": "Пароль повинен містити хочаб одну цифру"}
         )

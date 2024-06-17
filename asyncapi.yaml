@@ -1,0 +1,108 @@
+asyncapi: '2.0.0'
+info:
+  title: IBayNamespace SocketIO API
+  version: '1.0.0'
+  description: Documentation for the IBayNamespace SocketIO API
+
+servers:
+  production:
+    url: ws://localhost:8000/ibay
+    protocol: wss
+
+channels:
+  connect:
+    subscribe:
+      summary: Client connection
+      description: Triggered when a client connects
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            sid:
+              type: string
+              description: Session ID of the client
+            environ:
+              type: object
+              description: Environment details
+            auth:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Authentication token
+
+  disconnect:
+    subscribe:
+      summary: Client disconnection
+      description: Triggered when a client disconnects
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            sid:
+              type: string
+              description: Session ID of the client
+
+  create_announcement:
+    subscribe:
+      summary: Create announcement
+      description: Triggered when a client creates an announcement
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            sid:
+              type: string
+              description: Session ID of the client
+            data:
+              type: object
+              description: Announcement data
+    publish:
+      summary: Announcement response
+      description: Sent to the client after creating an announcement
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            data:
+              type: object
+              description: Response data
+
+  buy_commodity:
+    subscribe:
+      summary: Buy commodity
+      description: Triggered when a client buys a commodity
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            sid:
+              type: string
+              description: Session ID of the client
+            data:
+              type: object
+              description: Purchase data
+    publish:
+      summary: Order creation result
+      description: Sent to the client after creating an order
+      message:
+        contentType: application/json
+        payload:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Status of the order creation
+            accomodation_id:
+              type: string
+              description: ID of the accommodation
+            errors:
+              type: array
+              items:
+                type: string
+              description: List of errors if any

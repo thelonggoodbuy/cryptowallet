@@ -90,11 +90,11 @@ class EtheriumCryproScanner(AbstractCryproScanner):
                 transaction_dict, wallet_data
             )
 
-            saved_transactions_list = (
-                await TransactionETHService.return_all_transactions_per_wallet(
-                    wallet_data["current_wallet_adress"]
-                )
+            # saved_transactions_list = (
+            await TransactionETHService.return_all_transactions_per_wallet(
+                wallet_data["current_wallet_adress"]
             )
+            # )
 
             # formated_transaction_list = await self.format_all_transactions_per_wallet(saved_transactions_list)
 

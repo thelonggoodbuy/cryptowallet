@@ -1,23 +1,26 @@
 from logging.config import fileConfig
-
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-
 import os
 import sys
+
 
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), ".."))
 sys.path.append(parent_dir)
 
 
-from db_config import database
-
-from alembic import context
+from db_config import database  # noqa: E402
+from alembic import context  # noqa: E402
 
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+from src.users.models import User, Message
+from src.wallets.models import Wallet, Asset, Blockchain
+from src.etherium.models import Transaction
+from src.orders.models import Commodity, Order
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -29,6 +32,12 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = database.Base.metadata
+
+
+print("-------------------------------------------")
+print(target_metadata.tables.keys())
+print("-------------------------------------------")
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

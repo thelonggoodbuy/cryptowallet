@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter
 from fastapi.responses import HTMLResponse, JSONResponse
 from typing import Annotated
-from src.users.models import User
+# from src.users.models import User
 
 from src.users.dependencies import get_current_user
 

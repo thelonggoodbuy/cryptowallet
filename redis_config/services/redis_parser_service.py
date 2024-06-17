@@ -17,7 +17,7 @@ class RedisParserService:
                 await self.redis_connection.hmset(
                     "wallet_sid_pair", mapping={address: str(online_sid_list)}
                 )
-            case byte:
+            case byte:  # noqa: F841
                 decoded_sid_list = ast.literal_eval(sid_list.decode())
                 decoded_sid_list.append(sid)
                 await self.redis_connection.hmset(
@@ -56,7 +56,7 @@ class RedisParserService:
                     "profile_wallets_online", mapping={user_id: str(wallets_data_dict)}
                 )
 
-            case bytes:
+            case bytes:  # noqa: F841
                 wallets_data_dict = ast.literal_eval(wallets_data.decode("utf-8"))
                 wallets_data_dict["connection_quantity"] += 1
                 sid_list = wallets_data_dict["sid_list"]
@@ -65,7 +65,7 @@ class RedisParserService:
                         sid_list = [
                             sid,
                         ]
-                    case list:
+                    case list:  # noqa: F841
                         sid_list.append(sid)
                 wallets_data_dict["sid_list"] = sid_list
                 wallets_data_dict["wallets_data"] = user_wallets_addresses
@@ -73,7 +73,8 @@ class RedisParserService:
                     "profile_wallets_online", mapping={user_id: str(wallets_data_dict)}
                 )
 
-        users_online = await self.redis_connection.hgetall("profile_wallets_online")
+        # users_online = await self.redis_connection.hgetall("profile_wallets_online")
+        await self.redis_connection.hgetall("profile_wallets_online")
 
         sid_online = await redis_connection.hgetall("profile_wallets_seed_user_pair")
 

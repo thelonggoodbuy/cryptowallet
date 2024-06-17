@@ -36,7 +36,7 @@ class RedisUserService:
                 user_status_dict["status"] = "new"
                 user_status_dict["user_data"] = user_data_dict
 
-            case bytes:
+            case bytes:  # noqa: F841
                 user_data_dict = ast.literal_eval(user_data.decode("utf-8"))
                 user_data_dict["connection_quantity"] += 1
                 sid_list = user_data_dict["sid_list"]
@@ -45,7 +45,7 @@ class RedisUserService:
                         sid_list = [
                             sid,
                         ]
-                    case list:
+                    case list:  # noqa: F841
                         sid_list.append(sid)
                 user_data_dict["sid_list"] = sid_list
                 await self.redis_connection.hmset(

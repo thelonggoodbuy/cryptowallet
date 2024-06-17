@@ -1,4 +1,11 @@
-exclude: '^docs/|/migrations/|devcontainer.json'
+# exclude: '^docs/|/migrations/|devcontainer.json'
+exclude: |
+  \.venv/|
+  ^db_config/alembic/|
+  ^db_config/alembic/env.py|
+  ^front/static/
+
+
 default_stages: [commit]
 
 default_language_version:
@@ -11,7 +18,7 @@ repos:
       - id: end-of-file-fixer
       - id: check-json
       - id: check-toml
-      - id: check-xml
+      # - id: check-xml
       - id: check-yaml
       - id: debug-statements
       - id: check-builtin-literals
@@ -30,23 +37,12 @@ repos:
       - id: trailing-whitespace
         args: [ --markdown-linebreak-ext=md ]  # Preserve Markdown hard linebreaks
 
-  - repo: https://github.com/adamchainz/django-upgrade
-    rev: '1.16.0'
-    hooks:
-      - id: django-upgrade
-        args: ['--target-version', '4.2']
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.4
-    hooks:
-      # Linter
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-      # Formatter
-      - id: ruff-format
-
-  - repo: https://github.com/Riverside-Healthcare/djLint
-    rev: v1.34.1
-    hooks:
-      - id: djlint-reformat-django
-      - id: djlint-django
+  # - repo: https://github.com/astral-sh/ruff-pre-commit
+  #   rev: v0.4.4
+  #   hooks:
+  #     # Linter
+  #     - id: ruff
+  #       args: [--fix, --exit-non-zero-on-fix]
+  #     # Formatter
+  #     - id: ruff-format

@@ -221,7 +221,7 @@ class WalletEtheriumService(AbstractWalletService):
                 "blockchain_photo": imported_wallet.asset.blockchain.photo["url"][1:],
                 "balance": imported_wallet.balance,
                 "room": wallet_data["room"],
-                "balance": imported_wallet.balance,
+                # "balance": imported_wallet.balance,
             }
             await return_new_wallet(imported_wallet_dictionary)
 

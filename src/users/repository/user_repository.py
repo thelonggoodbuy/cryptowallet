@@ -47,7 +47,7 @@ class UserRepository:
             user = user_object.scalars().first()
             user.username = update_data.username
 
-            if update_data.delete_image == True:
+            if update_data.delete_image:
                 user.photo = None
             elif update_data.photo:
                 print("change photo!")
@@ -57,7 +57,7 @@ class UserRepository:
 
             await session.commit()
 
-            if user.photo != None:
+            if not user.photo:
                 photo_url = user.photo["url"][1:]
             else:
                 photo_url = None

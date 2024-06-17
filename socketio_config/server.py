@@ -15,6 +15,15 @@ from src.users.services.user_service import UserService
 from src.users.services.message_service import MessageService
 
 
+from src.wallets.services.wallet_etherium_service import WalletEtheriumService
+
+# from celery_config.config import monitoring_wallets_state_task, app
+
+from src.etherium.services.transaction_eth_service import TransactionETHService
+from etherium_config.services.eth_parser import eth_parser_service
+from delivery_config.services.delivery_eth_service import DeliveryEthService
+
+
 SOCKETIO_PATH = "socket"
 CLIENT_URLS = ["http://localhost:8000", "ws://localhost:8000"]
 
@@ -109,13 +118,6 @@ server.register_namespace(MessagingNamespace("/messaging"))
 # =====================================================================================
 # =============================Waller namespace========================================
 # =====================================================================================
-
-from src.wallets.services.wallet_etherium_service import WalletEtheriumService
-
-# from celery_config.config import monitoring_wallets_state_task, app
-
-from src.etherium.services.transaction_eth_service import TransactionETHService
-from etherium_config.services.eth_parser import eth_parser_service
 
 
 class WalletProfileNamespace(socketio.AsyncNamespace):
@@ -220,9 +222,6 @@ async def return_all_transactions_per_wallet(transaction_data, sid):
 server.register_namespace(WalletProfileNamespace("/profile_wallets"))
 
 
-from delivery_config.services.delivery_eth_service import DeliveryEthService
-
-
 class IBayNamespace(socketio.AsyncNamespace):
     sid_room_pairs = {}
     sid_user_id_pairs = {}
@@ -282,22 +281,14 @@ class IBayNamespace(socketio.AsyncNamespace):
                     )
 
     async def on_buy_commodity(self, sid, data):
-        print("===>>>saving_data<<===")
-        print(data)
-        print("======================")
-
         result_dict = await DeliveryEthService.create_new_order(data)
-        # print('-----saving-----result-----')
-        # print(result_dict)
-        # print('---------------------------')
 
         if "status" in result_dict and result_dict["status"] == "success":
             response_dict = {
                 "status": "success",
                 "accomodation_id": data["sending_data"]["accomodation_id"],
             }
-            print("====SUCCESS!======")
-            # print()
+
             await client_manager.emit(
                 "order_creation_result", data=response_dict, namespace="/ibay"
             )

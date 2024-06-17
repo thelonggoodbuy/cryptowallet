@@ -43,15 +43,15 @@ class UpdateUserModel(BaseModel):
     @field_validator("password")
     def validate_password_structure(cls, value: str, values: FieldValidationInfo):
         pasword_schema = PasswordValidator()
-        if pasword_schema.min(8).validate(value) == False:
+        if not pasword_schema.min(8).validate(value):
             raise ValueError("Пароль не може бути меньшим, ніж 8 символів")
-        if pasword_schema.has().symbols().validate(value) == False:
+        if not pasword_schema.has().symbols().validate(value):
             raise ValueError("Пароль повинен містити хочаб один знак")
-        if pasword_schema.has().lowercase().validate(value) == False:
+        if not pasword_schema.has().lowercase().validate(value):
             raise ValueError("Пароль повинен містити хочаб одну маленьку літеру")
-        if pasword_schema.has().uppercase().validate(value) == False:
+        if not pasword_schema.has().uppercase().validate(value):
             raise ValueError("Пароль повинен містити хочаб одну велику літеру")
-        if pasword_schema.has().digits().validate(value) == False:
+        if not pasword_schema.has().digits().validate(value):
             raise ValueError("Пароль повинен містити хочаб одну цифру")
         return value
 
@@ -109,8 +109,12 @@ class FictiveFormData(BaseModel):
     def username(self):
         return self.username
 
+    # @property
+    # def username(self):
+    #     return self.password
+
     @property
-    def username(self):
+    def password(self):
         return self.password
 
     @property
