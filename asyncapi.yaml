@@ -1,108 +1,338 @@
-asyncapi: '2.0.0'
+asyncapi: 3.0.0
 info:
-  title: IBayNamespace SocketIO API
-  version: '1.0.0'
-  description: Documentation for the IBayNamespace SocketIO API
+  title: Async Api docs
+  version: 1.0.0
+  description: Documentation for AsyncAPI
 
 servers:
-  production:
-    url: ws://localhost:8000/ibay
-    protocol: wss
+  development:
+    host: ws://localhost:8000
+    pathname: /messaging
+    protocol: ws
+    description: messaging namespace
 
 channels:
+  chat:
+    address: /chat
+    description: Chat channel. Describe all logic for /messaging namespace.
+                  This logic also includes a disconnect event where
+                  the client is disconnected from the chat. But it is not presentet
+                  otherwise disoconnect event doesnt contant any message.
+    messages:
+      connect_message:
+        $ref: '#/components/messages/connect_message'
+      send_message_message:
+        $ref: '#/components/messages/send_message_message'
+      show_online_users_message:
+        $ref: '#/components/messages/show_online_users_message'
+      remove_user_from_chat_message:
+        $ref: '#/components/messages/remove_user_from_chat_message'
+      return_last_messages_from_chat_message:
+        $ref: '#/components/messages/return_last_messages_from_chat_message'
+      receive_last_messages_from_chat_message:
+        $ref: '#/components/messages/receive_last_messages_from_chat_message'
+      get_other_user_data_message:
+        $ref: '#/components/messages/get_other_user_data_message'
+      receive_other_user_data_message:
+        $ref: '#/components/messages/receive_other_user_data_message'
+      show_saved_message_message:
+        $ref: '#/components/messages/show_saved_message_message'
+
+
+
+operations:
+
   connect:
-    subscribe:
-      summary: Client connection
-      description: Triggered when a client connects
-      message:
-        contentType: application/json
-        payload:
-          type: object
-          properties:
-            sid:
-              type: string
-              description: Session ID of the client
-            environ:
-              type: object
-              description: Environment details
-            auth:
-              type: object
-              properties:
-                token:
-                  type: string
-                  description: Authentication token
+    action: send
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/connect_message'
 
-  disconnect:
-    subscribe:
-      summary: Client disconnection
-      description: Triggered when a client disconnects
-      message:
-        contentType: application/json
-        payload:
-          type: object
-          properties:
-            sid:
-              type: string
-              description: Session ID of the client
+  send_message:
+    action: send
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/send_message_message'
 
-  create_announcement:
-    subscribe:
-      summary: Create announcement
-      description: Triggered when a client creates an announcement
-      message:
-        contentType: application/json
-        payload:
-          type: object
-          properties:
-            sid:
-              type: string
-              description: Session ID of the client
-            data:
-              type: object
-              description: Announcement data
-    publish:
-      summary: Announcement response
-      description: Sent to the client after creating an announcement
-      message:
-        contentType: application/json
-        payload:
-          type: object
-          properties:
-            data:
-              type: object
-              description: Response data
+  show_online_users:
+    action: receive
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/show_online_users_message'
 
-  buy_commodity:
-    subscribe:
-      summary: Buy commodity
-      description: Triggered when a client buys a commodity
-      message:
-        contentType: application/json
+  remove_user_from_chat:
+    action: receive
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/remove_user_from_chat_message'
+
+  return_last_messages_from_chat:
+    action: send
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/return_last_messages_from_chat_message'
+
+  receive_last_messages_from_chat:
+    action: receive
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/receive_last_messages_from_chat_message'
+
+  get_other_user_data:
+    action: send
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/get_other_user_data_message'
+
+  receive_other_user_data:
+    action: receive
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/receive_other_user_data_message'
+
+  show_saved_message:
+    action: receive
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/show_saved_message_message'
+
+components:
+  messages:
+    connect_message:
+      summary: Action send token to backend
+      payload:
+        $ref: '#/components/schemas/connect_schema'
+      examples:
+      - name: connect_message
         payload:
-          type: object
-          properties:
-            sid:
-              type: string
-              description: Session ID of the client
+          token: 'eyJhbGciOiJIUzI1NiIfInR5cCI6IkpXVCJ9.eyJzdWIiOdJnbGlzb25VZXhhbXBsZS5jb20ifQ.bi69qVUGMVxPk9iSbaaV21o8FSBvnfLdh7S5Y34KeVo'
+      - name: deliberately_error_example
+        payload:
+          token: 'eyJhbGciOiJIUzI1NiIfInR5cCI6IkpXVCJ9.eyJzdWIiOdJnbGlzb25VZXhhbXBsZS5jb20ifQ.bi69qVUGMVxPk9iSbaaV21o8FSBvnfLdh7S5Y34KeVo'
+          some_unexist_filed: 777
+
+    send_message_message:
+      summary: Action send message to serverside
+      payload:
+        $ref: '#/components/schemas/send_message_schema'
+      examples:
+        - name: send_message_with_image
+          payload:
+            message: 'test message with photo of one greeen pixel'
+            token: 'eyJhbGciOiJIUzI1NiIfInR5cCI6IkpXVCJ9.eyJzdWIiOdJnbGlzb25VZXhhbXBsZS5jb20ifQ.bi69qVUGMVxPk9iSbaaV21o8FSBvnfLdh7S5Y34KeVo'
+            photo: b'\x00\xff\x00'
+        - name: send_message_with_image_without_image
+          payload:
+            message: 'test message without image'
+            token: 'eyJhbGciOiJIUzI1NiIfInR5cCI6IkpXVCJ9.eyJzdWIiOdJnbGlzb25VZXhhbXBsZS5jb20ifQ.bi69qVUGMVxPk9iSbaaV21o8FSBvnfLdh7S5Y34KeVo'
+
+    show_online_users_message:
+      summary: Action return data about all online users
+      payload:
+        $ref: '#/components/schemas/show_online_users_schema'
+      examples:
+        - name: 'online users list'
+          payload:
+            - id: 12,
+              username: 'Hoalim'
+              user_photo: '/media/attachment/11f5b6f4-28b3-478c-b11f-4865ba5fc2a6'
+            - id: 22,
+              username: 'Brendon'
+
+    remove_user_from_chat_message:
+      summary: Action remove user, who have become offline
+      payload:
+        $ref: '#/components/schemas/remove_user_from_chat_schema'
+      examples:
+        - name: removed_user_from_chat
+          payload:
             data:
-              type: object
-              description: Purchase data
-    publish:
-      summary: Order creation result
-      description: Sent to the client after creating an order
-      message:
-        contentType: application/json
-        payload:
+              id: 12
+              status: 'disconnected'
+
+    return_last_messages_from_chat_message:
+      summary: request throw sockets to retreave data about last 50 messages
+      payload:
+        $ref: '#/components/schemas/return_last_messages_from_chat_schema'
+      examples:
+        - name: return_last_messages_from_chat
+          payload:
+            caution: 'this message doesnt send any data'
+
+    receive_last_messages_from_chat_message:
+      summary: receive from backend 50 messages
+      payload:
+        $ref: '#/components/schemas/receive_last_messages_from_chat_schema'
+      examples:
+        - name: receive_last_messages_from_chat
+          payload:
+            '21':
+              id: 21
+              message: 'test message'
+              message_photo: '/media/attachment/11f5b6f4-28b3-478c-b11f-4865ba5fc2a6'
+              user_photo: '/media/attachment/11f5b6f4-28b3-478c-b11f-4865ba5fc2a6'
+              username: 'DouUsername'
+            '22':
+              id: 21
+              message: 'test message_2'
+              message_photo: '/media/attachment/11f5b6f4-28b3-478c-b11f-4865ba5fc2a6'
+              user_photo: '/media/attachment/11f5b6f4-28b3-478c-b11f-4865ba5fc2a6'
+              username: 'DouUsername2'
+
+    get_other_user_data_message:
+      summary: request data about user
+      payload:
+        $ref: '#/components/schemas/get_other_user_data_schema'
+      examples:
+        - name: request_data_about_user
+          payload:
+            user_id: '21'
+
+
+    receive_other_user_data_message:
+      summary: recieve data about user
+      payload:
+        $ref: '#/components/schemas/receive_other_user_data_schema'
+      examples:
+        - name: recieve_data_about_user
+          payload:
+            username: 'Dou_username'
+            email: 'test_email@gmail.com'
+            user_photo: '/media/attachment/8e8e68cc-ddb9-4275-97bb-349b3b1be41f'
+
+
+    show_saved_message_message:
+      summary: receive saved message
+      payload:
+        $ref: '#/components/schemas/show_saved_message_schema'
+      examples:
+        - name: show_saved_message
+          payload:
+            'message':
+              id: 14
+              message: 'test received new message'
+              username: 'test_user'
+              datetime: '23 чер 14:36'
+              message_photo: '/media/attachment/48a5b5c3-3e52-4524-b1e7-42682bc06a88'
+              user_photo: '/media/attachment/48a5b5c3-3e52-4524-b1e7-42682bc06a88'
+
+
+  schemas:
+    connect_schema:
+      type: object
+      properties:
+        token:
+          type: string
+
+    send_message_schema:
+      type: object
+      properties:
+        message:
+          type: string
+        token:
+          type: string
+        photo:
+          type: string
+          format: binary
+
+    show_online_users_schema:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          username:
+            type: string
+          user_photo:
+            type: string
+
+    remove_user_from_chat_schema:
+      type: object
+      properties:
+        data:
           type: object
           properties:
+            id:
+              type: integer
             status:
               type: string
-              description: Status of the order creation
-            accomodation_id:
+
+    return_last_messages_from_chat_schema:
+      type: object
+      properties:
+        caution:
+          type: string
+
+    receive_last_messages_from_chat_schema:
+      type: object
+      properties:
+        id:
+          type: object
+          properties:
+            id:
+              type: integer
+            message:
               type: string
-              description: ID of the accommodation
-            errors:
-              type: array
-              items:
-                type: string
-              description: List of errors if any
+            message_photo:
+              type: string
+            user_photo:
+              type: string
+            usermame:
+              type: string
+
+    get_other_user_data_schema:
+      type: object
+      properties:
+        user_id:
+          type: string
+
+
+    receive_other_user_data_schema:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        user-photo:
+          type: string
+
+    show_saved_message_schema:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: integer
+            message:
+              type: string
+            username:
+              type: string
+            datetime:
+              type: string
+            message_photo:
+              type: string
+            user_photo:
+              type: string
+
+
+
+        # payload:
+        #   'message':
+        #     id: 14
+        #     message: 'test received new message'
+        #     username: 'test_user'
+        #     datetime: '23 чер 14:36'
+        #     message_photo: '/media/attachment/48a5b5c3-3e52-4524-b1e7-42682bc06a88'
+        #     user_photo: '/media/attachment/48a5b5c3-3e52-4524-b1e7-42682bc06a88'

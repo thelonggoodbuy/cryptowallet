@@ -236,10 +236,14 @@
         var cookie_data = document.cookie
 
 
+
         for (var cookie of cookie_data.split('; ')){
         if (cookie.startsWith('access_token=')){
           var access_token = cookie.replace('access_token=', '')}}
 
+          console.log('--->access_token<---')
+          console.log(access_token)
+          console.log('====================')
 
         // connection to socket logic
         var chat_socket = io("ws://localhost:8000/messaging", {
@@ -318,6 +322,9 @@
         chat_socket.on('show_online_users', (data) => {
           // console.log('-----users---online----data-----')
           // console.log(message)
+          console.log('======show===online====users======')
+          console.log(data)
+          console.log('==================================')
           for (user of data){
             var current_user_quantity = $(`#user_${user['id']}`).length
             if (current_user_quantity == 0){
@@ -384,6 +391,11 @@
               // message_dict['photo'] = null
             }
 
+            console.log('===============message_dict=======================')
+            console.log(message_dict)
+            console.log('==================================================')
+
+
             // strFormData = messageFormData.toString()
             // console.log(message_dict)
             chat_socket.emit('send_message', message_dict)
@@ -399,6 +411,10 @@
 
         // listen messages from backend
         chat_socket.on("show_saved_message", (data) => {
+
+          console.log('==================!!!!!!!!!!!!!!!!!!!!!!!!!===========================')
+          console.log(data)
+          console.log('============================================================')
 
           if (data['message']['message_photo'])
           {$('#list_of_message').append(
@@ -465,6 +481,9 @@
 
         // listener for remove user from chat
         chat_socket.on("remove_user_from_chat", (data) => {
+          console.log('===============removing=====user=====from====chat=====')
+          console.log(data)
+          console.log('======================================================')
           var user_id = data['data']['id']
           user_obj = $(`#user_${user_id}`)
           user_obj.remove()
@@ -476,6 +495,7 @@
         // user_from_list
         $('#user_from_list').on('click', "li[class$='user_from_list']", function() {
           var user_id = ($(this)[0].id).replace('user_', '')
+          console.log(typeof user_id)
           data = {'user_id': user_id}
           chat_socket.emit("get_other_user_data", data)
         })

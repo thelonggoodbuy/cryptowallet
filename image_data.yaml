@@ -1,0 +1,5 @@
+type: ImageData
+properties:
+  contentType: string  # Required, specifies the MIME type (e.g., image/jpeg)
+  size: integer  # Required, indicates the size of the image in bytes
+  # data: string  # Raw binary data of the image

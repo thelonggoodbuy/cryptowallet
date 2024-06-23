@@ -55,6 +55,10 @@ class MessagingNamespace(socketio.AsyncNamespace):
         await client_manager.enter_room(sid, room="chat_room", namespace="/messaging")
         users_online = await redis_user_service.return_all_online_user()
 
+        print('======================data=====all=====users=====online=========')
+        print(users_online)
+        print('================================================================')
+
         await client_manager.emit(
             "show_online_users", data=users_online, room=sid, namespace="/messaging"
         )
