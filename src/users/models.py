@@ -18,9 +18,13 @@ class User(Base):
     password: Mapped[str] = mapped_column(String(70))
     username: Mapped[str] = mapped_column(String(70))
     is_active: Mapped[bool] = mapped_column(default=False)
+    is_admin: Mapped[bool] = mapped_column(default=False, nullable=True)
     photo = Column(FileField)
     # !
     messages: Mapped[List["Message"]] = relationship(back_populates="user")
+
+    def __str__(self):
+        return f'Користувач {self.id}. {self.email}'
 
 
 class Message(Base):

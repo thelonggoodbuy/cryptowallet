@@ -81,3 +81,19 @@ class UserService:
             case _:
                 result = {"status": "error"}
         return result
+
+    async def return_all_users():
+        all_users = await user_rep_link.return_all_users()
+        return all_users
+
+    @classmethod
+    async def check_if_user_is_admin_by_token(cls, access_token: str) -> bool:
+        jvt_result_decode = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
+        user = await cls.return_user_per_email(jvt_result_decode['sub'])
+        print('=====!!!======')
+        print(user)
+        print('==============')
+        if user.is_admin == True:
+            return True
+        else:
+            return False

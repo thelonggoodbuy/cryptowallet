@@ -325,14 +325,3 @@ components:
               type: string
             user_photo:
               type: string
-
-
-
-        # payload:
-        #   'message':
-        #     id: 14
-        #     message: 'test received new message'
-        #     username: 'test_user'
-        #     datetime: '23 чер 14:36'
-        #     message_photo: '/media/attachment/48a5b5c3-3e52-4524-b1e7-42682bc06a88'
-        #     user_photo: '/media/attachment/48a5b5c3-3e52-4524-b1e7-42682bc06a88'

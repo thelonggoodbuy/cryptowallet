@@ -27,6 +27,8 @@ class Wallet(Base):
     asset_id: Mapped[int] = mapped_column(ForeignKey("asset.id"))
     asset: Mapped["Asset"] = relationship(backref="wallets")
 
+    def __str__(self):
+        return self.address
 
 class Asset(Base):
     __tablename__ = "asset"
@@ -42,6 +44,8 @@ class Asset(Base):
 
     code: Mapped[str] = mapped_column(String(70))
 
+    def __str__(self):
+        return self.code
 
 class Blockchain(Base):
     __tablename__ = "blockchain"

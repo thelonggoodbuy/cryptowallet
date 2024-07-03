@@ -1686,6 +1686,34 @@ files = [
 ]
 
 [[package]]
+name = "itsdangerous"
+version = "2.2.0"
+description = "Safely pass data to untrusted environments and back."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "itsdangerous-2.2.0-py3-none-any.whl", hash = "sha256:c6242fc49e35958c8b15141343aa660db5fc54d4f13a1db01a3f5891b98700ef"},
+    {file = "itsdangerous-2.2.0.tar.gz", hash = "sha256:e0050c0b7da1eea53ffaf149c0cfbb5c6e2e2b69c4bef22c81fa6eb73e5f6173"},
+]
+
+[[package]]
+name = "jinja2"
+version = "3.1.4"
+description = "A very fast and expressive template engine."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "jinja2-3.1.4-py3-none-any.whl", hash = "sha256:bc5dd2abb727a5319567b7a813e6a2e7318c39f4f487cfe6c89c6f9c7d25197d"},
+    {file = "jinja2-3.1.4.tar.gz", hash = "sha256:4a3aee7acbbe7303aede8e9648d13b8bf88a429282aa6122a993f0ac800cb369"},
+]
+
+[package.dependencies]
+MarkupSafe = ">=2.0"
+
+[package.extras]
+i18n = ["Babel (>=2.7)"]
+
+[[package]]
 name = "jsonschema"
 version = "4.21.1"
 description = "An implementation of JSON Schema validation for Python"
@@ -3046,6 +3074,28 @@ files = [
 ]
 
 [[package]]
+name = "sqladmin"
+version = "0.17.0"
+description = "SQLAlchemy admin for FastAPI and Starlette"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "sqladmin-0.17.0-py3-none-any.whl", hash = "sha256:bc1cc8d6a07b815d900d730185cecd3053b745857c444ddee81dbfa15588b1b9"},
+    {file = "sqladmin-0.17.0.tar.gz", hash = "sha256:d23bfce1527495550084ed50f49af3c38fd988704643429c78b62d9f93f8677a"},
+]
+
+[package.dependencies]
+itsdangerous = {version = "*", optional = true, markers = "extra == \"full\""}
+jinja2 = "*"
+python-multipart = "*"
+sqlalchemy = ">=1.4"
+starlette = "*"
+wtforms = ">=3.1,<3.2"
+
+[package.extras]
+full = ["itsdangerous"]
+
+[[package]]
 name = "sqlalchemy"
 version = "2.0.25"
 description = "Database Abstraction Library"
@@ -3605,6 +3655,53 @@ files = [
 h11 = ">=0.9.0,<1"
 
 [[package]]
+name = "wtforms"
+version = "3.1.2"
+description = "Form validation and rendering for Python web development."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "wtforms-3.1.2-py3-none-any.whl", hash = "sha256:bf831c042829c8cdbad74c27575098d541d039b1faa74c771545ecac916f2c07"},
+    {file = "wtforms-3.1.2.tar.gz", hash = "sha256:f8d76180d7239c94c6322f7990ae1216dae3659b7aa1cee94b6318bdffb474b9"},
+]
+
+[package.dependencies]
+markupsafe = "*"
+
+[package.extras]
+email = ["email-validator"]
+
+[[package]]
+name = "wtforms-appengine"
+version = "0.1"
+description = "Appengine tools for WTForms"
+optional = false
+python-versions = "*"
+files = [
+    {file = "WTForms-Appengine-0.1.zip", hash = "sha256:56824d785458a8da68fab3d3ba3561831115965197a85a624e4bb9534c69fe19"},
+    {file = "WTForms_Appengine-0.1-py2.py3-none-any.whl", hash = "sha256:a4e000db66185bcedb007ecd24fc1b311bb62139d455b1088382a8fcce329973"},
+    {file = "WTForms_Appengine-0.1-py27-none-any.whl", hash = "sha256:2f38d2c73e52ae7d8ac75c32e83bfe76b9789f5d8775e7079173709b31e05ac2"},
+]
+
+[package.dependencies]
+WTForms = ">=1.0.5"
+
+[[package]]
+name = "wtforms-sqlalchemy"
+version = "0.4.1"
+description = "SQLAlchemy tools for WTForms"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "WTForms-SQLAlchemy-0.4.1.tar.gz", hash = "sha256:370f52b738527cf6d8ab78d3488afb9342666144da2637e0cf8b5ae522e8a4db"},
+    {file = "WTForms_SQLAlchemy-0.4.1-py3-none-any.whl", hash = "sha256:df3965015b60de172f4b35e691a47d9913d56bb0abb62c620edd04c1376979e3"},
+]
+
+[package.dependencies]
+SQLAlchemy = ">=1.4"
+WTForms = ">=3.1"
+
+[[package]]
 name = "yarl"
 version = "1.9.4"
 description = "Yet another URL library"
@@ -3710,4 +3807,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.9"
-content-hash = "557c0b0e39d9a56eabdcbc56be477bed1124c2dbb0d6f12c8d863c10bfdb3ba3"
+content-hash = "b2d082d09acd6b3ebf6de33c13f5113cbc1ef8316862b403ae38705667df038e"

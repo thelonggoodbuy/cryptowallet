@@ -100,4 +100,13 @@ class UserRepository:
         return fictive_form_data
 
 
+    async def return_all_users(self):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(User)
+            result = await session.execute(query)
+            users = result.scalars()
+            await session.commit()
+            return users
+
 user_rep_link = UserRepository()

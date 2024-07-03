@@ -9,19 +9,11 @@ from datetime import datetime
 from db_config.database import Base
 
 
-# from db_config.models import Base
-
-# class Base(DeclarativeBase):
-#     pass
-
-
 class Transaction(Base):
     __tablename__ = "transaction"
     STATUS = (("success", "Success"), ("fail", "Fail"), ("pending", "Pending"))
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    # wallet_id: Mapped[int] = mapped_column(ForeignKey("wallet.id"))
-    # wallet: Mapped["Wallet"] = relationship(backref="transactions")
     send_from: Mapped[str] = mapped_column(String(100))
     send_to: Mapped[str] = mapped_column(String(100))
     value = Column(DECIMAL(22, 18))
@@ -29,3 +21,6 @@ class Transaction(Base):
     date_time_transaction = Column(DateTime, default=datetime.now)
     txn_fee = Column(DECIMAL(22, 18))
     status = Column(ChoiceType(STATUS))
+
+    def __str__(self):
+        return self.txn_hash

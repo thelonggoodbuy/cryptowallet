@@ -26,7 +26,7 @@ class Commodity(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     # wallet FK
     wallet_id: Mapped[int] = mapped_column(ForeignKey("wallet.id"))
-    wallet: Mapped["Wallet"] = relationship(backref="wallets")
+    wallet: Mapped["Wallet"] = relationship(backref="commodity")
 
     title: Mapped[str] = mapped_column(String(70))
     # price: mapped_column(DECIMAL(10, 9))
@@ -34,6 +34,10 @@ class Commodity(Base):
 
     # photo: mapped_column(FileField())
     photo = Column(FileField())
+
+
+    def __str__(self):
+        return self.title
 
 
 class Order(Base):
@@ -56,24 +60,14 @@ class Order(Base):
     transaction: Mapped["Transaction"] = relationship(
         "Transaction", foreign_keys=[transaction_id], backref="orders"
     )
-
     return_transaction_id: Mapped[int] = mapped_column(
         ForeignKey("transaction.id"), nullable=True
     )
     return_transaction: Mapped["Transaction"] = relationship(
         "Transaction", foreign_keys=[return_transaction_id], backref="return_orders"
     )
-
-    # # one to one Transaction
-    # transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"))
-    # transaction: Mapped["Transaction"] = relationship(backref="orders")
-
-    # return_transaction_id: Mapped[int] = mapped_column(ForeignKey("transaction.id"), nullable=True)
-    # return_transaction: Mapped["Transaction"] = relationship("Transaction", backref="return_orders", foreign_keys=[return_transaction_id])
-
-    # date_time_transaction: mapped_column(DATETIME())
-    # date_time_transaction = Column(DATETIME())
     date_time_transaction = Column(DateTime, default=datetime.now)
-    # order_status: Mapped[str] = mapped_column(ENUM("new", "delivery", "complete", "fail"))
-    # order_status: Mapped[str] = mapped_column(ENUM("new", "delivery", "complete", "fail"))
     order_status = Column(ChoiceType(ORDER_STATUS))
+
+    def __str__(self):
+        return f'Замовлення {self.id}'
