@@ -6,7 +6,7 @@ import locale
 from propan_config.router import add_to_returning_saved_message_query
 
 
-locale.setlocale(locale.LC_TIME, "uk_UA")
+locale.setlocale(locale.LC_TIME, "uk_UA.UTF-8")
 
 
 class MessageService:

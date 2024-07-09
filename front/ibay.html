@@ -55,22 +55,22 @@
         <hr>
         <ul class="nav nav-pills flex-column lg-auto">
         <li class="nav-item">
-            <a href="#" class="nav-link text-white fs-4">
+            <a href="#" class="nav-link text-white fs-4" id="profile_link">
             Профіль
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white  fs-4">
+            <a href="#" class="nav-link text-white  fs-4" id="wallets_link">
             Гаманець
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link active fs-4"aria-current="page">
+            <a href="#" class="nav-link active fs-4"aria-current="page" id="ibay_link">
             iBay
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white fs-4">
+            <a href="#" class="nav-link text-white fs-4" id="chat_link">
             Чат
             </a>
         </li>
@@ -93,8 +93,8 @@
 
 
                 </ul>
-                <a href="#" class="nav-link px-2 mx-3 link-dark fs-4">Username</a>
-                <img src="/static/static/image/portrait.jpg" alt="mdo" width="50" height="50" class="img-fluid">
+                <a href="#" class="username nav-link px-2 mx-3 link-dark fs-4" id="top_profile_link">Username</a>
+                <img src="/static/static/image/portrait.jpg" alt="mdo" width="50" height="50" class="portrait_jpg img-fluid">
               </div>
             <!-- </div> -->
           </header>
@@ -103,11 +103,11 @@
             <div class="bg-dark p-4">
               <ul>
                 <li><h5 class="text-white h4">Collapsed content</h5></li>
-                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Профіль</a></span></li>
-                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Гаманець</a></span></li>
-                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">iBay</a></span></li>
-                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Чат</a></span></li>
-                <li><h5 class="text-white h4">Username</h5></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none" id="mobile_profile_link">Профіль</a></span></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none" id="mobile_wallets_link">Гаманець</a></span></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none" id="mobile_ibay_link">iBay</a></span></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none" id="mobile_chat_link">Чат</a></span></li>
+                <li><h5 class="username text-white h4">Username</h5></li>
               </ul>
             </div>
           </div>
@@ -250,150 +250,9 @@
 
 <div class="row" id="delivery_container">
 
-    <!-- <div class="col-10 col-lg-5 border mx-3 my-3 py-3" id="delivery_77">
-    <div class="row">
-        <div class="col-3 d-none d-xxl-block text-center my-auto">
-            <img src="/static/static/image/рыбка.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
-        </div>
-        <div class="col-12 col-xxl-8">
-            <div class="row">
-                <div class="col-3 me-3">
-                    <p>Назва</p>
-                </div>
-                <div class="col-8">
-                    <p>іграшка рибка</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-3 me-3">
-                    <p>Тразакція</p>
-                </div>
-                <div class="col-8">
-                    <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-3 me-3">
-                    <p>Ціна</p>
-                </div>
-                <div class="col-8">
-                    <p>1 ETH</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-3 me-3">
-                <p>Час замовлення</p>
-                </div>
-                <div class="col-8">
-                    <p>15.08.2022</p>
-                </div>
-            </div>
-
-            <div class="row">
-            <div class="col-3 me-3">
-                <p>Статус</p>
-            </div>
-            <div class="col-8">
-                <p>Новий</p>
-            </div>
-            </div>
-
-            <div class="row">
-            <div class="col-3 me-3">
-                <p>Повернення</p>
-            </div>
-            <div class="col-8">
-                <p class="text-break text-primary">C4Fwdsygb6uL6iZ2dd6dHCdnw5FB2oZNCdpQ1F5kQ7Q9</p>
-            </div>
-            </div>
-
-        </div>
-    </div>
-    </div> -->
-    <!-- ************************************************************************************ -->
-
-
-    <!-- <div class="col-10 col-lg-5 border mx-3 my-3 py-3" id="delivery_89">
-    <div class="row">
-        <div class="col-3 d-none d-xxl-block text-center my-auto">
-            <img src="/static/static/image/fishing_rood.jpg" class="img-fluid rounded-start" style="max-height: 150px;" alt="фото товару">
-        </div>
-        <div class="col-12 col-xxl-8">
-            <div class="row">
-                <div class="col-3 me-3">
-                    <p>Назва</p>
-                </div>
-                <div class="col-8">
-                    <p>вудилище</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-3 me-3">
-                    <p>Тразакція</p>
-                </div>
-                <div class="col-8">
-                    <p class="text-break text-primary">afdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-3 me-3">
-                    <p>Ціна</p>
-                </div>
-                <div class="col-8">
-                    <p>7 ETH</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-3 me-3">
-                <p>Час замовлення</p>
-                </div>
-                <div class="col-8">
-                    <p>15.08.2022</p>
-                </div>
-            </div>
-
-            <div class="row">
-            <div class="col-3 me-3">
-                <p>Статус</p>
-            </div>
-            <div class="col-8">
-                <p>Новий</p>
-            </div>
-            </div>
-
-            <div class="row">
-            <div class="col-3 me-3">
-                <p>Повернення</p>
-            </div>
-            <div class="col-8">
-                <p class="text-break text-primary">C4Fwdsygb6uL6iZ2dd6dHCdnw5FB2oZNCdpQ1F5kQ7Q9</p>
-            </div>
-            </div>
-
-        </div>
-    </div>
-    </div> -->
-</div>
-<!-- ************************************************************************************ -->
-
-
-
-
+ </div>
 
 </div>
-<!-- <h1>3</h1> -->
-
-
-
-
-    <!-- header -->
-
 
     </main>
 
@@ -413,6 +272,48 @@
 
         var cookie_data = document.cookie
 
+
+        $.ajax({
+            url: window.location.href.replace('ibay/', 'users/get_current_user_data/'),
+            type: "POST",
+            data: JSON.stringify({'access_token': access_token}),
+            processData: false,
+            contentType: false,
+            success: function(result){
+                console.log('This is your current user data:')
+                console.log(result)
+                var username_data = result['username']
+                var email_data = result['email']
+
+              for(element of $("[class^='username']")){
+                    $(element).text(username_data)
+              }
+
+              $("[class^='portrait_jpg']").each(function(image_obj){
+
+                if(result['photo_url'] == null){
+                // console.log(result['photo_url'])
+                // console.log('opt 1')
+                } else {
+                // console.log(result['photo_url'])
+                // console.log('opt 2')
+                $(this)[0].src=result['photo_url']
+                }
+                }
+                )
+
+
+
+            }})
+
+
+
+
+
+
+
+
+
         toastr.options = {
           "closeButton": true,
           "debug": false,
@@ -431,6 +332,19 @@
           "hideMethod": "fadeOut"
       }
 
+      //list of links!
+        $('#profile_link').attr('href', window.location.href.replace('ibay/', 'users/profile/'))
+        $('#top_profile_link').attr('href', window.location.href.replace('ibay/', 'users/profile/'))
+        $('#mobile_profile_link').attr('href', window.location.href.replace('ibay/', 'users/profile/'))
+
+        $('#wallets_link').attr('href', window.location.href.replace('ibay/', 'wallets/'))
+        $('#mobile_wallets_link').attr('href', window.location.href.replace('ibay/', 'wallets/'))
+
+        $('#ibay_link').attr('href', window.location.href)
+        $('#mobile_ibay_link').attr('href', window.location.href)
+
+        $('#chat_link').attr('href', window.location.href.replace('ibay/', 'users/chat/'))
+        $('#mobile_chat_link').attr('href', window.location.href.replace('ibay/', 'users/chat/'))
 
 
 
@@ -705,10 +619,14 @@
         for (var cookie of cookie_data.split('; ')){
         if (cookie.startsWith('access_token=')){
           var access_token = cookie.replace('access_token=', '')}}
+          var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '') + '/ibay'
+            print('===socket_address===')
+            print(socket_address)
+            print('====================')
 
 
         // connection to socket logic
-        var ibay_socket = io("ws://localhost:8000/ibay", {
+        var ibay_socket = io(socket_address, {
           path: "/socket/ws/socket.io",
           auth: {
             token: access_token

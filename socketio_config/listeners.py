@@ -17,9 +17,13 @@ from socketio_config.server import (
     return_new_wallet,
     return_all_transactions_per_wallet,
 )
+import os
 
 
-rabbit_sockets_listener_router = RabbitRouter("amqp://guest:guest@localhost:5672")
+RABBIT_ADDRESS = os.environ.get('RABBIT_ADDRESS')
+
+
+rabbit_sockets_listener_router = RabbitRouter(RABBIT_ADDRESS)
 
 
 @rabbit_router.broker.handle(

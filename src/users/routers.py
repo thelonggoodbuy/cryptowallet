@@ -1,6 +1,7 @@
 from fastapi import Depends, APIRouter, status, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse
 from src.users.services.user_service import UserService
+import os
 
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -31,8 +32,11 @@ from src.users.dependencies import (
 )
 
 
-SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
-ALGORITHM = "HS256"
+# SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
+# ALGORITHM = "HS256"
+SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+ALGORITHM = os.environ.get('JWT_ALGORITHM')
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 0.25
 
 
@@ -101,7 +105,7 @@ async def login(request: Request):
     return HTMLResponse(content=data, status_code=200)
 
 
-@router.get("/users/profile/", response_class=HTMLResponse)
+@router.get("/users/profile/", response_class=HTMLResponse, name="user_profile")
 async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_user)]):
     match current_user_or_redirect:
         case UserInDB():

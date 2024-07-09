@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+
+  nginx:
+    build:
+      context: ./nginx
+    volumes:
+      - static_volume:/usr/src/app/front
+    ports:
+      - 80:80
+    depends_on:
+      - asgi-web
+
+  asgi-web:
+    build: .
+    command: uvicorn fastapi_config.main:app --host 0.0.0.0 --port 8000
+    # command: sh -c "sleep 45 && uvicorn fastapi_config.main:app --host 0.0.0.0 --port 8000"
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - ./.env
+    ports:
+      - 8000:8000
+    # depends_on:
+    #   - db
+    #   - rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      # db:
+        # condition: service_healthy
+
+
+  db:
+    image: postgres:15.0
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -q -h localhost -p 5432 -U maxim"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+
+
+  redis:
+    image: redis:7.2
+    depends_on:
+      - asgi-web
+      - db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  celery_with_block-parser-query:
+    build:
+      context: .
+    command: celery -A celery_config.tasks worker -l info -Q parse_latest_block_query -n worker_1 --concurrency=1 --loglevel=info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - asgi-web
+
+  celery_with_block-handler-query:
+    build:
+      context: .
+    command: celery -A celery_config.tasks worker -l info -Q handle_block_query -n worker_2 --concurrency=1 --loglevel=info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - asgi-web
+
+  celery_with_block-oldest_delivery_query:
+    build:
+      context: .
+    command: celery -A celery_config.tasks worker -l info -Q handle_block_query -n worker_2 --concurrency=1 --loglevel=info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - asgi-web
+
+  celery_with_block-main-celery:
+    build:
+        context: .
+    command: celery -A celery_config.tasks worker --loglevel=info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - asgi-web
+
+  celery-beat:
+    build:
+        context: .
+    command: celery -A celery_config.config beat -l info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - asgi-web
+      - celery_with_block-parser-query
+      - celery_with_block-handler-query
+      - celery_with_block-oldest_delivery_query
+      - celery_with_block-main-celery
+
+volumes:
+  postgres_data:
+  static_volume:

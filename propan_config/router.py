@@ -2,11 +2,15 @@
 from pydantic import BaseModel
 from propan.fastapi import RabbitRouter
 from propan.brokers.rabbit import RabbitExchange, RabbitQueue
+import os
 # from fastapi_config.main import app
 
 # propan_config/broker.py
 
-rabbit_router = RabbitRouter("amqp://guest:guest@localhost:5672")
+RABBIT_ADDRESS = os.environ.get('RABBIT_ADDRESS')
+
+
+rabbit_router = RabbitRouter(RABBIT_ADDRESS)
 # app = FastAPI(lifespan=router.lifespan_context)
 
 exch = RabbitExchange("exchange", auto_delete=True)

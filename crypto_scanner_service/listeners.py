@@ -4,13 +4,16 @@ from propan_config.router import (
     queue_get_all_transcations,
     rabbit_router,
 )
-
-
 from crypto_scanner_service.services.eth_crypro_scanner import etherium_crypro_scanner
+import os
+
+
+RABBIT_ADDRESS = os.environ.get('RABBIT_ADDRESS')
+
 
 
 rabbit_etherium_service_listener_router = RabbitRouter(
-    "amqp://guest:guest@localhost:5672"
+    RABBIT_ADDRESS
 )
 
 

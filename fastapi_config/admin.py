@@ -154,7 +154,8 @@ class AdminAuth(AuthenticationBackend):
         if is_admin_status == True:
             return True
         else:
-            return RedirectResponse(url="http://127.0.0.1:8000/users/profile/")
+            # return RedirectResponse(url="http://127.0.0.1:8000/users/profile/")
+            return RedirectResponse(url=request.url_for('user_profile'))
 
 
 authentication_backend = AdminAuth(secret_key="TestAdminSecretKey")

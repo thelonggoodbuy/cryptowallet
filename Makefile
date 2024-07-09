@@ -1,7 +1,12 @@
 run-dev-clear:
 	clear
+	# export CRYPTO_WALLET_ENV=local
+	export USE_LOCAL_ENV=true && \
 	uvicorn fastapi_config.main:app --reload
-	# propan run -p 5672:5672 propan_config.app:app
+
+run-docker-clear:
+	clear
+	uvicorn fastapi_config.main:app --reload
 
 run-dev:
 	uvicorn fastapi_config.main:app --reload

@@ -10,6 +10,12 @@ from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 
 from socketio_config.server import client_manager
 from src.orders.services.order_eth_service import OrderEthService
+import os
+
+WSS_SEPOLIA_INFURA_LINK = os.environ.get('WSS_SEPOLIA_INFURA_LINK')
+HTTPS_SEPOLIA_INFURA_LINK = os.environ.get('HTTPS_SEPOLIA_INFURA_LINK')
+FASTAPI_HEALTH_LINK = os.environ.get('FASTAPI_HEALTH_LINK')
+
 
 
 class ETHParserService:
@@ -25,12 +31,12 @@ class ETHParserService:
 
     web3_connection = Web3(
         Web3.WebsocketProvider(
-            "wss://sepolia.infura.io/ws/v3/245f010db1cf410f87552fb31909a726"
+            WSS_SEPOLIA_INFURA_LINK
         )
     )
     web3_async_connection = AsyncWeb3(
         AsyncWeb3.AsyncHTTPProvider(
-            "https://sepolia.infura.io/v3/245f010db1cf410f87552fb31909a726"
+            HTTPS_SEPOLIA_INFURA_LINK
         )
     )
     sender_message = "Знято {} TRX з гаманця {}"
@@ -50,7 +56,7 @@ class ETHParserService:
 
         async with aiohttp.ClientSession() as session:
             async with session.ws_connect(
-                "wss://sepolia.infura.io/ws/v3/245f010db1cf410f87552fb31909a726"
+                WSS_SEPOLIA_INFURA_LINK
             ) as connection:
                 dictionary = {
                     "id": 1,
@@ -92,7 +98,7 @@ class ETHParserService:
         can be raised to stop the loop.
         """
         async with httpx.AsyncClient() as client:
-            fastapi_url = "http://localhost:8000/health"
+            fastapi_url = FASTAPI_HEALTH_LINK
             await client.get(fastapi_url)
 
     @classmethod

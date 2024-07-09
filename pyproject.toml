@@ -44,6 +44,7 @@ wtforms = "^3.1.2"
 wtforms-appengine = "^0.1"
 wtforms-sqlalchemy = "^0.4.1"
 itsdangerous = "^2.2.0"
+python-dotenv = "^1.0.1"
 
 
 [build-system]

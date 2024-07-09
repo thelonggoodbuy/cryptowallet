@@ -22,26 +22,21 @@ from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 from src.etherium.services.transaction_eth_service import TransactionETHService
 from etherium_config.services.eth_parser import eth_parser_service
 from delivery_config.services.delivery_eth_service import DeliveryEthService
-
+import os
 
 SOCKETIO_PATH = "socket"
 CLIENT_URLS = ["http://localhost:8000", "ws://localhost:8000"]
 
-url = "amqp://guest:guest@localhost:5672"
-
-client_manager = socketio.AsyncAioPikaManager(url)
+# url = "amqp://guest:guest@localhost:5672"
+RABBIT_ADDRESS = os.environ.get('RABBIT_ADDRESS')
+client_manager = socketio.AsyncAioPikaManager(RABBIT_ADDRESS)
 server = socketio.AsyncServer(
     async_mode="asgi", cors_allowed_origins="*", client_manager=client_manager
 )
 socket_app = socketio.ASGIApp(socketio_server=server, socketio_path="socket")
-# w3_connection = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/245f010db1cf410f87552fb31909a726'))
 
-# socket_manager = socketio.AsyncAioPikaManager('amqp://')
-
-# socket_app = socketio.ASGIApp(socketio_server=sio, socketio_path='socket')
-
-SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
-ALGORITHM = "HS256"
+# SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
+# ALGORITHM = "HS256"
 
 
 # --------->>>>>messaging logic<<<<<<<<-------------------------------------------
@@ -128,6 +123,7 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
     sid_room_pairs = {}
 
     async def on_connect(self, sid, environ, auth):
+        print('=====================Wallets----connection!!!!!!!!=====================')
         email = await UserService.return_email_by_token(token=auth["token"])
         user = await UserService.return_user_per_email(email)
         all_users_wallets = await WalletEtheriumService.return_wallets_per_user_email(

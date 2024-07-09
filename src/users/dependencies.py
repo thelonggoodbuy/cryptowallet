@@ -1,5 +1,6 @@
 from fastapi import Depends, status, HTTPException, Request
 from starlette.responses import RedirectResponse
+import os
 
 from passlib.context import CryptContext
 from email_validator import validate_email, EmailNotValidError
@@ -17,8 +18,12 @@ from src.users.services.user_service import UserService
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="token")
 
-SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
-ALGORITHM = "HS256"
+# SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
+# ALGORITHM = "HS256"
+
+SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+ALGORITHM = os.environ.get('JWT_ALGORITHM')
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 0.25
 
 

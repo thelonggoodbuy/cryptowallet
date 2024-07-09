@@ -54,22 +54,22 @@
         <hr>
         <ul class="nav nav-pills flex-column lg-auto">
         <li class="nav-item">
-            <a href="#" class="nav-link text-white fs-4">
+            <a href="#" class="nav-link text-white fs-4"  id="profile_link">
             Профіль
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white  fs-4">
+            <a href="#" class="nav-link text-white  fs-4" id="wallets_link">
             Гаманець
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link active fs-4"aria-current="page">
+            <a href="#" class="nav-link active fs-4" id="ibay_link">
             iBay
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white fs-4">
+            <a href="#" class="nav-link text-white fs-4" aria-current="page" id="chat_link">
             Чат
             </a>
         </li>
@@ -92,8 +92,8 @@
 
 
                 </ul>
-                <a href="#" class="nav-link px-2 mx-3 link-dark fs-4">Username</a>
-                <img src="/static/static/image/portrait.jpg" alt="mdo" width="50" height="50" class="img-fluid">
+                <a href="#" class="username nav-link px-2 mx-3 link-dark fs-4">Username</a>
+                <img src="/static/static/image/portrait.jpg" alt="mdo" width="50" height="50" class="portrait_jpg img-fluid">
               </div>
             <!-- </div> -->
           </header>
@@ -102,11 +102,11 @@
             <div class="bg-dark p-4">
               <ul>
                 <li><h5 class="text-white h4">Collapsed content</h5></li>
-                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Профіль</a></span></li>
-                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Гаманець</a></span></li>
-                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">iBay</a></span></li>
-                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none">Чат</a></span></li>
-                <li><h5 class="text-white h4">Username</h5></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none" id="mobile_profile_link">Профіль</a></span></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none" id="mobile_wallets_link">Гаманець</a></span></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none" id="mobile_ibay_link">iBay</a></span></li>
+                <li><span class="text-white"><a href="#" class="link-light" style="text-decoration:none" id="mobile_chat_link">Чат</a></span></li>
+                <li><h5 class="username text-white h4">Username</h5></li>
               </ul>
             </div>
           </div>
@@ -237,6 +237,9 @@
 
 
 
+
+
+
         for (var cookie of cookie_data.split('; ')){
         if (cookie.startsWith('access_token=')){
           var access_token = cookie.replace('access_token=', '')}}
@@ -245,6 +248,9 @@
           console.log(access_token)
           console.log('====================')
 
+
+        var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '') + '/messaging'
+
         // connection to socket logic
         var chat_socket = io("ws://localhost:8000/messaging", {
           path: "/socket/ws/socket.io",
@@ -252,6 +258,50 @@
             token: access_token
           }
         })
+
+        $.ajax({
+            url: window.location.href.replace('ibay/', 'users/get_current_user_data/'),
+            type: "POST",
+            data: JSON.stringify({'access_token': access_token}),
+            processData: false,
+            contentType: false,
+            success: function(result){
+                console.log('This is your current user data:')
+                console.log(result)
+                var username_data = result['username']
+                var email_data = result['email']
+
+              for(element of $("[class^='username']")){
+                    $(element).text(username_data)
+              }
+
+              $("[class^='portrait_jpg']").each(function(image_obj){
+
+                if(result['photo_url'] == null){
+                // console.log(result['photo_url'])
+                // console.log('opt 1')
+                } else {
+                // console.log(result['photo_url'])
+                // console.log('opt 2')
+                $(this)[0].src=result['photo_url']
+                }
+                }
+                )
+            }})
+
+                      //list of links!
+        $('#profile_link').attr('href', window.location.href.replace('users/chat/', 'users/profile/'))
+        $('#top_profile_link').attr('href', window.location.href.replace('users/chat/', 'users/profile/'))
+        $('#mobile_profile_link').attr('href', window.location.href.replace('users/chat/', 'users/profile/'))
+
+        $('#wallets_link').attr('href', window.location.href.replace('users/chat/', 'wallets/'))
+        $('#mobile_wallets_link').attr('href', window.location.href.replace('users/chat/', 'wallets/'))
+
+        $('#ibay_link').attr('href', window.location.href.replace('users/chat/', 'ibay/'))
+        $('#mobile_ibay_link').attr('href', window.location.href.replace('users/chat/', 'ibay/'))
+
+        $('#chat_link').attr('href', window.location.href)
+        $('#mobile_chat_link').attr('href', window.location.href)
 
 
         // connect logic

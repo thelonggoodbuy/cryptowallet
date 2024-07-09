@@ -4,12 +4,19 @@ from web3.eth import AsyncEth
 from aioetherscan import Client as AiotherscanClient
 from aiohttp_retry import ExponentialRetry
 from asyncio_throttle import Throttler
+import os
+
 
 
 # web3 py settings
+HTTPS_SEPOLIA_INFURA_LINK = os.environ.get('HTTPS_SEPOLIA_INFURA_LINK')
+ETHERSCAN_API_KEY = os.environ.get('ETHERSCAN_API_KEY')
+
+
+
 w3_connection = Web3(
     AsyncWeb3.AsyncHTTPProvider(
-        "https://sepolia.infura.io/v3/245f010db1cf410f87552fb31909a726"
+        HTTPS_SEPOLIA_INFURA_LINK
     ),
     modules={"eth": (AsyncEth,)},
     middlewares=[],
@@ -21,7 +28,7 @@ def aiotherscan_client_executor(async_func):
         throttler = Throttler(rate_limit=1, period=6.0)
         retry_options = ExponentialRetry(attempts=2)
         aiotherscan_client = AiotherscanClient(
-            "1A17HIRIZMJXY6JMPQ15BEQQYJJT4CQFPJ",
+            ETHERSCAN_API_KEY,
             network="sepolia",
             throttler=throttler,
             retry_options=retry_options,

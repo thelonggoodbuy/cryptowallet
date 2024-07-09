@@ -1,11 +1,13 @@
 from jose import jwt
 from src.users.repository.user_repository import user_rep_link
-
+import os
 # from src.users.dependencies import get_password_hash
 
 
-SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
-ALGORITHM = "HS256"
+# SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
+# ALGORITHM = "HS256"
+SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+ALGORITHM = os.environ.get('JWT_ALGORITHM')
 
 
 class UserService:
@@ -54,23 +56,6 @@ class UserService:
                         user_after_validation
                     )
                 )
-                # new_user = models.User(
-                #     email=user_after_validation.email,
-                #     # password=get_password_hash(user_after_validation.password),
-                #     username=user_after_validation.username,
-                #     is_active=True
-                # )
-                # db.add(new_user)
-                # db.commit()
-                # db.refresh(new_user)
-
-                # fictive_form_data = FictiveFormData(username=new_user.email,
-                #                                     password=new_user.password,
-                #                                     scopes=['remember_me:true',])
-
-                # token = await login_for_access_token(fictive_form_data,
-                #                     response,
-                #                     db)
 
                 result = {
                     "status": "validated",
