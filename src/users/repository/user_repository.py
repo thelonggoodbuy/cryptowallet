@@ -109,4 +109,14 @@ class UserRepository:
             await session.commit()
             return users
 
+
+    async def check_if_admin_user_exist(self):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(User).filter(User.is_admin == True)
+            user = await session.execute(query)
+            result = user.scalars().first()
+            await session.commit()
+        return result
+
 user_rep_link = UserRepository()

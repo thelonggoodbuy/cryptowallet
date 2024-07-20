@@ -93,17 +93,31 @@ async def get_current_user(request: Request):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    print('===request_data===')
+    # print(request.url.path)
+    print(request['path'])
+    print(request.__dict__)
+    print('------------------')
     try:
         token = request.cookies["access_token"]
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
-            raise credentials_exception
+            # print('1')
+            raise JWTError
         token_data = TokenData(username=username)
 
         user = await get_user(email=token_data.username)
         if user is None:
-            raise credentials_exception
+            print('2')
+            redirect_url = "/users/login/"
+            if request['path'] != ('/users/login/' or '/users/registration/'):
+                return RedirectResponse(
+                        url=redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT
+                    )
+            # else:
+            #     raise
+            # raise credentials_exception
         return user
 
     except JWTError:

@@ -31,11 +31,14 @@ RUN apt-get update && \
     sed -i -e 's/# uk_UA.UTF-8 UTF-8/uk_UA.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales
 
+
+
 ENV LANG uk_UA.UTF-8
 ENV LC_ALL uk_UA.UTF-8
 
 # install dependencies
 RUN pip install --upgrade pip
+# RUN pip install gunicorn
 COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r /usr/src/app/requirements.txt
 

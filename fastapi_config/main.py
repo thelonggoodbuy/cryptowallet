@@ -32,7 +32,8 @@ admin = Admin(app,
 
 app.mount("/static", StaticFiles(directory="front", html=True), name="static")
 app.mount("/media", StaticFiles(directory="media", html=True), name="media")
-app.mount("/socket", app=socket_app)
+
+# app.mount("/socket", app=socket_app)
 
 app.include_router(users_routers.router)
 app.include_router(wallet_routers.router)

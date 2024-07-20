@@ -1,8 +1,18 @@
-run-dev-clear:
+run-fastapi:
 	clear
-	# export CRYPTO_WALLET_ENV=local
+	# export USE_LOCAL_ENV=true && \
+	# uvicorn fastapi_config.main:app --reload
 	export USE_LOCAL_ENV=true && \
-	uvicorn fastapi_config.main:app --reload
+	uvicorn fastapi_config.main:app --host 0.0.0.0 --port 8000
+
+
+run-socketio:
+	clear
+	export USE_LOCAL_ENV=true && \
+	uvicorn socketio_config.server:app --host 0.0.0.0 --port 5000
+
+
+
 
 run-docker-clear:
 	clear

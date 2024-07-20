@@ -1,23 +1,12 @@
 import socketio
-
-# from redis_config.redis_config import add_user_to_chat_redis_hash,\
-#                                     add_seed_email_pair,\
-#                                     return_email_by_seed_and_delete,\
-#                                     delete_user_from_chat_redis_hash,\
-#                                     return_all_online_user
 from redis_config.services.redis_user_service import redis_user_service
 from propan_config.router import add_to_get_all_transcations_queue
 from src.users.schemas import MessageFromChatModel
 from src.orders.services.commodity_eth_service import CommodityEthService
-
-# from src.etherium.services.transaction_eth_service import TransTransactionETHService
 from src.users.services.user_service import UserService
 from src.users.services.message_service import MessageService
 
-
 from src.wallets.services.wallet_etherium_service import WalletEtheriumService
-
-# from celery_config.config import monitoring_wallets_state_task, app
 
 from src.etherium.services.transaction_eth_service import TransactionETHService
 from etherium_config.services.eth_parser import eth_parser_service
@@ -44,7 +33,11 @@ socket_app = socketio.ASGIApp(socketio_server=server, socketio_path="socket")
 
 class MessagingNamespace(socketio.AsyncNamespace):
     async def on_connect(self, sid, environ, auth):
+        print('****************************************')
+        print('=====>>>>>Messaging Connection<<<=======')
+        print('****************************************')
         email = await UserService.return_email_by_token(token=auth["token"])
+
         user_status = await redis_user_service.add_user_to_chat_redis_hash(sid, email)
         await redis_user_service.add_seed_email_pair(sid, email)
         await client_manager.enter_room(sid, room="chat_room", namespace="/messaging")

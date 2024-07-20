@@ -22,6 +22,14 @@ from src.wallets.models import Wallet, Asset, Blockchain
 from src.etherium.models import Transaction
 from src.orders.models import Commodity, Order
 
+
+db_user = os.getenv("POSTGRES_USER")
+db_password = os.getenv("POSTGRES_PASSWORD")
+db_host = os.getenv("POSTGRES_HOST")
+db_port = os.getenv("POSTGRES_PORT")
+db_name = os.getenv("POSTGRES_DB")
+
+
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -33,6 +41,8 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = database.Base.metadata
 
+db_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+config.set_main_option("sqlalchemy.url", db_url)
 
 print("-------------------------------------------")
 print(target_metadata.tables.keys())

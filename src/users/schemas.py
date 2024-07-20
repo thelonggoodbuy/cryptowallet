@@ -79,6 +79,7 @@ class NewUserModel(BaseModel):
     repeat_password: str
     data_status: str | None
     cause: Optional[List[dict]] = None
+    is_admin: bool = False
 
     @classmethod
     def as_form(

@@ -53,8 +53,19 @@ async def validate_access_token(request: Request):
 
     if token_from_backend == token:
         try:
-            jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            result = {"result": True}
+            decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            print('***')
+
+
+            print(decoded_token['sub'])
+            user = await UserService.return_user_per_email(decoded_token['sub'])
+            print(user)
+
+            print('***')
+            if user:
+                result = {"result": True}
+            else:
+                result = {"result": False, "cause": "user doesnt exist"}
         except ExpiredSignatureError:
             result = {"result": False, "cause": "token_expiced"}
     else:

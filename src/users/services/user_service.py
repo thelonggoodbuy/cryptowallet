@@ -82,3 +82,11 @@ class UserService:
             return True
         else:
             return False
+
+    @classmethod
+    async def check_if_admin_user_exist(cls) -> bool:
+        admin_is_exist_status = await user_rep_link.check_if_admin_user_exist()
+        if admin_is_exist_status:
+            return True
+        else:
+            return False

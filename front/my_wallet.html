@@ -344,7 +344,7 @@
         console.log('---------------------')
 
         // connection to socket logic
-        var profile_wallet_socket = io(socket_address, {
+        var profile_wallet_socket = io("ws://127.0.0.1:8000/profile_wallets", {
           path: "/socket/ws/socket.io",
           auth: {
             token: access_token

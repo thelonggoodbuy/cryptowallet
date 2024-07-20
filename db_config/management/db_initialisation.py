@@ -1,6 +1,7 @@
 import asyncio
 import typer
-from db_config.database import init_models
+# from db_config.database import init_models
+from ..database import init_models
 
 cli = typer.Typer()
 

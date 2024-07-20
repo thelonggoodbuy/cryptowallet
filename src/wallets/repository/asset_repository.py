@@ -1,6 +1,7 @@
 from db_config.database import engine
 from sqlalchemy import select
-from src.wallets.models import Asset
+from src.wallets.models import Asset, Blockchain
+from src.wallets.schemas import NewAssetSchema
 
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
@@ -30,6 +31,24 @@ class AssetRepository:
             result = assets.scalars().first()
             await session.commit()
         return result
+
+
+    async def create_asset(self, asset_data: NewAssetSchema, blockchain: Blockchain):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            asset = Asset(type = asset_data.type,
+                    text = asset_data.text,
+                    decimal_places = asset_data.decimal_places,
+                    title = asset_data.title,
+                    code = asset_data.code,
+                    blockchain_id = blockchain.id)
+            session.add(asset)
+            await session.commit()
+        return asset
+
+
+
+
 
 
 asset_rep_link = AssetRepository()

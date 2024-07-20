@@ -620,13 +620,17 @@
         if (cookie.startsWith('access_token=')){
           var access_token = cookie.replace('access_token=', '')}}
           var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '') + '/ibay'
-            print('===socket_address===')
-            print(socket_address)
-            print('====================')
+            console.log('===socket_address===')
+            console.log(socket_address)
+            console.log('====================')
 
 
         // connection to socket logic
-        var ibay_socket = io(socket_address, {
+
+        // work local address: "ws://localhost:8000/ibay", "ws://127.0.0.1:8000/ibay"
+        //
+
+        var ibay_socket = io("ws://127.0.0.1:8000/ibay", {
           path: "/socket/ws/socket.io",
           auth: {
             token: access_token
