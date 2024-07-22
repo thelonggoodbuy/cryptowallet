@@ -3,13 +3,13 @@ run-fastapi:
 	# export USE_LOCAL_ENV=true && \
 	# uvicorn fastapi_config.main:app --reload
 	export USE_LOCAL_ENV=true && \
-	uvicorn fastapi_config.main:app --host 0.0.0.0 --port 8000
+	uvicorn fastapi_config.main:app --host 127.0.0.1 --port 8000
 
 
 run-socketio:
 	clear
 	export USE_LOCAL_ENV=true && \
-	uvicorn socketio_config.server:app --host 0.0.0.0 --port 5000
+	uvicorn socketio_config.server:socket_app --host 127.0.0.1 --port 5000
 
 
 
@@ -26,11 +26,13 @@ run-dev:
 # 1!
 run-dev-celery-block-parser-query:
 	clear
+	export USE_LOCAL_ENV=true && \
 	celery -A celery_config.tasks worker -l info -Q parse_latest_block_query -n worker_1 --concurrency=1 --loglevel=info
 
 # 2!
 run-dev-celery-block-handler-query:
 	clear
+	export USE_LOCAL_ENV=true && \
 	celery -A celery_config.tasks worker -l info -Q handle_block_query -n worker_2 --concurrency=1 --loglevel=info
 
 # 3!

@@ -15,6 +15,8 @@ from asyncio_throttle import Throttler
 from aioetherscan.exceptions import EtherscanClientApiError
 import os
 
+# from socketio_config.server import 
+
 
 
 HTTPS_SEPOLIA_INFURA_LINK = os.environ.get('HTTPS_SEPOLIA_INFURA_LINK')
@@ -55,6 +57,8 @@ class EtheriumCryproScanner(AbstractCryproScanner):
 
             sid(str): session data for sockets
         """
+
+        from socketio_config.server import return_all_transactions_per_wallet
 
         throttler = Throttler(rate_limit=1, period=6.0)
         retry_options = ExponentialRetry(attempts=2)
@@ -112,7 +116,16 @@ class EtheriumCryproScanner(AbstractCryproScanner):
                 "wallet_id": wallet_data["wallet_id"],
                 "sid": sid,
             }
-            await add_to_return_to_socketio_all_transcations_queue(message)
+            # await add_to_return_to_socketio_all_transcations_queue(message)
+            # TODO clean to normal messaging
+            transaction_data_dict = {
+                "scaning_status": message["scaning_status"],
+                "wallet_id": message["wallet_id"],
+            }
+            sid = message["sid"]
+            await return_all_transactions_per_wallet(transaction_data_dict, sid)
+
+
         except EtherscanClientApiError:
             # message = {'formated_transaction_list': [], 'sid': sid}
             message = {
@@ -120,7 +133,15 @@ class EtheriumCryproScanner(AbstractCryproScanner):
                 "wallet_id": wallet_data["wallet_id"],
                 "sid": sid,
             }
-            await add_to_return_to_socketio_all_transcations_queue(message)
+            # await add_to_return_to_socketio_all_transcations_queue(message)
+            # TODO clean to normal messaging
+            transaction_data_dict = {
+                "scaning_status": message["scaning_status"],
+                "wallet_id": message["wallet_id"],
+            }
+            sid = message["sid"]
+            await return_all_transactions_per_wallet(transaction_data_dict, sid)
+
         await aiotherscan_client.close()
 
     async def synchronize_transaction_state_for_wallet(self, wallet_data: dict) -> None:

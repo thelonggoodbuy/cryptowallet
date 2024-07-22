@@ -251,8 +251,9 @@
 
         var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '') + '/messaging'
 
+        // ws://127.0.0.1:8000/messaging
         // connection to socket logic
-        var chat_socket = io("ws://127.0.0.1:8000/messaging", {
+        var chat_socket = io("ws://127.0.0.1:5000/messaging", {
           path: "/socket/ws/socket.io",
           auth: {
             token: access_token

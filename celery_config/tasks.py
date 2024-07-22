@@ -1,3 +1,6 @@
+
+from fastapi_config import environment
+
 from celery_config.config import app
 from crypto_parser_service.services.etherium_parser_service import ETHParserService
 import asyncio

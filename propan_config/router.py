@@ -99,6 +99,7 @@ async def add_update_wallet_list_query(message):
 
 
 async def add_to_get_all_transcations_queue(message):
+    # TODO переписать на нормальный меседжинг
     await rabbit_router.broker.publish(
         message,
         queue="get_all_transcations_queue",

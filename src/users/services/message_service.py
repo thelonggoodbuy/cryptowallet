@@ -5,7 +5,6 @@ from src.users.schemas import MessageFromChatModel
 import locale
 from propan_config.router import add_to_returning_saved_message_query
 
-
 locale.setlocale(locale.LC_TIME, "uk_UA.UTF-8")
 
 
@@ -73,4 +72,15 @@ class MessageService:
         # print(message_dict)
         # print('***')
 
-        await add_to_returning_saved_message_query(message_dict)
+        # await add_to_returning_saved_message_query(message_dict)
+
+
+        from socketio_config.server import client_manager
+        # TODO EMITTER!
+
+        await client_manager.emit(
+            "show_saved_message",
+            data={"message": message_dict},
+            room="chat_room",
+            namespace="/messaging",
+        )

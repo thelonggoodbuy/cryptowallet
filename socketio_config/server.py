@@ -1,3 +1,6 @@
+# from propan_config.router import *
+from fastapi_config import environment
+
 import socketio
 from redis_config.services.redis_user_service import redis_user_service
 from propan_config.router import add_to_get_all_transcations_queue
@@ -11,7 +14,14 @@ from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 from src.etherium.services.transaction_eth_service import TransactionETHService
 from etherium_config.services.eth_parser import eth_parser_service
 from delivery_config.services.delivery_eth_service import DeliveryEthService
+
+from propan import RabbitBroker, RabbitRouter
+import asyncio
+
+
+
 import os
+
 
 SOCKETIO_PATH = "socket"
 CLIENT_URLS = ["http://localhost:8000", "ws://localhost:8000"]
@@ -27,6 +37,10 @@ socket_app = socketio.ASGIApp(socketio_server=server, socketio_path="socket")
 # SECRET_KEY = "e902bbf3a6c28106f91028b01e6158bcab2360acc0676243d70404fe6e731b58"
 # ALGORITHM = "HS256"
 
+broker = RabbitBroker(RABBIT_ADDRESS)
+router = RabbitRouter(broker)
+
+# broker.
 
 # --------->>>>>messaging logic<<<<<<<<-------------------------------------------
 
@@ -35,9 +49,11 @@ class MessagingNamespace(socketio.AsyncNamespace):
     async def on_connect(self, sid, environ, auth):
         print('****************************************')
         print('=====>>>>>Messaging Connection<<<=======')
+        # POSTGRES_DB=os.environ.get('POSTGRES_DB')
+        # print(POSTGRES_DB)
         print('****************************************')
-        email = await UserService.return_email_by_token(token=auth["token"])
 
+        email = await UserService.return_email_by_token(token=auth["token"])
         user_status = await redis_user_service.add_user_to_chat_redis_hash(sid, email)
         await redis_user_service.add_seed_email_pair(sid, email)
         await client_manager.enter_room(sid, room="chat_room", namespace="/messaging")
@@ -58,6 +74,7 @@ class MessagingNamespace(socketio.AsyncNamespace):
                 namespace="/messaging",
             )
 
+
     async def on_disconnect(self, sid):
         raw_email_list = await redis_user_service.return_email_by_seed_and_delete(sid)
         email = raw_email_list[0].decode()
@@ -73,12 +90,19 @@ class MessagingNamespace(socketio.AsyncNamespace):
                 namespace="/messaging",
             )
 
+
     async def on_send_message(self, sid, data):
+        # pass
         data["email"] = await UserService.return_email_by_token(token=data["token"])
         data_obj = MessageFromChatModel(**data)
         await MessageService.save_new_message(data_obj)
 
+
+
+
+
     async def on_return_last_messages_from_chat(self, sid):
+
         last_messages = await MessageService.return_last_messages()
         await client_manager.emit(
             "receive_last_messages_from_chat",
@@ -88,6 +112,7 @@ class MessagingNamespace(socketio.AsyncNamespace):
         )
 
     async def on_get_other_user_data(self, sid, data):
+        # pass
         user_id = data["user_id"]
         user_data = await UserService.return_user_data_by_id(user_id)
         await client_manager.emit(
@@ -145,7 +170,7 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
         await eth_parser_service.delete_user_from_parser(sid)
 
     async def on_create_wallet(self, sid, data):
-        # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
+        # # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
         new_wallet_data = {"token": data["token"], "room": self.sid_room_pairs[sid]}
         new_walet_dict = await WalletEtheriumService.create_wallet_for_user(
             new_wallet_data
@@ -153,8 +178,7 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
         await return_new_wallet(new_walet_dict)
 
     async def on_import_wallet(self, sid, data):
-        # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
-
+        # # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
         import_wallet_data = {
             "token": data["token"],
             "private_key": data["private_key"],
@@ -162,7 +186,9 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
         }
         await WalletEtheriumService.import_wallet_for_user(import_wallet_data)
 
+
     async def on_send_transaction(self, sid, data):
+        # pass
         user_id = await WalletEtheriumService.return_user_id_by_wallet_id(
             data["current_wallet_id"]
         )
@@ -176,9 +202,13 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
         )
 
     async def on_get_transactions_per_wallet(self, sid, data):
-        # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
+        from crypto_scanner_service.services.eth_crypro_scanner import etherium_crypro_scanner
+
+        # pass
+        # # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
         message = {"data": data, "sid": sid}
-        await add_to_get_all_transcations_queue(message)
+        await etherium_crypro_scanner.return_all_transactions_by_wallet(data, sid)
+        # await add_to_get_all_transcations_queue(message)
 
     # async def on_update_concrete_wallet_per_id(self, sid, data):
 
@@ -192,7 +222,8 @@ async def return_new_wallet(message):
 
 
 async def update_wallet_state(wallets_data, sid):
-    # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
+    # pass
+    # # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
     await client_manager.emit(
         "return_list_of_user_wallets",
         data=wallets_data,
@@ -202,6 +233,7 @@ async def update_wallet_state(wallets_data, sid):
 
 
 async def return_all_transactions_per_wallet(transaction_data, sid):
+    # pass
     print("transaction_data is: ")
     print(transaction_data)
     await client_manager.emit(
@@ -220,6 +252,7 @@ class IBayNamespace(socketio.AsyncNamespace):
     sid_user_id_pairs = {}
 
     async def on_connect(self, sid, environ, auth):
+        # pass
         email = await UserService.return_email_by_token(token=auth["token"])
         user = await UserService.return_user_per_email(email)
         room = f"room_ibay_{user.id}"
@@ -232,6 +265,7 @@ class IBayNamespace(socketio.AsyncNamespace):
         pass
 
     async def on_create_announcement(self, sid, data):
+        # pass
         all_wallets_addresses = (
             await WalletEtheriumService.return_all_wallets_adresses_per_user_id(
                 self.sid_user_id_pairs[sid]
@@ -274,6 +308,7 @@ class IBayNamespace(socketio.AsyncNamespace):
                     )
 
     async def on_buy_commodity(self, sid, data):
+        # pass
         result_dict = await DeliveryEthService.create_new_order(data)
 
         if "status" in result_dict and result_dict["status"] == "success":
@@ -295,3 +330,43 @@ class IBayNamespace(socketio.AsyncNamespace):
 
 
 server.register_namespace(IBayNamespace("/ibay"))
+
+
+# async def consume_messages():
+    # async def on_receive_chat_message(message):
+    #     print("Received chat message:", message)
+
+    # async def on_receive_saved_chat_message(message):
+    #     print("Received saved chat message:", message)
+
+    # Add similar functions for other messages
+
+    # channel = broker.handle()
+    # print('====CHANNEL===DATA=====')
+    # # print(channel.)
+    # print('=======================')
+
+    # await broker.consume(on_receive_chat_message, queue="chat_message_query")
+    # await broker.consume(on_receive_saved_chat_message, queue="return_saved_message")
+
+# from propan.brokers.rabbit import ExchangeType, RabbitExchange, RabbitQueue
+
+
+# @broker.handle(
+#     queue=RabbitQueue("chat_message_query"), exchange=RabbitExchange("exchange", type=ExchangeType.FANOUT)
+# )
+# async def base_handler(body: dict):
+#     print(body)
+
+
+async def main():
+    await broker.start()
+    await broker.connect(RABBIT_ADDRESS)
+    # broker
+    # await consume_messages()
+
+
+
+
+loop = asyncio.get_event_loop()
+loop.create_task(main())

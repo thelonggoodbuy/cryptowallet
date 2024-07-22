@@ -223,7 +223,7 @@ class WalletEtheriumService(AbstractWalletService):
                 "room": wallet_data["room"],
                 # "balance": imported_wallet.balance,
             }
-            await return_new_wallet(imported_wallet_dictionary)
+            # await return_new_wallet(imported_wallet_dictionary)
 
         except IntegrityError:
             error_text = (
@@ -234,7 +234,7 @@ class WalletEtheriumService(AbstractWalletService):
                 "text": error_text,
                 "room": wallet_data["room"],
             }
-            await return_new_wallet(imported_wallet_dictionary)
+            # await return_new_wallet(imported_wallet_dictionary)
 
         except Exception:
             error_text = "Помилка в приватному ключі"
@@ -243,7 +243,15 @@ class WalletEtheriumService(AbstractWalletService):
                 "text": error_text,
                 "room": wallet_data["room"],
             }
-            await return_new_wallet(imported_wallet_dictionary)
+            # await return_new_wallet(imported_wallet_dictionary)
+
+        from socketio_config.server import client_manager
+        # TODO Emiter
+        room = imported_wallet_dictionary["room"]
+        await client_manager.emit(
+            "show_new_wallet", room=room, data=imported_wallet_dictionary, namespace="/profile_wallets"
+        )
+
 
     async def return_wallet_per_address(address: str) -> Wallet:
         """

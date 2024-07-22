@@ -495,8 +495,8 @@
       //"/socket/ws/socket.io"
 
 
-      // connection to socket logic
-      var profile_wallet_socket = io("ws://127.0.0.1:8000/profile_wallets", {
+      // connection to socket logic ws://0.0.0.0:5000/messaging http://127.0.0.1/
+      var profile_wallet_socket = io("ws://127.0.0.1:5000/profile_wallets", {
           path: "/socket/ws/socket.io",
           // transports: ["websocket"],
           auth: {

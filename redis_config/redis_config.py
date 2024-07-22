@@ -4,9 +4,9 @@ import os
 
 
 # redis_url = "redis://localhost/1"
-# redis_url = os.environ.get("REDIS_URL")
+redis_url = os.environ.get("REDIS_URL")
 #TODO убрать колхоз с ссылкой. подтяуть ее из .env
-redis_url = 'redis://localhost/1'
+# redis_url = 'redis://localhost/1'
 print('===>Redis url:<===')
 print(redis_url)
 print('==================')

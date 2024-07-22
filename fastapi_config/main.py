@@ -7,7 +7,7 @@ from src.users import routers as users_routers
 from src.wallets import routers as wallet_routers
 from src.orders import routers as orders_routers
 from fastapi.staticfiles import StaticFiles
-from socketio_config.server import socket_app
+# from socketio_config.server import socket_app
 from propan_config.router import rabbit_router
 from src.users.listeners import rabbit_users_listener_router
 from socketio_config.listeners import rabbit_sockets_listener_router
@@ -58,3 +58,4 @@ admin.add_view(WalletAdmin)
 admin.add_view(OrderAdmin)
 admin.add_view(CommodityAdmin)
 admin.add_view(TransactionAdmin)
+
