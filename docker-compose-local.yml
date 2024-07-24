@@ -11,11 +11,12 @@ services:
       - 80:80
     depends_on:
       - asgi-web
+      - socketio
 
   asgi-web:
     build: .
-    command: gunicorn -b 0.0.0.0:8000 --worker-class=uvicorn.workers.UvicornWorker --workers=1 fastapi_config.main:app
-    # command: uvicorn fastapi_config.main:app --host 0.0.0.0 --port 8000
+    # command: gunicorn -b 0.0.0.0:8000 --worker-class=uvicorn.workers.UvicornWorker --workers=1 fastapi_config.main:app
+    command: uvicorn fastapi_config.main:app --host 0.0.0.0 --port 8000
     # command: sh -c "sleep 45 && uvicorn fastapi_config.main:app --host 0.0.0.0 --port 8000"
     volumes:
       - static_volume:/usr/src/app/front
@@ -27,6 +28,19 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+
+  socketio:
+    build: .
+    command: uvicorn socketio_config.server:socket_app --host 0.0.0.0 --port 5000
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - ./.env
+    ports:
+      - 5000:5000
+    depends_on:
+      - asgi-web
+      - db
 
 
   db:
