@@ -21,6 +21,10 @@ print('==================INITIAL====SCRIPT======START===============')
 async def initialisation():
     print('==================INITIALISATION==ADMIN===USER===============')
     initial_admin_user = await UserService.check_if_admin_user_exist()
+    print('===initial_admin_user===')
+    print(initial_admin_user)
+    print('========================')
+
     if initial_admin_user:
         print('========ONE==AMIN===USER===WAS===REGISTERED==IN==DB========')
     else:
