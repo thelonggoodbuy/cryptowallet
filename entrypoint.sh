@@ -14,7 +14,10 @@ fi
 echo "**********ALEMBIC***HEAD****************************"
 
 alembic -c ./db_config/alembic.ini upgrade head
-python3 management/initial_script.py
+# python3 management/initial_script.py
+
+
+
 # python db_config/management/db_initialisation.py
 
 
