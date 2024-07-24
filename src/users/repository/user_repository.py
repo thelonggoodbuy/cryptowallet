@@ -117,6 +117,9 @@ class UserRepository:
             user = await session.execute(query)
             result = user.scalars().first()
             await session.commit()
+        print('===result===')
+        print(result)
+        print('============')
         return result
 
 user_rep_link = UserRepository()
