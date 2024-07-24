@@ -76,7 +76,9 @@ class UserService:
         jvt_result_decode = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
         user = await cls.return_user_per_email(jvt_result_decode['sub'])
         print('=====!!!======')
-        print(user.is_admin)
+        print(user)
+        print(type(user))
+        print(user.__dict__)
         print('==============')
         if user.is_admin == True:
             return True
