@@ -23,8 +23,8 @@ services:
       - ./:/usr/src/app/
     env_file:
       - ./.env
-    ports:
-      - 8000:8000
+    # ports:
+    #   - 8000:8000
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -36,8 +36,8 @@ services:
       - ./:/usr/src/app/
     env_file:
       - ./.env
-    ports:
-      - 5000:5000
+    # ports:
+    #   - 5000:5000
     depends_on:
       - asgi-web
       - db

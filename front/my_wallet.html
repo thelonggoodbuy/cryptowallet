@@ -338,13 +338,14 @@
         var old_address = window.location.href.replace(window.location.protocol, '').replace('wallets/', '')
         console.log('old_address')
         console.log(old_address)
-        var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '').replace('wallets/', '') + 'profile_wallets'
+        // var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '').replace('wallets/', '') + 'profile_wallets'
+        socket_address = "ws://127.0.0.1/profile_wallets"
         console.log('-->socket_address<---')
         console.log(socket_address)
         console.log('---------------------')
-
+        
         // connection to socket logic
-        var profile_wallet_socket = io("ws://127.0.0.1:5000/profile_wallets", {
+        var profile_wallet_socket = io(socket_address, {
           path: "/socket/ws/socket.io",
           auth: {
             token: access_token

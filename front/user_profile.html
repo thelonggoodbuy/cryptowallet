@@ -483,6 +483,7 @@
 
 
       var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '').replace('users/profile/', '') + 'profile_wallets'
+      socket_address = "ws://127.0.0.1/profile_wallets"
       console.log("=========test====changes=====")
       console.log("========old===work===========")
       console.log("ws://127.0.0.1/profile_wallets")
@@ -496,7 +497,7 @@
 
 
       // connection to socket logic ws://0.0.0.0:5000/messaging http://127.0.0.1/
-      var profile_wallet_socket = io("ws://127.0.0.1:5000/profile_wallets", {
+      var profile_wallet_socket = io(socket_address, {
           path: "/socket/ws/socket.io",
           // transports: ["websocket"],
           auth: {
