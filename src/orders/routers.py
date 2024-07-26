@@ -22,7 +22,7 @@ async def render_ibay_html(
 ):
     match current_user_or_redirect:
         case UserInDB():
-            with open("front/ibay.html", "r") as file:
+            with open("templates/ibay.html", "r") as file:
                 data = file.read()
             return HTMLResponse(content=data, status_code=200)
 

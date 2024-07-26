@@ -110,7 +110,7 @@ async def login_for_access_token(
 
 @router.get("/users/login/", response_class=HTMLResponse)
 async def login(request: Request):
-    with open("front/login.html", "r") as file:
+    with open("templates/login.html", "r") as file:
         data = file.read()
 
     return HTMLResponse(content=data, status_code=200)
@@ -120,7 +120,7 @@ async def login(request: Request):
 async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_user)]):
     match current_user_or_redirect:
         case UserInDB():
-            with open("front/user_profile.html", "r") as file:
+            with open("templates/user_profile.html", "r") as file:
                 data = file.read()
             return HTMLResponse(content=data, status_code=200)
 
@@ -165,7 +165,7 @@ async def update_profile(
 
 @router.get("/users/registration/", response_class=HTMLResponse)
 async def registration(request: Request):
-    with open("front/registration.html", "r") as file:
+    with open("templates/registration.html", "r") as file:
         data = file.read()
     return HTMLResponse(content=data, status_code=200)
 
@@ -190,7 +190,7 @@ async def chat(
 ):
     match current_user_or_redirect:
         case UserInDB():
-            with open("front/chat.html", "r") as file:
+            with open("templates/chat.html", "r") as file:
                 data = file.read()
             return HTMLResponse(content=data, status_code=200)
         case RedirectResponse():

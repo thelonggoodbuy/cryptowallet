@@ -33,7 +33,7 @@ async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_
     """
     match current_user_or_redirect:
         case UserInDB():
-            with open("front/my_wallet.html", "r") as file:
+            with open("templates/my_wallet.html", "r") as file:
                 data = file.read()
             return HTMLResponse(content=data, status_code=200)
 

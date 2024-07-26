@@ -23,7 +23,7 @@ from fastapi_config.admin import authentication_backend
 
 app = FastAPI(lifespan=rabbit_router.lifespan_context)
 
-custom_template_path = os.path.join(os.path.dirname(__file__), '../front/sqladmin_custom_templates')
+custom_template_path = os.path.join(os.path.dirname(__file__), '../templates/sqladmin_custom_templates')
 
 admin = Admin(app,
               engine,
