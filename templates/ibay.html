@@ -633,9 +633,11 @@
         var socket_address_local = "ws://127.0.0.1:5000/ibay"
         var socket_address_deploy = "wss://crypto-wallet-socketio.lfvimh.easypanel.host/ibay"
         if (window.location.protocol == "https:"){
-        var socket_address = socket_address_local
-        } else {
+        console.log('=======Https!!!======')
         var socket_address = socket_address_deploy
+        } else {
+            console.log('=======local!!!======')
+            var socket_address = socket_address_local
         }
 
         var ibay_socket = io(socket_address, {

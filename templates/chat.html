@@ -257,10 +257,12 @@
         var socket_address_local = "ws://127.0.0.1:5000/messaging"
         var socket_address_deploy = "wss://crypto-wallet-socketio.lfvimh.easypanel.host/messaging"
         if (window.location.protocol == "https:"){
-        var socket_address = socket_address_local
+        console.log('=======Https!!!======')
+          var socket_address = socket_address_deploy
         } else {
-        var socket_address = socket_address_deploy
-        }
+          console.log('=======local!!!======')
+          var socket_address = socket_address_local
+       }
 
 
         var chat_socket = io(socket_address, {
