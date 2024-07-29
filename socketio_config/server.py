@@ -171,6 +171,7 @@ class WalletProfileNamespace(socketio.AsyncNamespace):
 
     async def on_create_wallet(self, sid, data):
         # # TODO изменить работу с комнатой в вызываемых в послдствии сервисах. все что связано с профилями
+        print('!!!!!=========CREATE===WALLET======!!!!!')
         new_wallet_data = {"token": data["token"], "room": self.sid_room_pairs[sid]}
         new_walet_dict = await WalletEtheriumService.create_wallet_for_user(
             new_wallet_data

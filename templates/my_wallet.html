@@ -335,14 +335,23 @@
         // var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '') + '/profile_wallets'
         // console.log('====+++===+++===+++====')
 
-        var old_address = window.location.href.replace(window.location.protocol, '').replace('wallets/', '')
-        console.log('old_address')
-        console.log(old_address)
+        // var old_address = window.location.href.replace(window.location.protocol, '').replace('wallets/', '')
+        // console.log('old_address')
+        // console.log(old_address)
         // var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '').replace('wallets/', '') + 'profile_wallets'
-        socket_address = "ws://127.0.0.1/profile_wallets"
-        console.log('-->socket_address<---')
-        console.log(socket_address)
-        console.log('---------------------')
+        // socket_address = "ws://127.0.0.1/profile_wallets"
+        // console.log('-->socket_address<---')
+        // console.log(socket_address)
+        // console.log('---------------------')
+
+        var socket_address_local = "ws://127.0.0.1:5000/profile_wallets"
+        var socket_address_deploy = "wss://crypto-wallet-socketio.lfvimh.easypanel.host/profile_wallets"
+        if (window.location.protocol == "https:"){
+        var socket_address = socket_address_local
+        } else {
+        var socket_address = socket_address_deploy
+        }
+        // 
         
         // connection to socket logic
         var profile_wallet_socket = io(socket_address, {
@@ -369,6 +378,9 @@
             console.log(wallet_data['all_users_wallets'])
             var all_users_wallets = wallet_data['all_users_wallets']
             for (wallet_id in all_users_wallets){
+                console.log('***')
+                console.log(all_users_wallets[wallet_id])
+                console.log('***')
                 $('#wallets_container').append(
                     `<div class="col-10 col-lg-5 border mx-3 my-3 py-3" id=wallet_${wallet_id}>
                         <div class="row">

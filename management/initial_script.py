@@ -48,6 +48,7 @@ async def initialisation():
 
     print('===============BLOCKCHAIN=====WAS====CREATED=======')
     print(initial_blockchain)
+    print(initial_blockchain.photo)
     print('====END========BLOCKCHAIN=====WAS====CREATED=======')
     initial_asset = await create_initial_asset(initial_blockchain)
     print('===============ASETH==========WAS====CREATED=======')
@@ -64,6 +65,9 @@ async def create_eth_blockchain():
     )
     with open(f"seed/images/ethereum-icon.png", "rb") as photo:
         blockchain.photo = photo
+        print('=====PHOTO DATA======')
+        print(photo)
+        print('=====================')
         initial_blockchain = await BlockchainService.create_blockchain(blockchain)
     return initial_blockchain
 

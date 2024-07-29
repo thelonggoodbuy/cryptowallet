@@ -14,7 +14,8 @@ fi
 echo "**********ALEMBIC***HEAD****************************"
 
 alembic -c ./db_config/alembic.ini upgrade head
-# python3 management/initial_script.py
+chmod -R +rx front
+python3 management/initial_script.py
 
 
 

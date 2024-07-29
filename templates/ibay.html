@@ -630,7 +630,15 @@
         // work local address: "ws://localhost:8000/ibay", "ws://127.0.0.1:8000/ibay"
         //
 
-        var ibay_socket = io("ws://127.0.0.1:5000/ibay", {
+        var socket_address_local = "ws://127.0.0.1:5000/ibay"
+        var socket_address_deploy = "wss://crypto-wallet-socketio.lfvimh.easypanel.host/ibay"
+        if (window.location.protocol == "https:"){
+        var socket_address = socket_address_local
+        } else {
+        var socket_address = socket_address_deploy
+        }
+
+        var ibay_socket = io(socket_address, {
           path: "/socket/ws/socket.io",
           auth: {
             token: access_token

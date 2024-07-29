@@ -482,15 +482,27 @@
         var access_token = cookie.replace('access_token=', '')}}
 
 
-      var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '').replace('users/profile/', '') + 'profile_wallets'
-      socket_address = "ws://127.0.0.1/profile_wallets"
-      console.log("=========test====changes=====")
-      console.log("========old===work===========")
-      console.log("ws://127.0.0.1/profile_wallets")
-      console.log("=======New=======")
-      console.log(socket_address)
-      console.log(access_token)
-      console.log("==============================")
+      // var socket_address = "ws:" + window.location.href.replace(window.location.protocol, '').replace('users/profile/', '') + 'profile_wallets'
+      var socket_address_local = "ws://127.0.0.1:5000/profile_wallets"
+      var socket_address_deploy = "wss://crypto-wallet-socketio.lfvimh.easypanel.host/profile_wallets"
+      if (window.location.protocol == "https:"){
+        var socket_address = socket_address_local
+      } else {
+        var socket_address = socket_address_deploy
+      }
+      // // console.log("=========test====changes=====")
+      // // console.log("========old===work===========")
+      // // console.log("ws://127.0.0.1/profile_wallets")
+      // console.log("=======New=======")
+      // console.log(socket_address)
+      // // console.log(access_token)
+      // console.log('--->FASTAPI_HEALTH_LINK:<---')
+      // // console.log("{{env('FASTAPI_HEALTH_LINK')}}")
+      // window.FASTAPI_HEALTH_LINK = "{{ env('FASTAPI_HEALTH_LINK') }}";
+
+      // console.log(FASTAPI_HEALTH_LINK)
+
+      // console.log("==============================")
 
       //ws://127.0.0.1:80/profile_wallets
       //"/socket/ws/socket.io"
