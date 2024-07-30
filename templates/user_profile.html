@@ -494,7 +494,7 @@
       console.log(socket_address)
       console.log('========================')
 
-      var profile_wallet_socket = io("wss://crypto-wallet-socketio.lfvimh.easypanel.host/profile_wallets", {
+      var profile_wallet_socket = io(socket_address, {
           path: "/socket/ws/socket.io",
           // transports: ["websocket"],
           auth: {
