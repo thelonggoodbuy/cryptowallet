@@ -489,6 +489,10 @@
         console.log('=======local!!!======')
         var socket_address = socket_address_local
       }
+      console.log('=====socket_address=====')
+      console.log(window.location.protocol)
+      console.log(socket_address)
+      console.log('========================')
 
       var profile_wallet_socket = io("wss://crypto-wallet-socketio.lfvimh.easypanel.host/profile_wallets", {
           path: "/socket/ws/socket.io",
