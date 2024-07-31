@@ -71,9 +71,9 @@ class WalletEtheriumService(AbstractWalletService):
             wallets_dict[wallet.id]["blockchain_photo"] = wallet.asset.blockchain.photo[
                 "url"
             ][1:]
-        print('=======================>>>>>!!!!!<<<<<==============================')
-        print(wallet.asset.blockchain.photo)
-        print('====================================================================')
+        # print('=======================>>>>>!!!!!<<<<<==============================')
+        # print(wallet.asset.blockchain.photo)
+        # print('====================================================================')
         return wallets_dict
 
     async def return_wallets_per_user_email_without_sync(email: str) -> dict:
