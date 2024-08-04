@@ -31,9 +31,9 @@
         <!-- Custom styles for this template -->
         <!-- <link href="static/css/signin.css" rel="stylesheet"> -->
         <!-- <link href="#" rel="stylesheet" id="sign_in_css"> -->
-        <link rel="stylesheet"
-              href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/static/static/plugin/bootstrap-5.0.2/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/static/static/css/signin.css" />
+        <link href="/static/static/plugin/toastr/build/toastr.min.css" rel="stylesheet">
         <!-- <script>
       sign_in_css_obj = document.getElementById('sign_in_css')
       sign_in_css_obj.href=window.location.href.replace('users/login/', '') + 'static/static/css/signin.css'
@@ -95,9 +95,8 @@
   var head= document.getElementsByTagName('head')[0];
   head.appendChild(new_script);
         </script> -->
-        <script type="text/javascript"
-                src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
-        <!-- <script type="text/javascript" src="/front/static/plugin/jquery/dist/jquery.min.js"></script> -->
+        <script type="text/javascript" src="/static/static/plugin/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/static/plugin/toastr/build/toastr.min.js"></script>
         <script>
 
   window.onload = function() {
@@ -163,8 +162,10 @@
               window.location.href = window.location.href.replace('login/', 'profile/')
               console.log(document.cookie)
             },
-            error: function(){
+            error: function(data){
               console.log("error", data);
+              toastr.warning("Помилка в емейлі або в паролі користувача")
+
             }
           });
 
@@ -178,6 +179,23 @@
   })
   }
 
+  toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "10000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
 
         </script>
     </body>

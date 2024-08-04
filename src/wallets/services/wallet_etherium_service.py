@@ -305,7 +305,8 @@ class WalletEtheriumService(AbstractWalletService):
         user_id = await wallet_eth_rep_link.return_user_id_by_wallet_id(wallet_id)
         return user_id
 
-    async def update_and_return_ballance_state(wallet):
+    @classmethod
+    async def update_and_return_ballance_state(cls, wallet):
         # for wallet in wallets:
 
         balance = await w3_connection.eth.get_balance(wallet.address)
@@ -327,3 +328,111 @@ class WalletEtheriumService(AbstractWalletService):
         print("======================")
 
         return updated_wallet.balance
+    
+    @classmethod
+    async def check_if_account_in_db(cls, account_address):
+        account = await wallet_eth_rep_link.return_wallet_per_address(account_address)
+        if account:
+            return True
+        else:
+            return False
+
+
+    @classmethod
+    async def import_wallet_for_user_initial_script(cls, wallet_data: dict) -> dict:
+        """
+        
+        Args:
+            wallet_data(dict): Form data received by sockets containing:
+                - user_id (int): User's id.
+                - private_key (str): Private key of the account to import.
+
+        """
+
+
+        private_key = wallet_data["private_key"]
+        account = Account.from_key(private_key)
+        print('=====ACCOUNT DATA=====')
+        print(account)
+        print('======================')
+        is_exist_account_in_db = await cls.check_if_account_in_db(account.address)
+        if is_exist_account_in_db:
+            result_dict = {'status': 'fail', 'error_text': 'wallet with this address already exist in db'}
+        # Retrieve user and asset data
+        # email = await UserService.return_email_by_token(token=wallet_data["token"])
+        else:
+            user = await UserService.return_user_object_by_id(wallet_data["user_id"])
+            asset = await asset_rep_link.return_asset_per_code(code="ETH")
+
+            # Get and format wallet balance
+            balance = await w3_connection.eth.get_balance(account.address)
+            balance_in_ether = w3_connection.from_wei(balance, "ether")
+
+            # Create wallet in database
+            import_wallet_private_key = w3_connection.to_hex(account.key)
+            imported_wallet = await wallet_eth_rep_link.create_new_wallet(
+                private_key=import_wallet_private_key,
+                user=user,
+                address=account.address,
+                asset=asset,
+                balance=balance_in_ether,
+            )
+            result_dict = {'status': 'success', 'address': imported_wallet.address}
+        return result_dict
+
+
+
+
+
+    # @classmethod
+    # async def import_wallet_for_user_initial_script(cls, wallet_data: dict) -> dict:
+    #     """
+        
+    #     Args:
+    #         wallet_data(dict): Form data received by sockets containing:
+    #             - user_id (int): User's id.
+    #             - private_key (str): Private key of the account to import.
+
+    #     """
+
+    #     try:
+    #         private_key = wallet_data["private_key"]
+    #         account = Account.from_key(private_key)
+    #         print('=====ACCOUNT DATA=====')
+    #         print(account)
+    #         print('======================')
+    #         is_exist_account_in_db = await cls.check_if_account_in_db(account.address)
+    #         if is_exist_account_in_db:
+    #             result_dict = {'status': 'fail', 'error_text': 'wallet with this address already exist in db'}
+    #         # Retrieve user and asset data
+    #         # email = await UserService.return_email_by_token(token=wallet_data["token"])
+    #         else:
+    #             user = await UserService.return_user_object_by_id(wallet_data["user_id"])
+    #             asset = await asset_rep_link.return_asset_per_code(code="ETH")
+
+    #             # Get and format wallet balance
+    #             balance = await w3_connection.eth.get_balance(account.address)
+    #             balance_in_ether = w3_connection.from_wei(balance, "ether")
+
+    #             # Create wallet in database
+    #             import_wallet_private_key = w3_connection.to_hex(account.key)
+    #             imported_wallet = await wallet_eth_rep_link.create_new_wallet(
+    #                 private_key=import_wallet_private_key,
+    #                 user=user,
+    #                 address=account.address,
+    #                 asset=asset,
+    #                 balance=balance_in_ether,
+    #             )
+    #             result_dict = {'status': 'success', 'address': imported_wallet.address}
+
+
+    #     except IntegrityError:
+    #         error_text = "Аккаунт з таким приватним ключем вже зареєстрованний в системі"
+    #         result_dict = {'status': 'fail', 'error_text': error_text}
+
+
+    #     except Exception:
+    #         error_text = "Помилка в приватному ключі"
+    #         result_dict = {'status': 'fail', 'error_text': error_text}
+        
+    #     return result_dict

@@ -70,6 +70,9 @@ class WalletEtheriumRepository(WalletAbstractRepository):
         async with async_session() as session:
             query = (
                 select(Wallet)
+                .join(Wallet.user)
+                .join(Wallet.asset)
+                .join(Asset.blockchain)
                 .options(contains_eager(Wallet.asset).contains_eager(Asset.blockchain))
                 .options(contains_eager(Wallet.user))
                 .where(Wallet.address == wallet_address)
@@ -100,6 +103,12 @@ class WalletEtheriumRepository(WalletAbstractRepository):
     async def create_new_wallet(self, private_key, user, address, asset, balance=0):
         async_session = async_sessionmaker(engine, expire_on_commit=False)
         async with async_session() as session:
+            print('Debug wallet creating')
+            print(private_key)
+            print(user)
+            print(address)
+            print(asset)
+            print('***')
             wallet = Wallet(
                 private_key=private_key,
                 user=user,
@@ -166,5 +175,6 @@ class WalletEtheriumRepository(WalletAbstractRepository):
 
         return owner_id
 
+    # async def 
 
 wallet_eth_rep_link = WalletEtheriumRepository()

@@ -28,6 +28,12 @@ class UserService:
         else:
             user_dict["user_photo"] = None
         return user_dict
+    
+
+    async def return_user_object_by_id(user_id):
+        user_obj = await user_rep_link.return_user_data_by_id(user_id)
+        return user_obj
+
 
     async def update_user(validated_update_user_or_error):
         match validated_update_user_or_error:
@@ -89,6 +95,16 @@ class UserService:
     async def check_if_admin_user_exist(cls) -> bool:
         admin_is_exist_status = await user_rep_link.check_if_admin_user_exist()
         if admin_is_exist_status:
+            # print('======user is admin======')
             return True
         else:
+            # print('===user is simple user===')
             return False
+        
+
+    # @classmethod
+    # async def return_all_users(cls):
+    #     all_users_list = await user_rep_link.return_all_users()
+    #     print('====ALL===USERS=====')
+    #     print(all_users_list)
+    #     print('====================')

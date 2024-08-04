@@ -78,6 +78,7 @@ class UserRepository:
                 password=self.get_password_hash(user_after_validation.password),
                 username=user_after_validation.username,
                 is_active=True,
+                is_admin=user_after_validation.is_admin
             )
             session.add(new_user)
             await session.commit()
@@ -105,7 +106,7 @@ class UserRepository:
         async with async_session() as session:
             query = select(User)
             result = await session.execute(query)
-            users = result.scalars()
+            users = result.scalars().all()
             await session.commit()
             return users
 
@@ -113,13 +114,19 @@ class UserRepository:
     async def check_if_admin_user_exist(self):
         async_session = async_sessionmaker(engine, expire_on_commit=False)
         async with async_session() as session:
-            query = select(User).filter(User.is_admin == True)
+            # query = select(User).filter(User.is_admin == True)
+            query = select(User)
             user = await session.execute(query)
             result = user.scalars().first()
             await session.commit()
         print('===result===')
         print(result)
+        if result:
+            print(result.is_admin)
         print('============')
         return result
+    
+    # async def return_all_users(self):
+
 
 user_rep_link = UserRepository()
