@@ -83,6 +83,7 @@ services:
     depends_on:
       - db
       - asgi-web
+      - redis
 
   celery_with_block-handler-query:
     build:
@@ -95,6 +96,7 @@ services:
     depends_on:
       - db
       - asgi-web
+      - redis
 
 
   # celery_with_block-main-celery:

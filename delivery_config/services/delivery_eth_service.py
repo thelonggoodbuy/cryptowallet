@@ -162,8 +162,8 @@ class DeliveryEthService(DeliveryAbstractService):
         # delivery_change = random.choice([True, False])
         delivery_change = random.choice([False, True])
 
-        # if delivery_order and delivery_change == True:
-        if delivery_order and delivery_change:
+        if delivery_order and delivery_change == True:
+        # if delivery_order and delivery_change:
             sender_wallet_address = delivery_order.transaction.send_from
             sender_wallet = await WalletEtheriumService.return_wallet_per_address(
                 sender_wallet_address
@@ -199,8 +199,8 @@ class DeliveryEthService(DeliveryAbstractService):
                 namespace="/ibay",
             )
 
-        # elif delivery_order and delivery_change == False:
-        elif delivery_order and not delivery_change:
+        elif delivery_order and delivery_change == False:
+        # elif delivery_order and not delivery_change:
             from socketio_config.server import client_manager
 
             # print('***')
