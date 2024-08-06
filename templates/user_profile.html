@@ -84,7 +84,7 @@
 
                 </ul>
                 <a href="#" class="username nav-link px-2 mx-3 link-dark fs-4" id="top_profile_link">Username</a>
-                <img src="/static/static/image/empty_portrait.jpg" alt="mdo" width="50" height="50" class="portrait_jpg img-fluid">
+                <img src="/static/static/image/empty_portrait.jpg" alt="mdo" width="50" height="50" class="portrait_jpg img-fluid" id="portret_in_nav">
               </div>
             <!-- </div> -->
           </header>
@@ -203,8 +203,8 @@
         <h3>Статистика</h3>
         <div class="row my-3 border">
           <div class="col-12 my-3">
-            <h5>Повідомлень в чаті: 200</h5>
-            <h5>Кількість гаманців: 4</h5>
+            <h5>Повідомлень в чаті: <span id="total_messages_in_chat">200</span></h5>
+            <h5>Кількість гаманців: <span id="total_wallets">4</span></h5>
           </div>
         </div>
 
@@ -278,6 +278,8 @@
             }
           });
 
+          $('#delete_check_box').hide()
+
           // request get users data
           $.ajax({
             url: window.location.href.replace('profile/', 'get_current_user_data/'),
@@ -287,8 +289,22 @@
             contentType: false,
             success: function(result){
 
+              console.log('---->Current---user---data<----')
+              console.log(result)
+              console.log('-------------------------------')
+
               var username_data = result['username']
               var email_data = result['email']
+
+              // <h5>Повідомлень в чаті: <span id="total_messages_in_chat">200</span></h5>
+              // <h5>Кількість гаманців: <span id="total_wallets">4</span></h5>
+
+              var total_messages_in_chat = result['total_messages_by_user']
+              var total_wallets = result['wallets_quantity']
+
+              $('#total_messages_in_chat').html(total_messages_in_chat)
+              $('#total_wallets').html(total_wallets)
+
               $('#inputUsername').val(username_data)
 
               for(element of $("[class^='username']")){
@@ -367,12 +383,19 @@
     $('#imageInput').on('change', function(){
       var input = $(this)
       var output = $(this).closest("form").find("img[id='form-portrait']")
+      var naw_output = $('portret_in_nav')
       var reader = new FileReader();
       reader.onload = function () {
             output.attr("src", reader.result);
+            naw_output.attr("src", reader.result);
         };
       reader.readAsDataURL(input[0].files[0]);
+
+      
+
       $('#delete_check_box').prop('checked', false);
+
+      
 
 
       // console.log($(this).closest("form").find("img[id='form-portrait']"))

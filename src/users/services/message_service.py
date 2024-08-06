@@ -84,3 +84,8 @@ class MessageService:
             room="chat_room",
             namespace="/messaging",
         )
+
+    async def return_quantity_of_concrete_user(user_id):
+        all_messages = await message_rep_link.return_all_messages_of_user_by_id(user_id)
+        len_of_all_messages_list = len(all_messages)
+        return len_of_all_messages_list

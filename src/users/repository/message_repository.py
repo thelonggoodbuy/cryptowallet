@@ -41,6 +41,15 @@ class MessageRepository:
                 session.add(message)
                 await session.commit()
         return message
+    
+    async def return_all_messages_of_user_by_id(self, user_id):
+        async_session = async_sessionmaker(engine, expire_on_commit=False)
+        async with async_session() as session:
+            query = select(Message).filter(Message.user_id==user_id)
+            messages = await session.execute(query)
+            result = messages.scalars().all()
+            await session.commit()
+        return result
 
 
 message_rep_link = MessageRepository()

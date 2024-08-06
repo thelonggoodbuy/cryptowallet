@@ -1,6 +1,8 @@
 from fastapi import Depends, APIRouter, status, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse
 from src.users.services.user_service import UserService
+from src.users.services.message_service import MessageService
+from src.wallets.services.wallet_etherium_service import WalletEtheriumService
 import os
 
 from fastapi.security import OAuth2PasswordRequestForm
@@ -134,8 +136,11 @@ async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_
 async def profile_current_data(
     current_user_or_redirect: Annotated[User, Depends(get_current_user)],
 ):
+    print('===current===user===data====')
     match current_user_or_redirect:
         case UserInDB():
+            print('====user in db===')
+            # data for updating user form
             user = await UserService.return_user_per_email(
                 email=current_user_or_redirect.email
             )
@@ -144,10 +149,24 @@ async def profile_current_data(
             except TypeError:
                 photo_url = None
 
+            # data about quantity messages
+            total_messages_by_user = await MessageService.return_quantity_of_concrete_user(user.id)
+            print('===total_messages_by_user===')
+            print(total_messages_by_user)
+
+            # total users wallets
+            total_wallets_by_user = await WalletEtheriumService.return_wallets_per_user_email_without_sync(current_user_or_redirect.email)
+            wallets_quantity = len(total_wallets_by_user)
+            print('===wallets_quantity===')
+            print(wallets_quantity)
+            print('======================')
+
             data = {
                 "username": user.username,
                 "email": user.email,
                 "photo_url": photo_url,
+                "total_messages_by_user": total_messages_by_user,
+                "wallets_quantity": wallets_quantity
             }
 
             return data
@@ -186,10 +205,7 @@ async def registration_data(
 
 # ------------------------------CHAT--------LOGIC-------------------------------------------
 @router.get("/users/chat/", response_class=HTMLResponse)
-async def chat(
-    request: Request,
-    current_user_or_redirect: Annotated[User, Depends(get_current_user)],
-):
+async def chat(request: Request, current_user_or_redirect: Annotated[User, Depends(get_current_user)]):
     match current_user_or_redirect:
         case UserInDB():
             with open("templates/chat.html", "r") as file:
@@ -197,3 +213,15 @@ async def chat(
             return HTMLResponse(content=data, status_code=200)
         case RedirectResponse():
             return current_user_or_redirect
+        
+
+# @router.get("/users/profile/", response_class=HTMLResponse, name="user_profile")
+# async def profile(current_user_or_redirect: Annotated[User, Depends(get_current_user)]):
+#     match current_user_or_redirect:
+#         case UserInDB():
+#             with open("templates/user_profile.html", "r") as file:
+#                 data = file.read()
+#             return HTMLResponse(content=data, status_code=200)
+
+#         case RedirectResponse():
+#             return current_user_or_redirect

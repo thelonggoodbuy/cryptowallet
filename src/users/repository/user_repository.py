@@ -57,7 +57,7 @@ class UserRepository:
 
             await session.commit()
 
-            if not user.photo:
+            if user.photo:
                 photo_url = user.photo["url"][1:]
             else:
                 photo_url = None
